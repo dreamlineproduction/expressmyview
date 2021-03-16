@@ -1,0 +1,14 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/js/bootstrap-tagsinput.js": "/js/bootstrap-tagsinput.js",
+    "/js/channels.js": "/js/channels.js",
+    "/js/custom.js": "/js/custom.js",
+    "/js/history.js": "/js/history.js",
+    "/js/live-streams.js": "/js/live-streams.js",
+    "/js/login.js": "/js/login.js",
+    "/js/settings.js": "/js/settings.js",
+    "/js/video.js": "/js/video.js",
+    "/css/app.css": "/css/app.css",
+    "/css/dropzone.css": "/css/dropzone.css",
+    "/css/bootstrap-tagsinput.css": "/css/bootstrap-tagsinput.css"
+}

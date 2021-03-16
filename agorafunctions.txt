@@ -1,0 +1,30 @@
+Things to do:
+3) check if the host is online or not: modify the mysql whether
+4) chat messages
+5) add host userID to live_stream table.
+6) upgrade or downgrade video resolution based on network quality
+
+Remaining functions:
+
+Local audio and video methods
+createScreenVideoTrack	Creates a video track for screen sharing.
+createBufferSourceAudioTrack	Creates an audio track from an audio file.
+createCustomAudioTrack	Creates a customized audio track.
+createCustomVideoTrack	Creates a customized video track.
+
+Callback	Description
+onAudioAutoplayFailed	Occurs when the autoplay of an audio track fails.
+
+Other methods
+Method	Description
+getSupportedCodec	Gets the codecs that the browser supports.
+
+AgoraRTCClient
+
+Method	Description
+join	Joins a channel.
+leave	Leaves a channel.
+publish	Publishes local audio and/or video tracks to a channel.
+unpublish	Unpublishes the local audio and/or video tracks.
+subscribe	Subscribes to the audio and/or video tracks of a remote user.
+unsubscribe	Unsubscribes from the audio and/or tracks of a remote user.

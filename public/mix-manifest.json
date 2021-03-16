@@ -1,0 +1,13 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/js/broadcaster.js": "/js/broadcaster.js",
+    "/js/channels.js": "/js/channels.js",
+    "/js/custom.js": "/js/custom.js",
+    "/js/history.js": "/js/history.js",
+    "/js/live-streams.js": "/js/live-streams.js",
+    "/js/login.js": "/js/login.js",
+    "/js/podcast.js": "/js/podcast.js",
+    "/js/search.js": "/js/search.js",
+    "/js/settings.js": "/js/settings.js",
+    "/js/viewer.js": "/js/viewer.js"
+}
