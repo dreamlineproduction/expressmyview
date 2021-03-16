@@ -1,8 +1,12 @@
 Things to do:
-3) check if the host is online or not: modify the mysql whether
-4) chat messages
-5) add host userID to live_stream table.
-6) upgrade or downgrade video resolution based on network quality
+1) whether the stream is live or not
+2) show the list of past live broadcast
+3) option to delete the broadcast
+4) display name to be displayed in the chat.
+5) For the host: play the video in the player, with controller enabled.
+6) audience: no player controller needed.
+7) live view counter to be displayed for the connected viewers
+6) Emjois to be sent in the chat
 
 Remaining functions:
 
