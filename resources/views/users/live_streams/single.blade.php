@@ -44,9 +44,9 @@
                                     <div id="mic-list" class="dropdown-menu">
                                       <select name="mic-list-select" id="mic-list-select" class="dropdown-item"></select>
                                     </div>
-                                  
+
                               </div>
-                          </div>    
+                          </div>
                               </div>
                           </div>
 
@@ -85,9 +85,9 @@
 
                         </div>
 
-                      
+
                         <div id='host-video'></div>
-                      
+
 
 
 
@@ -148,7 +148,7 @@
 
 
 
-                                   
+
                                 </div>
                                 <div class="col-md-2 stream-key">
 
@@ -165,7 +165,7 @@
 
 
                         </div>
-                     
+
                     </div>
                     @endif
 
@@ -241,13 +241,13 @@
                                             </div>
                                             <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
                                                 style="overflow-y: scroll !important; height:500px !important;">
-                                              
-                                            
-                                               
-                                             
-                                               
-                                              
-                                               
+
+
+
+
+
+
+
                                                 <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
                                                     <div class="ps-scrollbar-x" tabindex="0"
                                                         style="left: 0px; width: 0px;"></div>
@@ -265,7 +265,7 @@
                                                 <img alt="($user->name)" class="avatar avatar-xs"
                                                     src="{{ !empty($user->profile->avatar) ? url('/storage/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
 
-                                         
+
                                                 <input class="publisher-input" id="publisher-input" type="text"
                                                     placeholder="Write something">
                                                 <div class="btn-group dropup">
@@ -336,7 +336,7 @@
 
 
 
-                      
+
                     </div>
                 </div>
             </div>
@@ -360,6 +360,7 @@ var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
 var clipboard = new ClipboardJS('.btn');
+var streamid = "{{ $stream->id }}";
 
 clipboard.on('success', function(e) {
     console.log(e);
@@ -374,7 +375,7 @@ function myFunction() {
   copyText.select();
   copyText.setSelectionRange(0, 99999);
   document.execCommand("copy");
-  
+
   var tooltip = document.getElementById("myTooltip");
   tooltip.innerHTML = "Copied";
 }

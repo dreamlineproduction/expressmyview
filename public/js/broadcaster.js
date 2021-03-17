@@ -3648,12 +3648,60 @@ $(function () {
   $('#golive-btn').prop('disabled', true);
   $('#golive-btn').on('click', function () {
     var hostState = hostStore.getState();
-    if (hostState.connectionState !== 'DISCONNECTED') return;
-    startBroadcasting();
+    if (hostState.connectionState !== 'DISCONNECTED') return; // startBroadcasting();
+
+    $.ajax({
+      url: APP_URL + '/live-stream/setlive',
+      // contentType: "application/json",
+      dataType: 'json',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        streamid: streamid,
+        livestatus: true
+      },
+      success: function success(data) {
+        if (data.status === 1) {
+          console.log('Stream set to live!');
+        } else {
+          console.log(data);
+        }
+      },
+      error: function error(_error) {
+        console.log(_error);
+      },
+      complete: function complete() {}
+    });
   });
   $('#exit-btn').prop('disabled', true);
   $('#exit-btn').on('click', function () {
-    leaveCall();
+    // leaveCall();
+    $.ajax({
+      url: APP_URL + '/live-stream/setlive',
+      // contentType: "application/json",
+      dataType: 'json',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        streamid: streamid,
+        livestatus: false
+      },
+      success: function success(data) {
+        if (data.status === 1) {
+          console.log('Stream set to not live!');
+        } else {
+          console.log(data);
+        }
+      },
+      error: function error(_error2) {
+        console.log(_error2);
+      },
+      complete: function complete() {}
+    });
   });
 });
 
@@ -3886,7 +3934,7 @@ var host = function host() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview\resources\js\broadcaster.js */"./resources/js/broadcaster.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/broadcaster.js */"./resources/js/broadcaster.js");
 
 
 /***/ })

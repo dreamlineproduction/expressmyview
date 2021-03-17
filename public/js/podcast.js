@@ -410,36 +410,6 @@ $(function () {
   // fluidPlayer method is global when CDN distribution is used.
 
 
-  var player = fluidPlayer(
-    'external-broadcasts-container',
-     {
-         layoutControls: {
-             // Parameters to customise the look and feel of the player
-             primaryColor: "#28B8ED",
-            playButtonShowing:      false,
-            playPauseAnimation:     true,
-            fillToContainer:        true,
-            autoPlay:               false,
-            preload:                false,
-            mute:                   false,
-            doubleclickFullscreen:  true,
-            subtitlesEnabled:       false,
-            keyboardControl:        true,
-            layout:                 'default',
-            allowDownload:          false,
-            playbackRateEnabled:    false,
-            allowTheatre:           true,
-            title:                  false,
-            loop:                   false,
-            
-
-            
-         },
-         vastOptions: {
-             // Parameters to customise how the ads are displayed & behave
-         }
-     }
- );
   var player = fluidPlayer('full-screen-video');
 
   if ($('#single-video').length > 0) {
@@ -632,7 +602,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview\resources\js\podcast.js */"./resources/js/podcast.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/podcast.js */"./resources/js/podcast.js");
 
 
 /***/ })

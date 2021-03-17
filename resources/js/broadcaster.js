@@ -337,12 +337,50 @@ $(function(){
   $('#golive-btn').on('click', () => {
     const hostState = hostStore.getState();
     if (hostState.connectionState !== 'DISCONNECTED') return;
-    startBroadcasting();
+    // startBroadcasting();
+    $.ajax({
+      url: APP_URL + '/live-stream/setlive',
+      // contentType: "application/json",
+      dataType: 'json',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+      method: 'post',
+      data: { streamid, livestatus: true },
+      success: (data) => {
+        if (data.status === 1) {
+          console.log('Stream set to live!');
+        } else {
+          console.log(data);
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      },
+      complete: () => {},
+    });
   });
 
   $('#exit-btn').prop('disabled', true);
   $('#exit-btn').on('click', () => {
-    leaveCall();
+    // leaveCall();
+    $.ajax({
+      url: APP_URL + '/live-stream/setlive',
+      // contentType: "application/json",
+      dataType: 'json',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+      method: 'post',
+      data: { streamid, livestatus: false},
+      success: (data) => {
+        if (data.status === 1) {
+          console.log('Stream set to not live!');
+        } else {
+          console.log(data);
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      },
+      complete: () => {},
+    });
   });
 
 });

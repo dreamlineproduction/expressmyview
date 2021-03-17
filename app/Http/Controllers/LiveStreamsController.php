@@ -49,7 +49,7 @@ class LiveStreamsController extends Controller
     {
       $type = $request->route('type');
       $user = $request->route('user');
-      $streams = LiveStream::where('channelname','<>','')->get();
+      $streams = LiveStream::where('islive',true)->get();
 
       $viewData = array(
         'streams' => $streams,
@@ -149,6 +149,9 @@ class LiveStreamsController extends Controller
             $stream = new LiveStream();
             $stream->channel_id = $request->input('channel');
             $stream->user_id = Auth::user()->id;
+            $stream->hostid = strval(Auth::user()->id);
+            $stream->islive = False;
+            $stream->totalviews = 0;
             $stream->title = $request->input('title');
             $stream->description = $request->input('description');
             $stream->privacy = $request->input('privacy');
@@ -335,6 +338,33 @@ class LiveStreamsController extends Controller
     public function edit($id)
     {
         //
+    }
+
+    public function editLiveStatus(Request $request) {
+
+      if (Auth::check()) {
+        $streamid = $request->input('streamid');
+        $livestatus = $request->input('livestatus') == 'true' ? 1 : 0;
+
+        $stream = LiveStream::where('id', $streamid)->first(['hostid','islive']);
+        if (is_null($stream)) {
+          return new Response(['status' => 0, 'error' => 'No stream with '.json_encode($request->all()).' ---found']);
+        }
+        if (Auth::user()->id == $stream->hostid) {
+          $stream->islive = $livestatus;
+          if ($stream->update()) {
+            $streamu = LiveStream::where('id', $streamid)->first(['hostid','islive']);
+            return new Response(['status' => 1, 'message' => 'Live status changed: '.json_encode($streamu).json_encode($request->all()).json_encode($livestatus).json_encode($streamid)]);
+          } else {
+            return new Response(['status' => 0, 'error' => 'MySQL sucks']);
+          }
+        } else {
+          return new Response(['status' => 0, 'error' => 'Access denied']);
+        }
+      } else {
+        return new Response(['status' => 0, 'error' => 'Access denied']);
+      }
+      return new Response(['status' => 0, 'error' => 'Access denied']);
     }
 
     /**
