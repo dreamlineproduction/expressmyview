@@ -350,7 +350,7 @@ class LiveStreamsController extends Controller
         $streamid = $request->input('streamid');
         $livestatus = $request->input('livestatus') == 'true' ? 1 : 0;
 
-        $stream = LiveStream::where('id', $streamid)->first(['hostid','islive']);
+        $stream = LiveStream::where('id', $streamid)->first();
         if (is_null($stream)) {
           return new Response(['status' => 0, 'error' => 'No stream with '.json_encode($request->all()).' ---found']);
         }
@@ -360,12 +360,11 @@ class LiveStreamsController extends Controller
             $stream->islive = $livestatus;
             $stream->update();
             DB::commit();
-            $streamu = LiveStream::where('id', $streamid)->first(['hostid','islive']);
-            return new Response(['status' => 1, 'message' => 'Live status changed: '.json_encode($streamu).json_encode($request->all()).json_encode($livestatus).json_encode($streamid)]);
+            return new Response(['status' => 1, 'message' => 'Live status changed!');
           }
           catch (\Exception $exception) {
             DB::rollBack();
-            return new Response(['status' => 0, 'error' => 'MySQL sucks'.json_encode($exception)]);
+            return new Response(['status' => 0, 'error' => 'MySQL sucks: '.json_encode($exception)]);
           }
         } else {
           return new Response(['status' => 0, 'error' => 'Access denied']);
