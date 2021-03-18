@@ -313,6 +313,8 @@ class LiveStreamsController extends Controller
         $rolertm = RtmTokenBuilder::RoleRtmUser;
         $tokenrtm = RtmTokenBuilder::buildToken($appID, $appCertificate, $userrtm, $role, $privilegeExpiredTs);
 
+        $displayname = Auth::user() ? Auth::user()->name : $userrtm;
+        $profilepic = !empty(Auth::user()->profile->avatar) ? url('/storage/users/avatar/' . Auth::user()->profile->avatar) : asset('img/user.png');
         $casts = $stream->casts;
         $categories = $stream->categories;
         $tags = $stream->tags;
@@ -325,6 +327,8 @@ class LiveStreamsController extends Controller
             'token' => $token,
             'tokenrtm' => $tokenrtm,
             'userrtm' => $userrtm,
+            'displayname' => $displayname,
+            'profilepic' => $profilepic,
         );
         return view('users.live_streams.watch', $viewData);
     }
@@ -351,12 +355,17 @@ class LiveStreamsController extends Controller
           return new Response(['status' => 0, 'error' => 'No stream with '.json_encode($request->all()).' ---found']);
         }
         if (Auth::user()->id == $stream->hostid) {
-          $stream->islive = $livestatus;
-          if ($stream->update()) {
+          DB::beginTransaction();
+          try {
+            $stream->islive = $livestatus;
+            $stream->update();
+            DB::commit();
             $streamu = LiveStream::where('id', $streamid)->first(['hostid','islive']);
             return new Response(['status' => 1, 'message' => 'Live status changed: '.json_encode($streamu).json_encode($request->all()).json_encode($livestatus).json_encode($streamid)]);
-          } else {
-            return new Response(['status' => 0, 'error' => 'MySQL sucks']);
+          }
+          catch (\Exception $exception) {
+            DB::rollBack();
+            return new Response(['status' => 0, 'error' => 'MySQL sucks'.json_encode($exception)]);
           }
         } else {
           return new Response(['status' => 0, 'error' => 'Access denied']);

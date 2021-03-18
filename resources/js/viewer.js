@@ -3,6 +3,7 @@ import AgoraRTM from 'agora-rtm-sdk';
 import { createStore } from 'redux';
 import audience from './audience';
 import devices from './devices';
+import connectedViewers from './connectedViewers';
 
 $(function(){
   console.log(
@@ -16,6 +17,12 @@ $(function(){
   audienceStore.subscribe(() => {
     const audienceState = audienceStore.getState();
     $('#connectionState').html(audienceState.connectionState);
+  });
+
+  const viewersStore = createStore(connectedViewers);
+  viewersStore.subscribe(() => {
+    const viewersState = viewersStore.getState();
+    $('#liveviewerscount').html(viewersState.viewersCount);
   });
 
   // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
@@ -83,12 +90,15 @@ $(function(){
       rtmchannel = RTM.rtmclient.createChannel(channelname);
 
       rtmchannel.on('ChannelMessage', ({text}, senderId) => {
+        const { msg, displayname, profilepic }  = JSON.parse(text);
         const divID = '_' + Math.random().toString(36).substr(2, 9);
         const chatDiv = $('<div>', {id: divID, class: 'media media-chat'});
-        const imgDiv = $('<img>', {class: 'avatar', src: 'https://img.icons8.com/color/36/000000/administrator-male.png'});
+        const imgDiv = $('<img>', {class: 'avatar', src: profilepic});
         chatDiv.append(imgDiv);
         const chatBody = $('<div>', {class: 'media-body'});
-        const textBody = $('<p>', {text: text});
+        const nameBody = $('<p>', {text: 'From: '+displayname});
+        const textBody = $('<p>', {html: msg});
+        chatBody.append(nameBody);
         chatBody.append(textBody);
         chatDiv.append(chatBody);
         chatDiv.attr('class', 'media media-chat');
@@ -110,22 +120,46 @@ $(function(){
     });
   };
 
-  $('#publisher-input').keyup((e) => {
-    if (e.keyCode == 13) {
-      const msg = $('#publisher-input').val();
-      rtmchannel.sendMessage({text: msg})
+  function sendChatMessage(textmsg, emoji=false) {
+    const { msg, displayname } = JSON.parse(textmsg);
+    if (rtmchannel) {
+      rtmchannel.sendMessage({text: textmsg})
       .then(() => {
         const divID = '_' + Math.random().toString(36).substr(2, 9);
         const chatDiv = $('<div>', {id: divID, class: 'media media-chat media-chat-reverse'});
         const chatBody = $('<div>', {class: 'media-body'});
-        const textBody = $('<p>', {text: msg});
+        const nameBody = $('<p>', {text: 'From: '+displayname});
+        // let textBody;
+        // if (emoji) {
+        //   textBody = JSON.parse(msg);
+        // } else {
+        //   textBody = $('<p>', {text: msg});
+        // }
+        const textBody = $('<p>', {html: msg});
+        // chatBody.append(nameBody);
         chatBody.append(textBody);
         chatDiv.append(chatBody);
         $('#chat-content').append(chatDiv);
-        $('#publisher-input').val('');
+        if (!emoji)  $('#publisher-input').val('');
       })
       .catch((error) => { console.log(error)});
     }
+  };
+
+  $('#publisher-input').keyup((e) => {
+    if (e.keyCode == 13) {
+      const msg = $('#publisher-input').val();
+      if (msg.length < 1) return;
+      const textmsg = JSON.stringify({msg,displayname,profilepic,emoji: false});
+      sendChatMessage(textmsg);
+    }
+  });
+
+  $('#publisher-btn').click((e) => {
+    const msg = $('#publisher-input').val();
+    if (msg.length < 1) return;
+    const textmsg = JSON.stringify({msg,displayname,profilepic,emoji: false});
+    sendChatMessage(textmsg);
   });
 
   async function joinLiveStream(){
@@ -188,6 +222,18 @@ $(function(){
       }
     });
 
+    bclient.client.on('user-joined', (user) => {
+      // console.log('host joined', user);
+      viewersStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: true }});
+      viewersStore.dispatch({type: 'INCREASE_VIEWERS_COUNT'})
+    });
+
+    bclient.client.on('user-left', (user) => {
+      // console.log('host left', user);
+      viewersStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: false }});
+      viewersStore.dispatch({type: 'DECREASE_VIEWERS_COUNT'})
+    });
+
     const uid = await bclient.client.join(options.appId, options.channel, options.token, null);
     $('#exit-btn').prop('disabled', false);
     await JoinChat();
@@ -212,6 +258,14 @@ $(function(){
   });
   $('#golive-btn').on('click', () => {
     joinLiveStream();
+  });
+
+  $('.dropdown-menu.emoji-item a').on('click', (e) => {
+    e.preventDefault();
+    const msg = e.target;
+    const msgt = $(msg).parent().html();
+    const textmsg = JSON.stringify({msg: msgt,displayname,profilepic, emoji: true});
+    sendChatMessage(textmsg, true);
   });
 
 });

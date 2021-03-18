@@ -38,9 +38,9 @@ Streaming Now - {{ $stream->title }}
                               </div>
                           </div>
 
-                          
+
                           <div id="external-broadcasts-container">
-                          
+
                           </div>
 
 
@@ -53,8 +53,9 @@ Streaming Now - {{ $stream->title }}
                                 <div class="col-md-6">
 
                                     <h2><a href="#">{{ $stream->title }}</a></h2>
-                                    <p class="mb-0"><i class="fas fa-eye"></i> {{ number_format($stream->views) }}
-                                    </p>
+                                    <!-- <p class="mb-0"><i class="fas fa-eye"></i> {{ number_format($stream->views) }}
+                                    </p> -->
+                                    <p class="mb-0" id="liveviewerscount"><i class="fas fa-eye"></i></p>
                                 </div>
 
                                 <div class="col-md-6">
@@ -163,11 +164,11 @@ Streaming Now - {{ $stream->title }}
                                                 </div>
                                                 <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
                                                     style="overflow-y: scroll !important; height:500px !important;">
-                                                 
-                                                  
-                                                   
-                                                 
-                                                
+
+
+
+
+
                                                     <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
                                                         <div class="ps-scrollbar-x" tabindex="0"
                                                             style="left: 0px; width: 0px;"></div>
@@ -249,7 +250,7 @@ Streaming Now - {{ $stream->title }}
                                                     </div>
 
 
-                                                    <a class="publisher-btn text-info" href="#" data-abc="true"><i
+                                                    <a class="publisher-btn text-info" href="#" data-abc="true" id="publisher-btn"><i
                                                             class="fa fa-paper-plane"></i></a>
 
                                                 </div>
@@ -293,6 +294,8 @@ var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
+var displayname = "{{ $displayname }}";
+var profilepic = "{{ $profilepic }}";
 
 </script>
 @endsection

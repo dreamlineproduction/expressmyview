@@ -3086,11 +3086,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 /* harmony import */ var _host__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./host */ "./resources/js/host.js");
 /* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./devices */ "./resources/js/devices.js");
+/* harmony import */ var _connectedViewers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./connectedViewers */ "./resources/js/connectedViewers.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -3135,16 +3137,13 @@ $(function () {
         micdd.append($('<option></option>').val(mic.deviceId).html(mic.label));
       });
     }
-  }); // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
-
-  if (APP_DEBUG) {
-    window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(0);
-  } else {
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
-  } // https://docs.agora.io/en/Agora%20Platform/token?platform=All%20Platforms
+  });
+  var viewersStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_connectedViewers__WEBPACK_IMPORTED_MODULE_6__["default"]);
+  viewersStore.subscribe(function () {
+    var viewersState = viewersStore.getState();
+    $('#liveviewerscount').html('<i class="fas fa-eye"></i> ' + viewersState.viewersCount);
+  }); // https://docs.agora.io/en/Agora%20Platform/token?platform=All%20Platforms
   // https://docs.agora.io/en/Agora%20Platform/token_server
-
 
   var token = servertoken;
   var tokenrtm = servertokenrtm;
@@ -3160,7 +3159,16 @@ $(function () {
     channel: channelname,
     token: token,
     role: 'host'
-  };
+  }; // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
+
+  if (APP_DEBUG) {
+    window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
+    window.bclient = bclient;
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(0);
+  } else {
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
+  }
+
   agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.getCameras().then(function (list) {
     devicesStore.dispatch({
       type: 'SET_DEVICE_LIST',
@@ -3278,28 +3286,38 @@ $(function () {
                 rtmchannel = RTM.rtmclient.createChannel(channelname);
                 rtmchannel.on('ChannelMessage', function (_ref, senderId) {
                   var text = _ref.text;
+                  console.log('Message received: ', text);
+
+                  var _JSON$parse2 = JSON.parse(text),
+                      msg = _JSON$parse2.msg,
+                      displayname = _JSON$parse2.displayname,
+                      profilepic = _JSON$parse2.profilepic;
+
                   var divID = '_' + Math.random().toString(36).substr(2, 9);
                   var chatDiv = $('<div>', {
                     id: divID,
                     "class": 'media media-chat'
                   });
                   var imgDiv = $('<img>', {
-                    "class": 'avatar',
-                    src: 'https://img.icons8.com/color/36/000000/administrator-male.png'
+                    "class": 'avatar avatar-xs',
+                    src: profilepic
                   });
                   chatDiv.append(imgDiv);
                   var chatBody = $('<div>', {
                     "class": 'media-body'
                   });
-                  var textBody = $('<p>', {
-                    text: text
+                  var nameBody = $('<p>', {
+                    text: 'From: ' + displayname
                   });
+                  var textBody = $('<p>', {
+                    html: msg
+                  });
+                  chatBody.append(nameBody);
                   chatBody.append(textBody);
                   chatDiv.append(chatBody);
                   chatDiv.attr('class', 'media media-chat');
                   $('#chat-content').append(chatDiv);
                   console.log(chatDiv);
-                  console.log('Message received: ', text);
                 });
                 rtmchannel.join().then(function () {
                   console.log('chat channel joining success');
@@ -3321,11 +3339,17 @@ $(function () {
   }
 
   ;
-  $('#publisher-input').keyup(function (e) {
-    if (e.keyCode == 13) {
-      var msg = $('#publisher-input').val();
+
+  function sendChatMessage(textmsg) {
+    var emoji = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    var _JSON$parse = JSON.parse(textmsg),
+        msg = _JSON$parse.msg,
+        displayname = _JSON$parse.displayname;
+
+    if (rtmchannel) {
       rtmchannel.sendMessage({
-        text: msg
+        text: textmsg
       }).then(function () {
         var divID = '_' + Math.random().toString(36).substr(2, 9);
         var chatDiv = $('<div>', {
@@ -3335,17 +3359,53 @@ $(function () {
         var chatBody = $('<div>', {
           "class": 'media-body'
         });
+        var nameBody = $('<p>', {
+          text: 'From: ' + displayname
+        }); // let textBody;
+        // if (emoji) {
+        //   textBody = JSON.parse(msg);
+        // } else {
+        //   textBody = $('<p>', {text: msg});
+        // }
+
         var textBody = $('<p>', {
-          text: msg
-        });
+          html: msg
+        }); // chatBody.append(nameBody);
+
         chatBody.append(textBody);
         chatDiv.append(chatBody);
         $('#chat-content').append(chatDiv);
-        $('#publisher-input').val('');
+        if (!emoji) $('#publisher-input').val('');
       })["catch"](function (error) {
         console.log(error);
       });
     }
+  }
+
+  ;
+  $('#publisher-input').keyup(function (e) {
+    if (e.keyCode == 13) {
+      var msg = $('#publisher-input').val();
+      if (msg.length < 1) return;
+      var textmsg = JSON.stringify({
+        msg: msg,
+        displayname: displayname,
+        profilepic: profilepic,
+        emoji: false
+      });
+      sendChatMessage(textmsg);
+    }
+  });
+  $('#publisher-btn').click(function (e) {
+    var msg = $('#publisher-input').val();
+    if (msg.length < 1) return;
+    var textmsg = JSON.stringify({
+      msg: msg,
+      displayname: displayname,
+      profilepic: profilepic,
+      emoji: false
+    });
+    sendChatMessage(textmsg);
   });
   $('#camera-list-select').change(function () {
     console.log($('#camera-list-select').val(), $('#camera-list-select').text());
@@ -3426,24 +3486,36 @@ $(function () {
               bclient.client.on('exception', function (event) {
                 console.log(event);
               });
-              _context4.next = 9;
+              bclient.client.on('user-joined', function (user) {
+                console.log('user-joined', user);
+                viewersStore.dispatch({
+                  payload: 'INCREASE_VIEWERS_COUNT'
+                });
+              });
+              bclient.client.on('user-left', function (user) {
+                console.log('user-left', user);
+                viewersStore.dispatch({
+                  payload: 'DECREASE_VIEWERS_COUNT'
+                });
+              });
+              _context4.next = 11;
               return bclient.client.join(options.appId, options.channel, options.token, null);
 
-            case 9:
+            case 11:
               uid = _context4.sent;
 
               if (!(bclient.localAudioTrack === null)) {
-                _context4.next = 18;
+                _context4.next = 20;
                 break;
               }
 
               deviceId = $('#mic-list-select').val();
-              _context4.next = 14;
+              _context4.next = 16;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createMicrophoneAudioTrack({
                 microphoneId: deviceId
               });
 
-            case 14:
+            case 16:
               bclient.localAudioTrack = _context4.sent;
               hostStore.dispatch({
                 type: 'AUDIO_TRACK_AVAILABLE',
@@ -3454,19 +3526,22 @@ $(function () {
               $('#mictoggle-btn').prop('disabled', false);
               $('#mictoggle-icon').css('color', 'green');
 
-            case 18:
+            case 20:
+              // Save this host uid on MySQL DB
+              console.log(uid);
+
               if (!(bclient.localVideoTrack === null)) {
-                _context4.next = 28;
+                _context4.next = 31;
                 break;
               }
 
               _deviceId = $('#camera-list-select').val();
-              _context4.next = 22;
+              _context4.next = 25;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
                 cameraId: _deviceId
               });
 
-            case 22:
+            case 25:
               bclient.localVideoTrack = _context4.sent;
               videoElem = document.getElementById('host-video');
               bclient.localVideoTrack.play(videoElem);
@@ -3479,17 +3554,17 @@ $(function () {
               $('#camtoggle-btn').prop('disabled', false);
               $('#camtoggle-icon').css('color', 'green');
 
-            case 28:
-              _context4.next = 30;
+            case 31:
+              _context4.next = 33;
               return bclient.client.publish([bclient.localAudioTrack, bclient.localVideoTrack]);
 
-            case 30:
+            case 33:
               $('#golive-btn').prop('disabled', true);
               $('#exit-btn').prop('disabled', false);
-              _context4.next = 34;
+              _context4.next = 37;
               return JoinChat();
 
-            case 34:
+            case 37:
             case "end":
               return _context4.stop();
           }
@@ -3648,8 +3723,8 @@ $(function () {
   $('#golive-btn').prop('disabled', true);
   $('#golive-btn').on('click', function () {
     var hostState = hostStore.getState();
-    if (hostState.connectionState !== 'DISCONNECTED') return; // startBroadcasting();
-
+    if (hostState.connectionState !== 'DISCONNECTED') return;
+    startBroadcasting();
     $.ajax({
       url: APP_URL + '/live-stream/setlive',
       // contentType: "application/json",
@@ -3677,7 +3752,7 @@ $(function () {
   });
   $('#exit-btn').prop('disabled', true);
   $('#exit-btn').on('click', function () {
-    // leaveCall();
+    leaveCall();
     $.ajax({
       url: APP_URL + '/live-stream/setlive',
       // contentType: "application/json",
@@ -3703,7 +3778,89 @@ $(function () {
       complete: function complete() {}
     });
   });
+  $('.dropdown-menu.emoji-item a').on('click', function (e) {
+    e.preventDefault();
+    var msg = e.target;
+    var msgt = $(msg).parent().html();
+    var textmsg = JSON.stringify({
+      msg: msgt,
+      displayname: displayname,
+      profilepic: profilepic,
+      emoji: true
+    });
+    sendChatMessage(textmsg, true);
+  });
 });
+
+/***/ }),
+
+/***/ "./resources/js/connectedViewers.js":
+/*!******************************************!*\
+  !*** ./resources/js/connectedViewers.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var initialState = {
+  viewersCount: 0,
+  hostConnected: false,
+  totalviews: 0,
+  noOfHosts: 1,
+  hostsList: []
+};
+
+var connectedViewers = function connectedViewers() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case 'INCREASE_VIEWERS_COUNT':
+      {
+        var viewersCount = state.viewersCount;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          viewersCount: viewersCount + 1
+        });
+      }
+
+    case 'DECREASE_VIEWERS_COUNT':
+      {
+        var _viewersCount = state.viewersCount;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          viewersCount: _viewersCount - 1
+        });
+      }
+
+    case 'HOST_CONNECTED':
+      {
+        var hostConnected = action.payload.hostConnected;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          hostConnected: hostConnected
+        });
+      }
+
+    case 'ADD_HOST_TO_LIST':
+      {
+        var host = action.payload.host;
+        var hostList = state.hostList;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          hostList: hostList.append(host)
+        });
+      }
+
+    default:
+      return state;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (connectedViewers);
 
 /***/ }),
 

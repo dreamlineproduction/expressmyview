@@ -3146,6 +3146,76 @@ var audience = function audience() {
 
 /***/ }),
 
+/***/ "./resources/js/connectedViewers.js":
+/*!******************************************!*\
+  !*** ./resources/js/connectedViewers.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var initialState = {
+  viewersCount: 0,
+  hostConnected: false,
+  totalviews: 0,
+  noOfHosts: 1,
+  hostsList: []
+};
+
+var connectedViewers = function connectedViewers() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case 'INCREASE_VIEWERS_COUNT':
+      {
+        var viewersCount = state.viewersCount;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          viewersCount: viewersCount + 1
+        });
+      }
+
+    case 'DECREASE_VIEWERS_COUNT':
+      {
+        var _viewersCount = state.viewersCount;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          viewersCount: _viewersCount - 1
+        });
+      }
+
+    case 'HOST_CONNECTED':
+      {
+        var hostConnected = action.payload.hostConnected;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          hostConnected: hostConnected
+        });
+      }
+
+    case 'ADD_HOST_TO_LIST':
+      {
+        var host = action.payload.host;
+        var hostList = state.hostList;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          hostList: hostList.append(host)
+        });
+      }
+
+    default:
+      return state;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (connectedViewers);
+
+/***/ }),
+
 /***/ "./resources/js/devices.js":
 /*!*********************************!*\
   !*** ./resources/js/devices.js ***!
@@ -3306,11 +3376,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 /* harmony import */ var _audience__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./audience */ "./resources/js/audience.js");
 /* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./devices */ "./resources/js/devices.js");
+/* harmony import */ var _connectedViewers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./connectedViewers */ "./resources/js/connectedViewers.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -3323,6 +3395,11 @@ $(function () {
   audienceStore.subscribe(function () {
     var audienceState = audienceStore.getState();
     $('#connectionState').html(audienceState.connectionState);
+  });
+  var viewersStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_connectedViewers__WEBPACK_IMPORTED_MODULE_6__["default"]);
+  viewersStore.subscribe(function () {
+    var viewersState = viewersStore.getState();
+    $('#liveviewerscount').html(viewersState.viewersCount);
   }); // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
 
   if (APP_DEBUG) {
@@ -3394,6 +3471,12 @@ $(function () {
                 rtmchannel = RTM.rtmclient.createChannel(channelname);
                 rtmchannel.on('ChannelMessage', function (_ref, senderId) {
                   var text = _ref.text;
+
+                  var _JSON$parse2 = JSON.parse(text),
+                      msg = _JSON$parse2.msg,
+                      displayname = _JSON$parse2.displayname,
+                      profilepic = _JSON$parse2.profilepic;
+
                   var divID = '_' + Math.random().toString(36).substr(2, 9);
                   var chatDiv = $('<div>', {
                     id: divID,
@@ -3401,15 +3484,19 @@ $(function () {
                   });
                   var imgDiv = $('<img>', {
                     "class": 'avatar',
-                    src: 'https://img.icons8.com/color/36/000000/administrator-male.png'
+                    src: profilepic
                   });
                   chatDiv.append(imgDiv);
                   var chatBody = $('<div>', {
                     "class": 'media-body'
                   });
-                  var textBody = $('<p>', {
-                    text: text
+                  var nameBody = $('<p>', {
+                    text: 'From: ' + displayname
                   });
+                  var textBody = $('<p>', {
+                    html: msg
+                  });
+                  chatBody.append(nameBody);
                   chatBody.append(textBody);
                   chatDiv.append(chatBody);
                   chatDiv.attr('class', 'media media-chat');
@@ -3437,11 +3524,17 @@ $(function () {
   }
 
   ;
-  $('#publisher-input').keyup(function (e) {
-    if (e.keyCode == 13) {
-      var msg = $('#publisher-input').val();
+
+  function sendChatMessage(textmsg) {
+    var emoji = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    var _JSON$parse = JSON.parse(textmsg),
+        msg = _JSON$parse.msg,
+        displayname = _JSON$parse.displayname;
+
+    if (rtmchannel) {
       rtmchannel.sendMessage({
-        text: msg
+        text: textmsg
       }).then(function () {
         var divID = '_' + Math.random().toString(36).substr(2, 9);
         var chatDiv = $('<div>', {
@@ -3451,17 +3544,53 @@ $(function () {
         var chatBody = $('<div>', {
           "class": 'media-body'
         });
+        var nameBody = $('<p>', {
+          text: 'From: ' + displayname
+        }); // let textBody;
+        // if (emoji) {
+        //   textBody = JSON.parse(msg);
+        // } else {
+        //   textBody = $('<p>', {text: msg});
+        // }
+
         var textBody = $('<p>', {
-          text: msg
-        });
+          html: msg
+        }); // chatBody.append(nameBody);
+
         chatBody.append(textBody);
         chatDiv.append(chatBody);
         $('#chat-content').append(chatDiv);
-        $('#publisher-input').val('');
+        if (!emoji) $('#publisher-input').val('');
       })["catch"](function (error) {
         console.log(error);
       });
     }
+  }
+
+  ;
+  $('#publisher-input').keyup(function (e) {
+    if (e.keyCode == 13) {
+      var msg = $('#publisher-input').val();
+      if (msg.length < 1) return;
+      var textmsg = JSON.stringify({
+        msg: msg,
+        displayname: displayname,
+        profilepic: profilepic,
+        emoji: false
+      });
+      sendChatMessage(textmsg);
+    }
+  });
+  $('#publisher-btn').click(function (e) {
+    var msg = $('#publisher-input').val();
+    if (msg.length < 1) return;
+    var textmsg = JSON.stringify({
+      msg: msg,
+      displayname: displayname,
+      profilepic: profilepic,
+      emoji: false
+    });
+    sendChatMessage(textmsg);
   });
 
   function joinLiveStream() {
@@ -3584,16 +3713,40 @@ $(function () {
                   console.log('user unpulished audio track: ' + user);
                 }
               });
-              _context5.next = 11;
+              bclient.client.on('user-joined', function (user) {
+                // console.log('host joined', user);
+                viewersStore.dispatch({
+                  type: 'HOST_CONNECTED',
+                  payload: {
+                    hostConnected: true
+                  }
+                });
+                viewersStore.dispatch({
+                  type: 'INCREASE_VIEWERS_COUNT'
+                });
+              });
+              bclient.client.on('user-left', function (user) {
+                // console.log('host left', user);
+                viewersStore.dispatch({
+                  type: 'HOST_CONNECTED',
+                  payload: {
+                    hostConnected: false
+                  }
+                });
+                viewersStore.dispatch({
+                  type: 'DECREASE_VIEWERS_COUNT'
+                });
+              });
+              _context5.next = 13;
               return bclient.client.join(options.appId, options.channel, options.token, null);
 
-            case 11:
+            case 13:
               uid = _context5.sent;
               $('#exit-btn').prop('disabled', false);
-              _context5.next = 15;
+              _context5.next = 17;
               return JoinChat();
 
-            case 15:
+            case 17:
             case "end":
               return _context5.stop();
           }
@@ -3645,6 +3798,18 @@ $(function () {
   });
   $('#golive-btn').on('click', function () {
     joinLiveStream();
+  });
+  $('.dropdown-menu.emoji-item a').on('click', function (e) {
+    e.preventDefault();
+    var msg = e.target;
+    var msgt = $(msg).parent().html();
+    var textmsg = JSON.stringify({
+      msg: msgt,
+      displayname: displayname,
+      profilepic: profilepic,
+      emoji: true
+    });
+    sendChatMessage(textmsg, true);
   });
 });
 
