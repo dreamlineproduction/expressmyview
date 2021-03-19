@@ -3391,6 +3391,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 $(function () {
   console.log('agora sdk version: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.VERSION + ' compatible: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.checkSystemRequirements());
+  var hostvideoDiv = $('#host-video');
+  hostvideoDiv.hide();
+  var spinnerDiv = $('#spinner');
+  spinnerDiv.hide();
+  var posterimage = $('#posterimage');
+  posterimage.height(480).hide();
+  $('#statusScreen').hide();
   var audienceStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_audience__WEBPACK_IMPORTED_MODULE_4__["default"]);
   audienceStore.subscribe(function () {
     var audienceState = audienceStore.getState();

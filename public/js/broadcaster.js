@@ -3106,10 +3106,86 @@ $(function () {
   var camList;
   var micList;
   var playbackList;
+  var hostvideoDiv = $('#host-video');
+  hostvideoDiv.hide();
+  var spinnerDiv = $('#spinner');
+  spinnerDiv.hide();
+  var posterimage = $('#posterimage');
+  posterimage.height(480).hide();
+  $('#statusScreen').hide();
   var hostStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_host__WEBPACK_IMPORTED_MODULE_4__["default"]);
   hostStore.subscribe(function () {
     var hostState = hostStore.getState();
-    $('#connectionState').html(hostState.connectionState);
+
+    if (hostState.connectionState === 'CONNECTED' || hostState.connectionState === 'DISCONNECTED') {
+      spinnerDiv.hide();
+      posterimage.hide();
+    }
+
+    if (hostState.webcamOff && (hostState.connectionState === 'CONNECTING' || hostState.connectionState === 'RECONNECTING')) {
+      posterimage.show();
+      posterimage.css({
+        'background-color': '#D6EAF8'
+      });
+      spinnerDiv.show();
+    }
+
+    if (hostState.connectionState === 'DISCONNECTED' && (hostState.webcamOff || !hostState.localVideoTrackavailable)) {
+      $('#statusScreen').show();
+      posterimage.show();
+      posterimage.css({
+        'background-color': '#E59866'
+      });
+      $('#statusScreen span').html('STATUS: ' + hostState.connectionState + '. WEBCAM IS OFF.');
+    }
+
+    if (hostState.localVideoTrackavailable) {
+      hostvideoDiv.show();
+    }
+
+    if (!hostState.localVideoTrackavailable) {
+      posterimage.show();
+      posterimage.css({
+        'background-color': '#EBEDEF'
+      });
+      spinnerDiv.show();
+      hostvideoDiv.hide();
+    }
+
+    if (hostState.connectionState === 'DISCONNECTED') {
+      $('#connectionState').html(hostState.connectionState + ', click on <i class="fas fa-podcast"></i>' + ' to go live!');
+    }
+
+    if (hostState.connectionState === 'CONNECTING') {
+      $('#connectionState').html(hostState.connectionState);
+    }
+
+    if (hostState.connectionState === 'RECONNECTING') {
+      $('#connectionState').html('DISCONNECTED!! ' + hostState.connectionState + '...');
+    }
+
+    if (hostState.webcamOff) {
+      $('#statusScreen').show();
+      posterimage.show();
+      posterimage.css({
+        'background-color': '#E59866'
+      });
+      $('#statusScreen span').html('STATUS: ' + hostState.connectionState + '. WEBCAM IS OFF');
+      hostvideoDiv.hide();
+    }
+
+    if (!hostState.webcamOff && (hostState.connectionState === 'CONNECTED' || hostState.connectionState === 'DISCONNECTED')) {
+      $('#statusScreen').hide();
+      posterimage.hide();
+      posterimage.css({
+        'background-color': '#E59866'
+      });
+      $('#statusScreen span').html('WEBCAM IS ON'); // hostvideoDiv.hide();
+    }
+
+    if (hostState.connectionState === 'CONNECTED') {
+      $('#connectionState').html(hostState.connectionState + ', click on <i class="fas fa-phone-slash"></i>' + ' to offline!');
+    }
 
     if (!hostState.micMuted && !hostState.webcamOff && hostState.localAudioTrackavailable && hostState.localVideoTrackavailable) {
       $('#golive-btn').prop('disabled', false);
@@ -3164,7 +3240,7 @@ $(function () {
   if (APP_DEBUG) {
     window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
     window.bclient = bclient;
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(0);
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
   } else {
     agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
   }
@@ -3505,7 +3581,7 @@ $(function () {
               uid = _context4.sent;
 
               if (!(bclient.localAudioTrack === null)) {
-                _context4.next = 20;
+                _context4.next = 22;
                 break;
               }
 
@@ -3523,25 +3599,32 @@ $(function () {
                   localAudioTrackavailable: true
                 }
               });
+              hostStore.dispatch({
+                type: 'SET_MIC_MUTED',
+                payload: {
+                  flag: false
+                }
+              });
               $('#mictoggle-btn').prop('disabled', false);
               $('#mictoggle-icon').css('color', 'green');
+              $('#mictoggle-icon.fas').attr('class', 'fas fa-microphone');
 
-            case 20:
+            case 22:
               // Save this host uid on MySQL DB
               console.log(uid);
 
               if (!(bclient.localVideoTrack === null)) {
-                _context4.next = 31;
+                _context4.next = 35;
                 break;
               }
 
               _deviceId = $('#camera-list-select').val();
-              _context4.next = 25;
+              _context4.next = 27;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
                 cameraId: _deviceId
               });
 
-            case 25:
+            case 27:
               bclient.localVideoTrack = _context4.sent;
               videoElem = document.getElementById('host-video');
               bclient.localVideoTrack.play(videoElem);
@@ -3551,20 +3634,27 @@ $(function () {
                   localVideoTrackavailable: true
                 }
               });
+              hostStore.dispatch({
+                type: 'SET_WEBCAM_OFF',
+                payload: {
+                  flag: false
+                }
+              });
               $('#camtoggle-btn').prop('disabled', false);
               $('#camtoggle-icon').css('color', 'green');
+              $('#camtoggle-icon.fas').attr('class', 'fas fa-video');
 
-            case 31:
-              _context4.next = 33;
+            case 35:
+              _context4.next = 37;
               return bclient.client.publish([bclient.localAudioTrack, bclient.localVideoTrack]);
 
-            case 33:
+            case 37:
               $('#golive-btn').prop('disabled', true);
               $('#exit-btn').prop('disabled', false);
-              _context4.next = 37;
+              _context4.next = 41;
               return JoinChat();
 
-            case 37:
+            case 41:
             case "end":
               return _context4.stop();
           }
@@ -3600,19 +3690,31 @@ $(function () {
                 payload: {
                   localVideoTrackavailable: false
                 }
+              });
+              hostStore.dispatch({
+                type: 'SET_WEBCAM_OFF',
+                payload: {
+                  flag: true
+                }
+              });
+              hostStore.dispatch({
+                type: 'SET_MIC_MUTED',
+                payload: {
+                  flag: true
+                }
               }); // Leave the channel.
 
-              _context5.next = 8;
+              _context5.next = 10;
               return bclient.client.leave();
 
-            case 8:
+            case 10:
               rtmchannel.leave();
               RTM.rtmclient.logout();
               bclient.client = null;
               $('#exit-btn').prop('disabled', true);
               $('#golive-btn').prop('disabled', false);
 
-            case 13:
+            case 15:
             case "end":
               return _context5.stop();
           }
@@ -3789,7 +3891,7 @@ $(function () {
       emoji: true
     });
     sendChatMessage(textmsg, true);
-  });
+  }); // const player = fluidPlayer('fluidplayerdiv');
 });
 
 /***/ }),

@@ -40,7 +40,18 @@ Streaming Now - {{ $stream->title }}
 
 
                           <div id="external-broadcasts-container">
+                            <div class="col-md-12" id='posterimage'>
+                              <div id="statusScreen" class="alert alert-primary align-self-center">
+                              <span></span></div>
+                              <div class="sk-wave sk-center" id='spinner'>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                              </div>
 
+                            </div>
                           </div>
 
 

@@ -10,6 +10,7 @@
 
 <!-- Emoji Set -->
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+<link href="{{ asset('css/spinkit.css') }}" rel="stylesheet" type="text/css">
 
 
 @endsection
@@ -21,7 +22,8 @@
             <div class="col-md-8">
                 <div class="single-video-left">
                     <div class="single-video live-strm">
-                      <span id="connectionState"></span>
+                      <div class="alert alert-primary">
+                      <span id="connectionState"></span></div>
                         <div id="buttons-container" class="row justify-content-end">
                           <div class="col-md-2 text-center">
                               <button id="golive-btn" type="button" class="btn btn-block btn-success btn-lg">
@@ -87,6 +89,24 @@
 
 
                         <div id='host-video'></div>
+                        <div class="col-md-12" id='posterimage'>
+                          
+                          <div id="statusScreen" class="alert alert-primary align-self-center">
+                          <span></span></div>
+                          <div class="sk-wave sk-center" id='spinner'>
+                            <div class="sk-wave-rect"></div>
+                            <div class="sk-wave-rect"></div>
+                            <div class="sk-wave-rect"></div>
+                            <div class="sk-wave-rect"></div>
+                            <div class="sk-wave-rect"></div>
+                          </div>
+
+                        </div>
+                        <!-- <div id='extraplayer'>
+                          <video id='fluidplayerdiv' controls>
+                            <source src='' type='video/mp4' />
+                          </video>
+                        </div> -->
 
 
 
@@ -268,7 +288,7 @@
 
 
                                                 <input class="publisher-input" id="publisher-input" type="text"
-                                                    placeholder="Write something">
+                                                    placeholder="Write something" data-emojiable="true">
                                                 <div class="btn-group dropup">
                                                     <button type="button" class="publisher-btn" id="emojidrop"
                                                         data-toggle="dropdown" aria-haspopup="true"
@@ -352,6 +372,8 @@
 <script src="{{ asset('js/clipboard.js') }}"></script>
 <script src="{{ asset('js/podcast.js') }}"></script>
 <script src="{{ asset('js/broadcaster.js') }}"></script>
+<!-- <script src="{{ asset('js/loademoji.js') }}"></script> -->
+
 <script>
 var channelname = "{{ $stream->channelname }}";
 var APP_ENV = "{{ env("APP_ENV") }}";

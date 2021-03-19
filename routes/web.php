@@ -34,8 +34,10 @@ Route::group(['middleware' => ['verified']], function () {
     Route::delete('/history/{history}', 'HistoriesController@remove');
 
     Route::get('/live-stream/create', 'LiveStreamsController@create')->name('live-stream.create');
-    Route::post('/live-stream', 'LiveStreamsController@store')->name('live-stream.store');
+    Route::post('/live-stream/store', 'LiveStreamsController@store')->name('live-stream.store');
     Route::get('/live-stream/{stream}/edit', 'LiveStreamsController@edit')->name('live-stream.edit');
+    Route::match(['put', 'patch'], '/live-stream/{stream}/update', 'LiveStreamsController@update')->name('live-stream.update');
+    Route::get('/live-stream/{stream}/delete', 'LiveStreamsController@destroy')->name('live-stream.delete');
     Route::post('/live-stream/setlive', 'LiveStreamsController@editLiveStatus')->name('live-stream.setlive');
     Route::match(['put', 'patch'], '/live-stream/{stream}/update', 'LiveStreamsController@update')->name('live-stream.update');
 
@@ -46,6 +48,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::delete('/podcast/{podcast}/delete', 'PodcastsController@delete')->name('podcast.delete');
 
     Route::get('/my-podcasts/{type?}', 'PodcastsController@getMyPodcasts')->name('my.podcasts');
+    Route::get('/my-livestreams', 'LiveStreamsController@getMyLiveStreams')->name('my.livestreams');
 
     Route::post('/podcast/{podcast}/comment', 'CommentsController@store')->name('comment.store');
     Route::post('/podcast/comment/{comment}/like', 'CommentsController@like')->name('comment.like');
@@ -64,8 +67,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::get('channel/{channel}/verify', 'ChannelsController@getVerificationForm')->name('channel.verify.request');
 });
 
-Route::get('/live-streams', 'LiveStreamsController@index')->name('live-stream.index');
-Route::get('/live-streams/all', 'AllLiveStreamsController@index')->name('live-streams.all');
+Route::get('/live-streams/all', 'LiveStreamsController@index')->name('live-streams.all');
 Route::get('/live-stream/watch/{stream}','LiveStreamsController@watch')->name('live-streams.watch');
 Route::get('/live-stream/{stream}', 'LiveStreamsController@show')->name('live-stream.show');
 

@@ -22,6 +22,7 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/agora.css') }}" rel="stylesheet">
+    <!-- <link href="{{ asset('css/emoji.css') }}" rel="stylesheet"> -->
     <!-- Owl Carousel -->
     <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
@@ -100,6 +101,11 @@
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js" defer></script>
 <!-- Custom scripts for all pages-->
 <script src="{{ asset('js/custom.js') }}" defer></script>
+<!-- Emoji picker -->
+<!-- <script src="{{ asset('js/emoji/config.js') }}"></script>
+<script src="{{ asset('js/emoji/util.js') }}"></script>
+<script src="{{ asset('js/emoji/jquery.emojiarea.js') }}"></script>
+<script src="{{ asset('js/emoji/emoji-picker.js') }}" defer></script> -->
 
 
 

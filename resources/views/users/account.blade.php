@@ -61,6 +61,94 @@
         </div>
         <hr>
 
+        @if(!empty($streams))
+            <div class="video-block section-padding">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="main-title">
+                            @if($streams->count() > 0)
+                                <div class="btn-group float-right right-action">
+
+                                    <a href="{{ route('my.livestreams') }}"
+                                       class="btn btn-primary btn-sm mb-4">View All</a>
+                                </div>
+                            @endif
+                            <h6>My Live Streams</h6>
+                        </div>
+                    </div>
+                    @forelse($streams as $stream)
+                        <div class="col-xl-3 col-sm-6 mb-3">
+                          <div class="video-card">
+                              <div class="video-card-image">
+                                  <a class="play-icon" href="{{ route('live-stream.show', $stream->id) }}"><i
+                                              class="fas fa-play-circle"></i></a>
+                                  <a href="{{ route('live-stream.show', $stream->id) }}"><img class="img-fluid"
+                                                                                           src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
+                                                                                           alt="{{ $stream->title }}"></a>
+                                  <div class="time">{{ time_elapsed_string($stream->created_at) }}</div>
+                              </div>
+                              <div class="video-card-body">
+
+                                  <div class="row">
+                                      <div class="col-md-10">
+
+                                          <div class="video-title text-left">
+                                              <a href="{{ route('live-stream.show', $stream->id) }}">{{ $stream->title }}</a>
+                                          </div>
+                                      </div>
+
+                                      <div class="col-md-2">
+
+                                          <div class=" text-right video-edit">
+                                              <div class="dropdown">
+                                                  <button class="btn btn-primary btn-round-edit" type="button"
+                                                          id="dropdownMenuButton" data-toggle="dropdown"
+                                                          aria-haspopup="true" aria-expanded="false">
+                                                      <i class="fas fa-ellipsis-h"></i>
+                                                  </button>
+                                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                      <a class="dropdown-item"
+                                                         href="{{ route('live-stream.edit', $stream->id) }}"><i
+                                                                  class="far fa-edit"></i> Edit LiveStream</a>
+                                                      <a class="dropdown-item"
+                                                         href="{{ route('live-stream.delete', $stream->id) }}"><i
+                                                                  class="far fa-trash-alt"></i> Delete LiveStream</a>
+
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  <div class="video-page text-success">
+                                      <a href="{{ route('channel.show', $stream->channel->id) }}">{{ $stream->channel->name }}</a>
+                                      @if($stream->channel->verified)
+                                          <a title="#" data-placement="top" data-toggle="tooltip" href="#"
+                                             data-original-title="Verified"><i
+                                                      class="fas fa-check-circle text-success"></i></a>
+                                      @endif
+                                  </div>
+                                  <div class="video-view">
+                                      {{ formatViewsCount($stream->views, 1) }} views &nbsp;<i
+                                              class="fas fa-calendar-alt"></i> {{ $stream->created_at->diffForHumans() }}
+                                  </div>
+
+
+                              </div>
+                          </div>
+                        </div>
+                    @empty
+                        <div class="col-md-12 mb-3 text-center">
+                            <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
+                            <h6 class="mt-4"> Sorry! You do not have any live streams yet.</h6>
+                            <a href="{{ route('livestream.create') }}" class="btn btn-primary mt-4">Create</a>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+            <hr class="mt-0">
+        @endif
+
         @if(!empty($videos))
             <div class="video-block section-padding">
                 <div class="row">

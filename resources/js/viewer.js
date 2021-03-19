@@ -13,6 +13,14 @@ $(function(){
       AgoraRTC.checkSystemRequirements()
   );
 
+  const hostvideoDiv = $('#host-video');
+  hostvideoDiv.hide();
+  const spinnerDiv = $('#spinner');
+  spinnerDiv.hide();
+  const posterimage = $('#posterimage');
+  posterimage.height(480).hide()
+  $('#statusScreen').hide();
+
   const audienceStore = createStore(audience);
   audienceStore.subscribe(() => {
     const audienceState = audienceStore.getState();
