@@ -141,7 +141,7 @@
                         <div class="col-md-12 mb-3 text-center">
                             <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
                             <h6 class="mt-4"> Sorry! You do not have any live streams yet.</h6>
-                            <a href="{{ route('livestream.create') }}" class="btn btn-primary mt-4">Create</a>
+                            <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
                         </div>
                     @endforelse
                 </div>

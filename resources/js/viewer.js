@@ -13,13 +13,19 @@ $(function(){
       AgoraRTC.checkSystemRequirements()
   );
 
-  const hostvideoDiv = $('#host-video');
-  hostvideoDiv.hide();
+  const hostvideoDiv = $('#external-broadcasts-container');
   const spinnerDiv = $('#spinner');
-  spinnerDiv.hide();
+  spinnerDiv.show();
   const posterimage = $('#posterimage');
-  posterimage.height(480).hide()
-  $('#statusScreen').hide();
+  posterimage.height(480).show()
+  posterimage.css({
+    'background-image': 'url('+thumbnailurl+')',
+    'background-position': 'center',
+    'background-repeat': 'no-repeat',
+    'background-size': 'cover',
+  });
+  $('#statusScreen').show();
+  $('#statusScreen span').html('Host has not joined yet or left the broadcast.');
 
   const audienceStore = createStore(audience);
   audienceStore.subscribe(() => {
@@ -30,13 +36,31 @@ $(function(){
   const viewersStore = createStore(connectedViewers);
   viewersStore.subscribe(() => {
     const viewersState = viewersStore.getState();
+    console.log(viewersState);
     $('#liveviewerscount').html(viewersState.viewersCount);
+    if (!viewersState.hostConnected ) {
+      posterimage.show();
+      $('#statusScreen').show()
+      $('#statusScreen span').html('Host got disconnected or left the broadcast');
+      spinnerDiv.show()
+    }
+    if (viewersState.numVideoTracks === 0 && viewersState.noOfHosts > 0) {
+      posterimage.show();
+      $('#statusScreen').show()
+      $('#statusScreen span').html('Host is not broadcasting any video stream');
+      spinnerDiv.show()
+    }
+    if (viewersState.numVideoTracks > 0 && viewersState.noOfHosts > 0) {
+      posterimage.hide();
+      $('#statusScreen').hide()
+      spinnerDiv.hide()
+    }
   });
 
   // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
   if (APP_DEBUG) {
     window.AgoraRTC = AgoraRTC;
-    AgoraRTC.setLogLevel(0);
+    AgoraRTC.setLogLevel(2);
   } else {
     AgoraRTC.setLogLevel(2);
   }
@@ -205,6 +229,7 @@ $(function(){
           const playerDiv = document.createElement('div');
           playerDiv.id = user.uid.toString();
           $('#external-broadcasts-container').append(playerDiv);
+          viewersStore.dispatch({type: 'INCREASE_VTRACK_COUNT'});
           remoteVideoTrack.play(playerDiv);
         }
         if (mediaType === 'audio') {
@@ -212,6 +237,7 @@ $(function(){
           const audioPlayerDiv = document.createElement('div');
           audioPlayerDiv.id = user.uid.toString() + 'audio';
           $('#external-broadcasts-container').append(audioPlayerDiv);
+          viewersStore.dispatch({type: 'INCREASE_ATRACK_COUNT'});
           remoteAudioTrack.play(audioPlayerDiv);
         }
       } catch(error) {
@@ -223,22 +249,26 @@ $(function(){
       if (mediaType === 'video') {
         $('#'+user.uid.toString()).remove();
         console.log('user unpulished video track: '+ user);
+        viewersStore.dispatch({type: 'DECREASE_VTRACK_COUNT'});
       }
       if (mediaType === 'audio') {
         $('#'+user.uid.toString()+'audio').remove();
         console.log('user unpulished audio track: '+ user);
+        viewersStore.dispatch({type: 'DECREASE_ATRACK_COUNT'});
       }
     });
 
     bclient.client.on('user-joined', (user) => {
       // console.log('host joined', user);
       viewersStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: true }});
+      viewersStore.dispatch({type: 'ADD_HOST_TO_LIST', payload: {host: user}});
       viewersStore.dispatch({type: 'INCREASE_VIEWERS_COUNT'})
     });
 
     bclient.client.on('user-left', (user) => {
       // console.log('host left', user);
       viewersStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: false }});
+      viewersStore.dispatch({type: 'REMOVE_HOST_FROM_LIST', payload: {hostid: user.uid}});
       viewersStore.dispatch({type: 'DECREASE_VIEWERS_COUNT'})
     });
 

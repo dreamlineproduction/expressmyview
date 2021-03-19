@@ -3915,8 +3915,12 @@ var initialState = {
   viewersCount: 0,
   hostConnected: false,
   totalviews: 0,
-  noOfHosts: 1,
-  hostsList: []
+  noOfHosts: 0,
+  hostsList: {},
+  audioTracks: [],
+  videoTracks: [],
+  numAudioTracks: 0,
+  numVideoTracks: 0
 };
 
 var connectedViewers = function connectedViewers() {
@@ -3940,6 +3944,38 @@ var connectedViewers = function connectedViewers() {
         });
       }
 
+    case 'INCREASE_ATRACK_COUNT':
+      {
+        var numAudioTracks = state.numAudioTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numAudioTracks: numAudioTracks + 1
+        });
+      }
+
+    case 'DECREASE_ATRACK_COUNT':
+      {
+        var _numAudioTracks = state.numAudioTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numAudioTracks: _numAudioTracks - 1
+        });
+      }
+
+    case 'INCREASE_VTRACK_COUNT':
+      {
+        var numVideoTracks = state.numVideoTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numVideoTracks: numVideoTracks + 1
+        });
+      }
+
+    case 'DECREASE_VTRACK_COUNT':
+      {
+        var _numVideoTracks = state.numVideoTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numVideoTracks: _numVideoTracks - 1
+        });
+      }
+
     case 'HOST_CONNECTED':
       {
         var hostConnected = action.payload.hostConnected;
@@ -3951,9 +3987,24 @@ var connectedViewers = function connectedViewers() {
     case 'ADD_HOST_TO_LIST':
       {
         var host = action.payload.host;
-        var hostList = state.hostList;
+        var hostsList = state.hostsList,
+            noOfHosts = state.noOfHosts;
+        hostsList[host.uid] = host;
         return _objectSpread(_objectSpread({}, state), {}, {
-          hostList: hostList.append(host)
+          hostsList: hostsList,
+          noOfHosts: noOfHosts + 1
+        });
+      }
+
+    case 'REMOVE_HOST_FROM_LIST':
+      {
+        var hostid = action.payload.hostid;
+        var _hostsList = state.hostsList,
+            _noOfHosts = state.noOfHosts;
+        delete _hostsList[hostid];
+        return _objectSpread(_objectSpread({}, state), {}, {
+          hostsList: _hostsList,
+          noOfHosts: _noOfHosts - 1
         });
       }
 

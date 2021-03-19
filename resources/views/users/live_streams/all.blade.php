@@ -7,7 +7,7 @@
 @section('content')
 <div class="container-fluid pb-0">
         <hr>
-
+        @if(!empty($streams))
         <div class="video-block section-padding">
                 <div class="row">
                     <div class="col-md-12">
@@ -32,7 +32,7 @@
                             <h6> All Live Streams</h6>
                         </div>
                     </div>
-                    @foreach ($streams as $stream)
+                    @forelse ($streams as $stream)
                     <div class="col-xl-3 col-sm-6 mb-3">
                         <div class="video-card">
                             <div class="video-card-image">
@@ -67,9 +67,19 @@
                             </div>
                         </div>
                     </div>
-                    @endforeach
+                    @empty
+                    <div class="col-md-12 mb-3 text-center">
+                        <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
+                        <h6 class="mt-4"> Sorry! There are not live streams currently.</h6>
+                        <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
+                        <h6 class="mt-4"> OR </h6>
+                        <a href="{{ route('my.livestreams') }}" class="btn btn-primary mt-4">Past Streams</a>
+                    </div>
+                    @endforelse
                 </div>
             </div>
+            <hr class="mt-0">
+        @endif
 
 
 
