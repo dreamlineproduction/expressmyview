@@ -1,41 +1,41 @@
 <!-- Sidebar -->
 <ul class="sidebar navbar-nav">
-    <li class="nav-item active">
+    <li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('home') }}">
             <i class="fas fa-fw fa-home"></i>
             <span>Home</span>
         </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('channels') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('channel.index') }}">
             <i class="fas fa-fw fa-users"></i>
             <span>Channels</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('live-stream.index') }}">
+    <li class="nav-item {{ Request::is('live-streams/all') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('live-streams.all') }}">
             <i class="fas fa-fw fa-video"></i>
             <span>Live Podcasts</span>
         </a>
     </li>
 
 
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('podcasts/audio') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('podcast.index',['type' => 'audio']) }}">
             <i class="fas fa-fw fa-cloud-upload-alt"></i>
             <span>Audio Podcasts</span>
         </a>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('podcasts/video') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('podcast.index',['type' => 'video']) }}">
             <i class="fas fa-fw fa-cloud-upload-alt"></i>
             <span>Video Podcasts</span>
         </a>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('history') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('history.index') }}">
             <i class="fas fa-fw fa-history"></i>
             <span>History Page</span>

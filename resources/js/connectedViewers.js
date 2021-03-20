@@ -2,8 +2,12 @@ const initialState = {
   viewersCount: 0,
   hostConnected: false,
   totalviews: 0,
-  noOfHosts: 1,
-  hostsList: [],
+  noOfHosts: 0,
+  hostsList: {},
+  audioTracks: [],
+  videoTracks: [],
+  numAudioTracks: 0,
+  numVideoTracks: 0,
 };
 
 const connectedViewers =(state = initialState, action) => {
@@ -20,6 +24,30 @@ const connectedViewers =(state = initialState, action) => {
       return { ...state, viewersCount: viewersCount - 1}
     }
 
+    case 'INCREASE_ATRACK_COUNT':
+    {
+      const { numAudioTracks } = state;
+      return { ...state, numAudioTracks: numAudioTracks + 1}
+    }
+
+    case 'DECREASE_ATRACK_COUNT':
+    {
+      const { numAudioTracks } = state;
+      return { ...state, numAudioTracks: numAudioTracks - 1}
+    }
+
+    case 'INCREASE_VTRACK_COUNT':
+    {
+      const { numVideoTracks } = state;
+      return { ...state, numVideoTracks: numVideoTracks + 1}
+    }
+
+    case 'DECREASE_VTRACK_COUNT':
+    {
+      const { numVideoTracks } = state;
+      return { ...state, numVideoTracks: numVideoTracks - 1}
+    }
+
     case 'HOST_CONNECTED':
     {
       const { hostConnected } = action.payload;
@@ -29,8 +57,17 @@ const connectedViewers =(state = initialState, action) => {
     case 'ADD_HOST_TO_LIST':
     {
       const { host } = action.payload;
-      const { hostList } = state;
-      return { ...state, hostList: hostList.append(host) };
+      const { hostsList, noOfHosts } = state;
+      hostsList[host.uid] = host;
+      return { ...state, hostsList , noOfHosts: noOfHosts + 1 };
+    }
+
+    case 'REMOVE_HOST_FROM_LIST':
+    {
+      const { hostid } = action.payload;
+      const { hostsList, noOfHosts } = state;
+      delete hostsList[hostid]
+      return { ...state, hostsList, noOfHosts: noOfHosts - 1 };
     }
 
     default:

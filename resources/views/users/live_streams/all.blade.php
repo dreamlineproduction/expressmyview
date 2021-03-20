@@ -7,7 +7,7 @@
 @section('content')
 <div class="container-fluid pb-0">
         <hr>
-
+        @if(!empty($streams))
         <div class="video-block section-padding">
                 <div class="row">
                     <div class="col-md-12">
@@ -18,140 +18,70 @@
                                     Sort by <i class="fa fa-caret-down" aria-hidden="true"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="http://localhost/expressmyview/public/podcasts/video?orderBy=rating"><i class="fas fa-fw fa-star" aria-hidden="true"></i> &nbsp; Top Rated</a>
-                                    <a class="dropdown-item" href="http://localhost/expressmyview/public/podcasts/video?orderBy=popularity"><i class="fas fa-fw fa-signal" aria-hidden="true"></i> &nbsp; Viewed</a>
-                                    <a class="dropdown-item" href="http://localhost/expressmyview/public/podcasts/video?orderBy=date"><i class="fas fa-fw fa-times-circle" aria-hidden="true"></i> &nbsp;
-                                        Upload Date</a>
+                                  <a class="dropdown-item"
+                                     href="{{ route('live-streams.all', ['type' => 'video', 'orderBy' => 'rating']) }}"><i
+                                              class="fas fa-fw fa-star"></i> &nbsp; Top Rated</a>
+                                  <a class="dropdown-item"
+                                     href="{{ route('live-streams.all', ['type' => 'video', 'orderBy' => 'popularity']) }}"><i
+                                              class="fas fa-fw fa-signal"></i> &nbsp; Viewed</a>
+                                  <a class="dropdown-item" href="{{ route('live-streams.all', ['type' => 'video', 'orderBy' => 'date']) }}"><i
+                                              class="fas fa-fw fa-times-circle"></i> &nbsp;
+                                      Stremed Date</a>
                                 </div>
                             </div>
                             <h6> All Live Streams</h6>
                         </div>
                     </div>
-                                            <div class="col-xl-3 col-sm-6 mb-3">
-                            <div class="video-card">
-                                <div class="video-card-image">
-                                    <a class="play-icon" href="http://localhost/expressmyview/public/podcast/1"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
-                                    <a href="http://localhost/expressmyview/public/podcast/1">
-                                        <img class="img-fluid" src="{{ url('/storage/podcast/thumbnail/' . $video->thumbnail) }}" alt="video">
-                                    </a>
-                                    <div class="time">0:8</div>
-                                </div>
-                                <div class="video-card-body">
-                                    <div class="row">
-                                        <div class="col-md-10">
+                    @forelse ($streams as $stream)
+                    <div class="col-xl-3 col-sm-6 mb-3">
+                        <div class="video-card">
+                            <div class="video-card-image">
+                              <a class="play-icon" href="{{ route('live-streams.watch', $stream->id) }}"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
+                              <a href="{{ route('live-streams.watch', $stream->id) }}">
+                                  <img class="img-fluid" src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}" alt="video">
+                              </a>
+                              <div class="time"><i class="fas fa-video"></i></div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="row">
+                                    <div class="col-md-10">
 
-                                            <div class="video-title text-left">
-                                                <a href="http://localhost/expressmyview/public/podcast/1">video</a>
-                                            </div>
-                                        </div>
+                                      <div class="video-title text-left">
+                                          <a href="{{ route('live-streams.watch', $stream->id) }}">{{ $stream->title }}</a>
+                                      </div>
+                                  </div>
 
-                                                                            </div>
-                                    <div class="video-page text-success">
-                                        <a href="http://localhost/expressmyview/public/channel/1">Pubg Live</a>
-                                                                            </div>
-                                    <div class="video-view float-left">
-                                        0 views &nbsp;<i class="fas fa-calendar-alt" aria-hidden="true"></i> 1 week ago
-                                    </div>
+                                                                              <div class="col-md-2">
 
-                                    <div class="clearfix"></div>
-                                </div>
+
+                                      </div>
+                                                                      </div>
+                              <div class="video-page text-success">
+                                  <a href="{{ route('channel.show', $stream->channel->id) }}">{{ $stream->channel->name }}</a>
+                                                                      </div>
+                              <div class="video-view float-left">
+                                  <i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ $stream->created_at->diffForHumans() }}
+                              </div>
+
+                                <div class="clearfix"></div>
                             </div>
                         </div>
-                                            <div class="col-xl-3 col-sm-6 mb-3">
-                            <div class="video-card">
-                                <div class="video-card-image">
-                                    <a class="play-icon" href="http://localhost/expressmyview/public/podcast/2"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
-                                    <a href="http://localhost/expressmyview/public/podcast/2">
-                                        <img class="img-fluid" src="http://localhost/expressmyview/public/storage/podcast/thumbnail/zejbApdBM3.jpg" alt="video">
-                                    </a>
-                                    <div class="time">0:8</div>
-                                </div>
-                                <div class="video-card-body">
-                                    <div class="row">
-                                        <div class="col-md-10">
-
-                                            <div class="video-title text-left">
-                                                <a href="http://localhost/expressmyview/public/podcast/2">video</a>
-                                            </div>
-                                        </div>
-
-                                                                            </div>
-                                    <div class="video-page text-success">
-                                        <a href="http://localhost/expressmyview/public/channel/1">Pubg Live</a>
-                                                                            </div>
-                                    <div class="video-view float-left">
-                                        1 views &nbsp;<i class="fas fa-calendar-alt" aria-hidden="true"></i> 1 week ago
-                                    </div>
-
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-                                            <div class="col-xl-3 col-sm-6 mb-3">
-                            <div class="video-card">
-                                <div class="video-card-image">
-                                    <a class="play-icon" href="http://localhost/expressmyview/public/podcast/3"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
-                                    <a href="http://localhost/expressmyview/public/podcast/3">
-                                        <img class="img-fluid" src="http://localhost/expressmyview/public/storage/podcast/thumbnail/08GV72bb1q.jpg" alt="video">
-                                    </a>
-                                    <div class="time">0:8</div>
-                                </div>
-                                <div class="video-card-body">
-                                    <div class="row">
-                                        <div class="col-md-10">
-
-                                            <div class="video-title text-left">
-                                                <a href="http://localhost/expressmyview/public/podcast/3">video</a>
-                                            </div>
-                                        </div>
-
-                                                                            </div>
-                                    <div class="video-page text-success">
-                                        <a href="http://localhost/expressmyview/public/channel/1">Pubg Live</a>
-                                                                            </div>
-                                    <div class="video-view float-left">
-                                        0 views &nbsp;<i class="fas fa-calendar-alt" aria-hidden="true"></i> 1 week ago
-                                    </div>
-
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-                                            <div class="col-xl-3 col-sm-6 mb-3">
-                            <div class="video-card">
-                                <div class="video-card-image">
-                                    <a class="play-icon" href="http://localhost/expressmyview/public/podcast/4"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
-                                    <a href="http://localhost/expressmyview/public/podcast/4">
-                                        <img class="img-fluid" src="http://localhost/expressmyview/public/storage/podcast/thumbnail/a9XjqbjBn5.jpg" alt="yt1s.com - Sadhgurus Life Advice for College Students  BeerBiceps Mental Fitness_1080p">
-                                    </a>
-                                    <div class="time">3:32</div>
-                                </div>
-                                <div class="video-card-body">
-                                    <div class="row">
-                                        <div class="col-md-10">
-
-                                            <div class="video-title text-left">
-                                                <a href="http://localhost/expressmyview/public/podcast/4">yt1s.com - Sadhgurus Life Advice for College Students  BeerBiceps Mental Fitness_1080p</a>
-                                            </div>
-                                        </div>
-
-                                                                            </div>
-                                    <div class="video-page text-success">
-                                        <a href="http://localhost/expressmyview/public/channel/1">Pubg Live</a>
-                                                                            </div>
-                                    <div class="video-view float-left">
-                                        0 views &nbsp;<i class="fas fa-calendar-alt" aria-hidden="true"></i> 1 week ago
-                                    </div>
-
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-                                        
+                    </div>
+                    @empty
+                    <div class="col-md-12 mb-3 text-center">
+                        <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
+                        <h6 class="mt-4"> Sorry! There are not live streams currently.</h6>
+                        <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
+                        <h6 class="mt-4"> OR </h6>
+                        <a href="{{ route('my.livestreams') }}" class="btn btn-primary mt-4">Past Streams</a>
+                    </div>
+                    @endforelse
                 </div>
             </div>
+            <hr class="mt-0">
+        @endif
 
 
 
-</div>        
+</div>
 @endsection

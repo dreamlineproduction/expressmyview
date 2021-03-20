@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\LiveStream;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,7 @@ class UsersController extends Controller
         $authenticatedUser = Auth::user();
         $podcasts = $authenticatedUser->podcasts()->where('status', 1);
         $podcasts2 = clone $podcasts;
+        $streams = LiveStream::where('user_id', $authenticatedUser->id)->latest()->take(4)->get();
 
         $videos = $podcasts->where('file_type', 'video')->latest()->take(4)->with('channel')->get();
         $audios = $podcasts2->where('file_type', 'audio')->latest()->take(4)->with('channel')->get();
@@ -27,6 +29,7 @@ class UsersController extends Controller
             'channels' => $authenticatedUser->channels,
             'videos' => $videos,
             'audios' => $audios,
+            'streams' => $streams,
         ];
         return view('users.account', $viewData);
     }

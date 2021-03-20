@@ -20,10 +20,69 @@ $(function(){
   let micList;
   let playbackList;
 
+  const hostvideoDiv = $('#host-video');
+  hostvideoDiv.hide();
+  const spinnerDiv = $('#spinner');
+  spinnerDiv.hide();
+  const posterimage = $('#posterimage');
+  posterimage.height(480).hide()
+
+  $('#statusScreen').hide();
+
   const hostStore = createStore(host);
   hostStore.subscribe(() => {
     const hostState = hostStore.getState();
-    $('#connectionState').html(hostState.connectionState);
+
+    if (hostState.connectionState === 'CONNECTED' || hostState.connectionState === 'DISCONNECTED') {
+      spinnerDiv.hide();
+      posterimage.hide();
+    }
+    if (hostState.webcamOff && (hostState.connectionState === 'CONNECTING' || hostState.connectionState === 'RECONNECTING')) {
+      posterimage.show();
+      posterimage.css({'background-color': '#D6EAF8'});
+      spinnerDiv.show();
+    }
+    if (hostState.connectionState === 'DISCONNECTED' && (hostState.webcamOff || !hostState.localVideoTrackavailable)) {
+      $('#statusScreen').show();
+      posterimage.show();
+      posterimage.css({'background-color': '#E59866'});
+      $('#statusScreen span').html('STATUS: ' + hostState.connectionState + '. WEBCAM IS OFF.');
+    }
+    if (hostState.localVideoTrackavailable) {
+      hostvideoDiv.show();
+    }
+    if (!hostState.localVideoTrackavailable) {
+      posterimage.show();
+      posterimage.css({'background-color': '#EBEDEF'});
+      spinnerDiv.show();
+      hostvideoDiv.hide();
+    }
+    if (hostState.connectionState === 'DISCONNECTED') {
+      $('#connectionState').html(hostState.connectionState + ', click on <i class="fas fa-podcast"></i>'+' to go live!');
+    }
+    if (hostState.connectionState === 'CONNECTING') {
+      $('#connectionState').html(hostState.connectionState);
+    }
+    if (hostState.connectionState === 'RECONNECTING') {
+      $('#connectionState').html('DISCONNECTED!! '+hostState.connectionState + '...');
+    }
+    if (hostState.webcamOff) {
+      $('#statusScreen').show();
+      posterimage.show();
+      posterimage.css({'background-color': '#E59866'});
+      $('#statusScreen span').html('STATUS: ' + hostState.connectionState + '. WEBCAM IS OFF');
+      hostvideoDiv.hide();
+    }
+    if (!hostState.webcamOff && (hostState.connectionState === 'CONNECTED' || hostState.connectionState === 'DISCONNECTED')) {
+      $('#statusScreen').hide();
+      posterimage.hide();
+      posterimage.css({'background-color': '#E59866'});
+      $('#statusScreen span').html('WEBCAM IS ON');
+      // hostvideoDiv.hide();
+    }
+    if (hostState.connectionState === 'CONNECTED') {
+      $('#connectionState').html(hostState.connectionState + ', click on <i class="fas fa-phone-slash"></i>'+' to offline!');
+    }
     if (!hostState.micMuted && !hostState.webcamOff && hostState.localAudioTrackavailable && hostState.localVideoTrackavailable) {
       $('#golive-btn').prop('disabled', false);
     } else {
@@ -81,7 +140,7 @@ $(function(){
   if (APP_DEBUG) {
     window.AgoraRTC = AgoraRTC;
     window.bclient = bclient;
-    AgoraRTC.setLogLevel(0);
+    AgoraRTC.setLogLevel(2);
   } else {
     AgoraRTC.setLogLevel(2);
   }
@@ -268,8 +327,10 @@ $(function(){
       const deviceId = $('#mic-list-select').val();
       bclient.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({microphoneId: deviceId});
       hostStore.dispatch({type: 'AUDIO_TRACK_AVAILABLE', payload: { localAudioTrackavailable: true }});
+      hostStore.dispatch({type: 'SET_MIC_MUTED', payload: {flag: false}});
       $('#mictoggle-btn').prop('disabled', false);
       $('#mictoggle-icon').css('color','green');
+      $('#mictoggle-icon.fas').attr('class','fas fa-microphone');
     }
     // Save this host uid on MySQL DB
     console.log(uid);
@@ -279,8 +340,10 @@ $(function(){
       const videoElem = document.getElementById('host-video');
       bclient.localVideoTrack.play(videoElem);
       hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: true }});
+      hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: false}});
       $('#camtoggle-btn').prop('disabled', false);
       $('#camtoggle-icon').css('color','green');
+      $('#camtoggle-icon.fas').attr('class','fas fa-video');
     }
 
     await bclient.client.publish([bclient.localAudioTrack, bclient.localVideoTrack]);
@@ -298,6 +361,8 @@ $(function(){
     bclient.localVideoTrack = null;
     hostStore.dispatch({type: 'AUDIO_TRACK_AVAILABLE', payload: { localAudioTrackavailable: false }});
     hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: false }});
+    hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: true}});
+    hostStore.dispatch({type: 'SET_MIC_MUTED', payload: {flag: true}});
 
     // Leave the channel.
     await bclient.client.leave();
@@ -438,5 +503,7 @@ $(function(){
     const textmsg = JSON.stringify({msg: msgt,displayname,profilepic, emoji: true});
     sendChatMessage(textmsg, true);
   });
+
+  // const player = fluidPlayer('fluidplayerdiv');
 
 });

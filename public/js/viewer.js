@@ -3165,8 +3165,12 @@ var initialState = {
   viewersCount: 0,
   hostConnected: false,
   totalviews: 0,
-  noOfHosts: 1,
-  hostsList: []
+  noOfHosts: 0,
+  hostsList: {},
+  audioTracks: [],
+  videoTracks: [],
+  numAudioTracks: 0,
+  numVideoTracks: 0
 };
 
 var connectedViewers = function connectedViewers() {
@@ -3190,6 +3194,38 @@ var connectedViewers = function connectedViewers() {
         });
       }
 
+    case 'INCREASE_ATRACK_COUNT':
+      {
+        var numAudioTracks = state.numAudioTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numAudioTracks: numAudioTracks + 1
+        });
+      }
+
+    case 'DECREASE_ATRACK_COUNT':
+      {
+        var _numAudioTracks = state.numAudioTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numAudioTracks: _numAudioTracks - 1
+        });
+      }
+
+    case 'INCREASE_VTRACK_COUNT':
+      {
+        var numVideoTracks = state.numVideoTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numVideoTracks: numVideoTracks + 1
+        });
+      }
+
+    case 'DECREASE_VTRACK_COUNT':
+      {
+        var _numVideoTracks = state.numVideoTracks;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          numVideoTracks: _numVideoTracks - 1
+        });
+      }
+
     case 'HOST_CONNECTED':
       {
         var hostConnected = action.payload.hostConnected;
@@ -3201,9 +3237,24 @@ var connectedViewers = function connectedViewers() {
     case 'ADD_HOST_TO_LIST':
       {
         var host = action.payload.host;
-        var hostList = state.hostList;
+        var hostsList = state.hostsList,
+            noOfHosts = state.noOfHosts;
+        hostsList[host.uid] = host;
         return _objectSpread(_objectSpread({}, state), {}, {
-          hostList: hostList.append(host)
+          hostsList: hostsList,
+          noOfHosts: noOfHosts + 1
+        });
+      }
+
+    case 'REMOVE_HOST_FROM_LIST':
+      {
+        var hostid = action.payload.hostid;
+        var _hostsList = state.hostsList,
+            _noOfHosts = state.noOfHosts;
+        delete _hostsList[hostid];
+        return _objectSpread(_objectSpread({}, state), {}, {
+          hostsList: _hostsList,
+          noOfHosts: _noOfHosts - 1
         });
       }
 
@@ -3391,6 +3442,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 $(function () {
   console.log('agora sdk version: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.VERSION + ' compatible: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.checkSystemRequirements());
+  var hostvideoDiv = $('#external-broadcasts-container');
+  var spinnerDiv = $('#spinner');
+  spinnerDiv.show();
+  var posterimage = $('#posterimage');
+  posterimage.height(480).show();
+  posterimage.css({
+    'background-image': 'url(' + thumbnailurl + ')',
+    'background-position': 'center',
+    'background-repeat': 'no-repeat',
+    'background-size': 'cover'
+  });
+  $('#statusScreen').show();
+  $('#statusScreen span').html('Host has not joined yet or left the broadcast.');
   var audienceStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_audience__WEBPACK_IMPORTED_MODULE_4__["default"]);
   audienceStore.subscribe(function () {
     var audienceState = audienceStore.getState();
@@ -3399,12 +3463,33 @@ $(function () {
   var viewersStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_connectedViewers__WEBPACK_IMPORTED_MODULE_6__["default"]);
   viewersStore.subscribe(function () {
     var viewersState = viewersStore.getState();
+    console.log(viewersState);
     $('#liveviewerscount').html(viewersState.viewersCount);
+
+    if (!viewersState.hostConnected) {
+      posterimage.show();
+      $('#statusScreen').show();
+      $('#statusScreen span').html('Host got disconnected or left the broadcast');
+      spinnerDiv.show();
+    }
+
+    if (viewersState.numVideoTracks === 0 && viewersState.noOfHosts > 0) {
+      posterimage.show();
+      $('#statusScreen').show();
+      $('#statusScreen span').html('Host is not broadcasting any video stream');
+      spinnerDiv.show();
+    }
+
+    if (viewersState.numVideoTracks > 0 && viewersState.noOfHosts > 0) {
+      posterimage.hide();
+      $('#statusScreen').hide();
+      spinnerDiv.hide();
+    }
   }); // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
 
   if (APP_DEBUG) {
     window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(0);
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
   } else {
     agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
   }
@@ -3671,6 +3756,9 @@ $(function () {
                             playerDiv = document.createElement('div');
                             playerDiv.id = user.uid.toString();
                             $('#external-broadcasts-container').append(playerDiv);
+                            viewersStore.dispatch({
+                              type: 'INCREASE_VTRACK_COUNT'
+                            });
                             remoteVideoTrack.play(playerDiv);
                           }
 
@@ -3679,6 +3767,9 @@ $(function () {
                             audioPlayerDiv = document.createElement('div');
                             audioPlayerDiv.id = user.uid.toString() + 'audio';
                             $('#external-broadcasts-container').append(audioPlayerDiv);
+                            viewersStore.dispatch({
+                              type: 'INCREASE_ATRACK_COUNT'
+                            });
                             remoteAudioTrack.play(audioPlayerDiv);
                           }
 
@@ -3706,11 +3797,17 @@ $(function () {
                 if (mediaType === 'video') {
                   $('#' + user.uid.toString()).remove();
                   console.log('user unpulished video track: ' + user);
+                  viewersStore.dispatch({
+                    type: 'DECREASE_VTRACK_COUNT'
+                  });
                 }
 
                 if (mediaType === 'audio') {
                   $('#' + user.uid.toString() + 'audio').remove();
                   console.log('user unpulished audio track: ' + user);
+                  viewersStore.dispatch({
+                    type: 'DECREASE_ATRACK_COUNT'
+                  });
                 }
               });
               bclient.client.on('user-joined', function (user) {
@@ -3719,6 +3816,12 @@ $(function () {
                   type: 'HOST_CONNECTED',
                   payload: {
                     hostConnected: true
+                  }
+                });
+                viewersStore.dispatch({
+                  type: 'ADD_HOST_TO_LIST',
+                  payload: {
+                    host: user
                   }
                 });
                 viewersStore.dispatch({
@@ -3731,6 +3834,12 @@ $(function () {
                   type: 'HOST_CONNECTED',
                   payload: {
                     hostConnected: false
+                  }
+                });
+                viewersStore.dispatch({
+                  type: 'REMOVE_HOST_FROM_LIST',
+                  payload: {
+                    hostid: user.uid
                   }
                 });
                 viewersStore.dispatch({

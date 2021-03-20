@@ -10,6 +10,7 @@ Streaming Now - {{ $stream->title }}
 
 <!-- Emoji Set -->
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+<link href="{{ asset('css/spinkit.css') }}" rel="stylesheet" type="text/css">
 
 
 @endsection
@@ -40,6 +41,18 @@ Streaming Now - {{ $stream->title }}
 
 
                           <div id="external-broadcasts-container">
+
+                          </div>
+                          <div class="col-md-12" id='posterimage'>
+                            <div id="statusScreen" class="alert alert-primary align-self-center">
+                            <span></span></div>
+                            <div class="sk-wave sk-center" id='spinner'>
+                              <div class="sk-wave-rect"></div>
+                              <div class="sk-wave-rect"></div>
+                              <div class="sk-wave-rect"></div>
+                              <div class="sk-wave-rect"></div>
+                              <div class="sk-wave-rect"></div>
+                            </div>
 
                           </div>
 
@@ -296,6 +309,7 @@ var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
 var displayname = "{{ $displayname }}";
 var profilepic = "{{ $profilepic }}";
+var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
 
 </script>
 @endsection
