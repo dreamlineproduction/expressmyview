@@ -1,43 +1,18 @@
+Things done (some items may need minor bug fixing, especially php related stuff)
+1) video, audio live streaming
+2) chatting (with emoji, display name, profile pic)
+3) user account display of livestreams
+4) option to delete / edit livestreams
+5) Server side token generation for higher security
+6) update of mysql db using post request
+7) screen sharing
+8) screen + cam sharing
+9) automatic switching from screen sharing to webcam
+
 ToDO:
-5) For the host: play the video in the player, with controller enabled.
-6) audience: no player controller needed.
-7) Emjois to be sent in the chat
-8) live view counter to be displayed for the connected viewers
+1) audio volume indicator
+2) option to go full screen
+3) audio track volume control
 
-Done:
-1) whether the stream is live or not
-2) show the list of past live broadcast
-3) option to delete the broadcast
-4) display name to be displayed in the chat.
-
-Agora functions:
-1) Cloud proxy: NOT NEEDED
-2) Display volume level:
-3) remoteUser.audioTrack.setVolume(level);
-4) localAudioTrack.setVolume(level);
-
-
-Remaining functions:
-
-Local audio and video methods
-createScreenVideoTrack	Creates a video track for screen sharing.
-createBufferSourceAudioTrack	Creates an audio track from an audio file.
-createCustomAudioTrack	Creates a customized audio track.
-createCustomVideoTrack	Creates a customized video track.
-
-Callback	Description
-onAudioAutoplayFailed	Occurs when the autoplay of an audio track fails.
-
-Other methods
-Method	Description
-getSupportedCodec	Gets the codecs that the browser supports.
-
-AgoraRTCClient
-
-Method	Description
-join	Joins a channel.
-leave	Leaves a channel.
-publish	Publishes local audio and/or video tracks to a channel.
-unpublish	Unpublishes the local audio and/or video tracks.
-subscribe	Subscribes to the audio and/or video tracks of a remote user.
-unsubscribe	Unsubscribes from the audio and/or tracks of a remote user.
+Things not possible in existing tech stack:
+1) live view counter to be displayed for the connected viewers
