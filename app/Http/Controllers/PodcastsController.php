@@ -13,6 +13,7 @@ use App\Jobs\ProcessPodcast;
 use App\Language;
 use App\License;
 use App\Tag;
+use App\Subscription;
 use App\User;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
@@ -22,8 +23,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
-
+use Illuminate\Contracts\Filesystem\Filesystem;
+use FFMpeg;
+use FFMpeg\Coordinate\Dimension;
+use FFMpeg\Format\Video\X264;
+use App\Channel;
+use Carbon;
 class PodcastsController extends Controller
 {
     /**
@@ -427,6 +432,225 @@ class PodcastsController extends Controller
         }
     }
 
+    public function relatedPodcasts(Request $request)
+    {
+        $pid = $request->pid;   
+        $podcast = Podcast::find($pid);
+        
+        $podcastCategories = $podcast->categories()->pluck('categories.id')->toArray();
+
+        $relatedPodcastsObj = Podcast::where('id', '!=', $pid)->where('status', 1);
+
+        if(empty($podcastCategories)){
+            $relatedPodcasts2 = $relatedPodcastsObj->inRandomOrder()->take(5)->get();
+        }else{
+
+            $relatedPodcasts2 = $relatedPodcastsObj
+                ->whereHas('categories', function ($query) use ($podcastCategories) {
+                    $query->whereIn('categories.id', $podcastCategories);
+                })
+                ->inRandomOrder()
+                ->take(5)
+                ->get();
+        }
+       
+            
+        return response()->json([
+            'status' => 0,
+            'relatedPodcast' => $relatedPodcasts2,
+            'message' => "success"
+        ]);
+        
+    }
+
+    public function uploadPodcastDetails(Request $request)
+    {
+        $request = request();
+        $podcastId = $request->input('podcast_id');
+        $podcast = Podcast::find($podcastId);
+
+        $validator = Validator::make($request->all(), [
+            'channel' => 'required',
+            'title' => 'required|string',
+            'privacy' => 'required',
+            'license' => 'required',
+            'languages' => 'required',
+            'comments_allowed' => 'required',
+            'categories' => 'required',
+            'thumbnail' => 'nullable|image'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 0,
+                'error' => $validator->getMessageBag()->toArray()
+            ]);
+        } else {
+            if ($request->hasFile('thumbnail')) {
+                $coverFilename = null;
+                $oldCoverFilename = $podcast->thumbnail;
+                if ($request->file('thumbnail')->store('public/podcast/thumbnail')) {
+                    $coverFilename = $request->file('thumbnail')->hashName();
+                    if (!empty($oldCoverFilename)) {
+
+                        unlink(storage_path('/app/public/podcast/thumbnail') . '/' . $oldCoverFilename);
+                    }
+
+                } else {
+                    return response()->json([
+                        'errors' => 'An error occurred. Please try again.'
+                    ]);
+                }
+            } else {
+                if($podcast->thumbnail){
+                    $thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $podcast->thumbnail;
+
+                    Storage::disk('s3')->put('public/podcast/thumbnail/' . $podcast->thumbnail, file_get_contents($thumbfile), 'public');
+    
+                    $coverFilename = $podcast->thumbnail;
+                }
+            }
+
+            $podcast->channel_id = $request->input('channel');
+            $podcast->title = $request->input('title');
+            $podcast->description = $request->input('description');
+            $podcast->privacy = $request->input('privacy');
+            $podcast->license_id = $request->input('license');
+            $podcast->comments_allowed = $request->input('comments_allowed');
+            $podcast->thumbnail = $coverFilename;
+            $podcast->status = 1;
+            DB::beginTransaction();
+            try {
+                $podcast->save();
+
+                $languages = $request->input('languages');
+                // $podcast->languages()->sync($languages);
+                $langIds = array();
+                foreach ($languages as $lng) {
+                    if (!empty($lng)) {
+                        $langDetails = Language::where('name', $lng)->first();
+                        if (!empty($langDetails)) {
+                            $langIds[] = $langDetails->id;
+                        }
+                    }
+                }
+                foreach ($langIds as $lngid) {
+                    $allLangs = DB::table('language_podcast')->where([
+                            'language_id' => $lngid,
+                            'podcast_id' => $podcastId
+                        ])->first();
+
+                    if(!$allLangs){
+                        DB::table('language_podcast')->insert([
+                            ['language_id' => $lngid, 'podcast_id' => $podcastId]
+                        ]);
+                    }
+                }
+
+                $categories = $request->input('categories');
+                $catIds = array();
+                foreach ($categories as $category) {
+                    if (!empty($category)) {
+                        $catDetails = Category::where('name', $category)->first();
+                        if (!empty($catDetails)) {
+                            $catIds[] = $catDetails->id;
+                        }
+                    }
+                }
+                
+                foreach ($catIds as $catid) {
+                    $allCats = DB::table('category_podcast')->where([
+                            'category_id' => $catid,
+                            'podcast_id' => $podcastId
+                        ])->first();
+
+                    if(!$allCats){
+                        DB::table('category_podcast')->insert([
+                            ['category_id' => $catid, 'podcast_id' => $podcastId]
+                        ]);
+                    }
+                }
+
+                // $podcast->categories()->sync($categories);
+
+                $tags = $request->input('tags');
+                $tagIds = array();
+                foreach ($tags as $tag) {
+                    if (!empty($tag)) {
+                        $tagDetails = Tag::where('name', $tag)->first();
+                        if (!empty($tagDetails)) {
+                            $tagIds[] = $tagDetails->id;
+                        } else {
+                            $newTag = new Tag();
+                            $newTag->name = $tag;
+                            $newTag->slug = Str::slug($tag);
+                            $newTag->save();
+                            $tagIds[] = $newTag->id;
+                        }
+                    }
+                }
+
+                foreach ($tagIds as $tagid) {
+                    $allTags = DB::table('podcast_tag')->where([
+                            'tag_id' => $tagid,
+                            'podcast_id' => $podcastId
+                        ])->first();
+                    
+                    if(!$allTags){
+                        DB::table('podcast_tag')->insert([
+                            ['tag_id' => $tagid, 'podcast_id' => $podcastId]
+                        ]);
+                    }
+                }
+                // $podcast->tags()->sync($tagIds);
+
+                $casts = $request->input('casts');
+                $castIds = array();
+                foreach ($casts as $cast) {
+                    if (!empty($cast)) {
+                        $castDetails = Cast::where('name', $cast)->first();
+                        if (!empty($castDetails)) {
+                            $castIds[] = $castDetails->id;
+                        } else {
+                            $newCast = new Cast();
+                            $newCast->name = $cast;
+                            $newCast->slug = Str::slug($cast);
+                            $newCast->save();
+                            $castIds[] = $newCast->id;
+                        }
+                    }
+                }
+
+                foreach ($castIds as $castid) {
+                    $allCasts = DB::table('cast_podcast')->where([
+                            'cast_id' => $castid,
+                            'podcast_id' => $podcastId
+                        ])->first();
+                    
+                    if(!$allCasts){
+                        DB::table('cast_podcast')->insert([
+                            ['cast_id' => $castid, 'podcast_id' => $podcastId]
+                        ]);
+                    }
+                }
+                // $podcast->casts()->sync($castIds);
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => 1,
+                    'message' => 'Podcast saved successfully.',
+                ]);
+            } catch (\Exception $exception) {
+                DB::rollBack();
+
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'An error occurred. Please try again.',
+                ]);
+            }
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -627,5 +851,608 @@ class PodcastsController extends Controller
             }
 
         }
+    }
+
+    public function uploadMedia(Request $request){
+        // $request = request();
+        $validator = Validator::make($request->all(), [
+            'video' => 'required|file|mimetypes:video/*,audio/*'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->getMessageBag()->first()
+            ]);
+        } else {
+            $file = $request->file('video');
+
+            // Check whether uploaded file is video or audio file
+            $mimeType = $file->getMimeType();
+            $fileType = explode('/', $mimeType)[0];
+
+            // Upload file
+            $originalFilenameWithExtension = $file->getClientOriginalName();
+            $originalFilename = substr($originalFilenameWithExtension, 0, strrpos($originalFilenameWithExtension, '.'));
+            $hashids = new Hashids(microtime(), 10);
+            $filenameWithoutExtension = $hashids->encode(rand(1, 100) . time());
+            $filename = $filenameWithoutExtension . '.' . ($fileType == 'video' ? $file->extension() : 'mp3');
+            $size = $file->getSize();
+            $file->storeAs('podcast', $filename, 'public');
+            // $filesystem = Storage::get("podcast/". $filename);
+            // $media = FFMpeg::fromFilesystem($filesystem)->open('podcast/' . $filename);
+            $media = FFMpeg::fromDisk('public')->open('podcast/' . $filename);
+            $duration = $media->getDurationInSeconds();
+
+            if ($fileType == 'video') {
+                // Get video duration and dimensions
+                $dimensions = $media->getVideoStream()->getDimensions();
+
+                // Create video thumbnail
+                $thumbnailFilename = $filenameWithoutExtension . '.jpg';
+                $media
+                    ->getFrameFromSeconds((int)($duration * 0.3))
+                    ->export()
+                    ->toDisk('public')
+                    ->save('podcast/thumbnail/' . $thumbnailFilename);
+
+            } else {
+                $thumbnailFilename = '';
+            }
+
+            // Save podcast data to database table (videos)
+            $podcast = new Podcast();
+            $podcast->filename = $filename;
+            $podcast->file_type = $fileType == 'video' ? 'video' : 'audio';
+            $podcast->size = $size;
+            $podcast->user_id = Auth::user()->id;
+            $podcast->runtime = $duration;
+            $podcast->runtime_formatted = formatVideoRuntime($duration);
+            $podcast->thumbnail = $thumbnailFilename;
+            if ($podcast->save()) {
+                if ($fileType == 'video') {
+                    ProcessPodcast::dispatch($podcast, $dimensions->getWidth(), $dimensions->getHeight());
+                } else {
+                    ProcessAudioPodcast::dispatch($podcast);
+                }
+
+                return response()->json([
+                    'title' => $originalFilename,
+                    'thumbnail' => !empty($thumbnailFilename) ? url('/storage/podcast/thumbnail/' . $thumbnailFilename) : $thumbnailFilename,
+                    'file_type' => $fileType == 'video' ? 'video' : 'audio',
+                    'action' => route('podcast.update', $podcast->id)
+                ], 201);
+            } else {
+                return response()->json([
+                    'error' => 'An error occurred. Please try again.'
+                ]);
+            }
+
+        }
+
+
+        // $file = Request::file('mediafile');
+        // $filename = Request::post('fileName');
+        // $path = public_path().'/uploads/';
+        
+        // $mimeType = $file->getMimeType();
+        // $fileType = explode('/', $mimeType)[0];
+        // $userid = Request::post('userid');
+        // $filetype = Request::post('filetype');
+        // $runtime = Request::post('runtime');
+        // $size = Request::post('size');
+        // // Upload file
+        // $current = time();
+        // $originalFilenameWithExtension = $file->getClientOriginalName();
+        // $originalFilename = substr($originalFilenameWithExtension, 0, strrpos($originalFilenameWithExtension, '.'));
+        // $hashids = new Hashids(microtime(), 10);
+        // $filenameWithoutExtension = $hashids->encode(rand(1, 100) . time());
+        // $filename = $filenameWithoutExtension . '_' . $userid . '_' . $current . '.' . ($fileType == 'video' ? $file->extension() : 'mp3');
+        // $file->move($path,$filename);
+        // $newPodcast = new Podcast;
+        // $newPodcast->user_id = isset($userid)?$userid:"";
+        // $newPodcast->filename = isset($filename)?$filename:"";
+        // $newPodcast->file_type = isset($filetype)?$filetype:"";
+        // $newPodcast->channel_id = NULL;
+        // $newPodcast->title = "";
+        // $newPodcast->description = "";
+        // $newPodcast->size = isset($size)?$size: 0;
+        // $newPodcast->runtime = isset($runtime)?$runtime: NULL;
+        // $newPodcast->runtime_formatted = "";
+        // $newPodcast->privacy = 1;
+        // $newPodcast->license_id = 0;
+        // $newPodcast->monetize = 0;
+        // $newPodcast->comments_allowed = 1;
+        // $newPodcast->thumbnail = "";
+        // $newPodcast->converted = 0;
+        // $newPodcast->status = 2;
+        // $newPodcast->views = 0;
+        // $newPodcast->likes =0;
+        // $newPodcast->dislikes = 0;
+        // $newPodcast->comments_count = 0;
+        // $newPodcast->save();
+        // return $userid;
+    }
+
+    protected function updatePodcast(Request $request)
+    {
+        $rules = [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
+            'phonenumber' => 'required|string|max:255',
+            'address1' => 'required|string|max:255',
+            'address2' => 'string|max:255',
+            'state' => 'required|string|max:255',
+            'zip' => 'required|string|max:255',
+        ];
+
+        $id =  $data['id'];
+        
+        $data = $request->all();
+         
+        $input     = $request->only('firstname', 'lastname', 'username', 'phonenumber', 'address1', 'address2', 'state', 'zip');
+        $validator = Validator::make($input, $rules);
+        
+        $user = User::find($id);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with("error","Something went wrong.")->withInput();
+        }
+
+        if ($user->count() == 0) {
+            $user = array(
+                "error" => "User not found"
+            );
+            return redirect()->back()->with("error","Something went wrong.")->withInput();
+        }
+        
+        $user->firstname = $data['firstname'];
+        $user->lastname = $data['lastname'];
+        $user->phonenumber = $data['phonenumber'];
+        $user->address1 = $data['address1'];
+        $user->address2 = $data['address2'];
+        $user->state = $data['state'];
+        $user->zip = $data['zip'];
+        $user->save();
+
+        return redirect()->back()->with("success","User Updated Successfully.")->withInput();
+    }
+ 
+    public function updatePodcastDetails(Request $request)
+    {
+        $request = request();
+        $podcastId = $request->input('id');
+        $podcast = Podcast::find($podcastId);
+       
+        $validator = Validator::make($request->all(), [
+            'channel' => 'required',
+            'title' => 'required',
+            'privacy' => 'required',
+            'license' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 0,
+                'error' => $validator->getMessageBag()->toArray()
+            ]);
+        } else {
+
+            $oldCoverFilename = $podcast->thumbnail;
+            if ($request->input('thumbnail')) {
+                $img = $request->input('thumbnail');
+                if (preg_match('/^data:image\/(\w+);base64,/', $img)) {
+                    $coverFilename = null;
+                    $data = substr($img, strpos($img, ',') + 1);
+                    $data = base64_decode($data);
+                    $type = explode('/', mime_content_type($img))[1];
+                    $currentDateTime = Carbon\Carbon::now();
+                    $currentDateTimeString = $currentDateTime->toDateTimeString();
+                    $coverFilename = $currentDateTime."_".".".$type;
+                    Storage::disk('s3')->delete('public/podcast/thumbnail/'. $oldCoverFilename);
+                    $p = Storage::disk('s3')->put('public/podcast/thumbnail/' . $coverFilename, $data, 'public');
+                }else{
+                    $coverFilename = $oldCoverFilename;
+                }
+            }else{
+                $coverFilename = $oldCoverFilename;
+            }
+            
+            $podcast->channel_id = $request->input('channel');
+            $podcast->title = $request->input('title');
+            $podcast->description = $request->input('description');
+            $podcast->privacy = $request->input('privacy');
+            $podcast->license_id = $request->input('license');
+            $podcast->thumbnail = $coverFilename;
+            $podcast->status = 1;
+            DB::beginTransaction();
+            try {
+                $podcast->save();
+
+                $languages = $request->input('languages');
+                if($languages){
+                    $langIds = array();
+                    foreach ($languages as $lng) {
+                        if (!empty($lng)) {
+                            $langDetails = Language::where('name', $lng)->first();
+                            if (!empty($langDetails)) {
+                                $langIds[] = $langDetails->id;
+                            }
+                        }
+                    }
+                
+                    foreach ($langIds as $lngid) {
+                        $allLangs = DB::table('language_podcast')->where([
+                                'language_id' => $lngid,
+                                'podcast_id' => $podcastId
+                            ])->first();
+
+                        
+                        if(!$allLangs){
+                            DB::table('language_podcast')->insert([
+                                ['language_id' => $lngid, 'podcast_id' => $podcastId]
+                            ]);
+                        }
+                    }
+                }
+                
+
+                $categories = $request->input('categories');
+                if($categories){
+                    $catIds = array();
+                    foreach ($categories as $category) {
+                        if (!empty($category)) {
+                            $catDetails = Category::where('name', $category)->first();
+                            if (!empty($catDetails)) {
+                                $catIds[] = $catDetails->id;
+                            }
+                        }
+                    }
+                    
+                    foreach ($catIds as $catid) {
+                        $allCats = DB::table('category_podcast')->where([
+                                'category_id' => $catid,
+                                'podcast_id' => $podcastId
+                            ])->first();
+
+                        if(!$allCats){
+                            DB::table('category_podcast')->insert([
+                                ['category_id' => $catid, 'podcast_id' => $podcastId]
+                            ]);
+                        }
+                    }
+                }
+
+                $tags = $request->input('tags');
+                if($tags){
+                    $tagIds = array();
+                    foreach ($tags as $tag) {
+                        if (!empty($tag)) {
+                            $tagDetails = Tag::where('name', $tag)->first();
+                            if (!empty($tagDetails)) {
+                                $tagIds[] = $tagDetails->id;
+                            } else {
+                                $newTag = new Tag();
+                                $newTag->name = $tag;
+                                $newTag->slug = Str::slug($tag);
+                                $newTag->save();
+                                $tagIds[] = $newTag->id;
+                            }
+                        }
+                    }
+
+                    foreach ($tagIds as $tagid) {
+                        $allTags = DB::table('podcast_tag')->where([
+                                'tag_id' => $tagid,
+                                'podcast_id' => $podcastId
+                            ])->first();
+                        
+                        if(!$allTags){
+                            DB::table('podcast_tag')->insert([
+                                ['tag_id' => $tagid, 'podcast_id' => $podcastId]
+                            ]);
+                        }
+                    }
+                }
+            
+                // // $podcast->tags()->sync($tagIds);
+
+                $casts = $request->input('casts');
+                if($casts){
+                    $castIds = array();
+                    foreach ($casts as $cast) {
+                        if (!empty($cast)) {
+                            $castDetails = Cast::where('name', $cast)->first();
+                            if (!empty($castDetails)) {
+                                $castIds[] = $castDetails->id;
+                            } else {
+                                $newCast = new Cast();
+                                $newCast->name = $cast;
+                                $newCast->slug = Str::slug($cast);
+                                $newCast->save();
+                                $castIds[] = $newCast->id;
+                            }
+                        }
+                    }
+
+                    foreach ($castIds as $castid) {
+                        $allCasts = DB::table('cast_podcast')->where([
+                                'cast_id' => $castid,
+                                'podcast_id' => $podcastId
+                            ])->first();
+                        
+                        if(!$allCasts){
+                            DB::table('cast_podcast')->insert([
+                                ['cast_id' => $castid, 'podcast_id' => $podcastId]
+                            ]);
+                        }
+                    }
+                }
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => 1,
+                    'message' => 'Podcast saved successfully.',
+                ]);
+            } catch (\Exception $exception) {
+                DB::rollBack();
+
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'An error occurred. Please try again.',
+                ]);
+            }
+        }
+    }
+
+    public function getChannelName($channelId){
+        $channel = Channel::find($channelId);
+
+        if($channel){
+            return $channel->name;
+        }else{
+            return "";
+        }
+    }
+
+    public function getAllVideoPodcasts()
+    {
+        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->orderBy('created_at', 'DESC')->get();
+
+        foreach ($allVideoPodcasts as $allVideoPodcast ){
+            if($allVideoPodcast['thumbnail']){
+                $allVideoPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$allVideoPodcast['thumbnail']);
+            }
+            $allVideoPodcast["channelName"] = $this->getChannelName($allVideoPodcast["channel_id"]);
+            $allVideoPodcast["dateDiff"] = $allVideoPodcast['created_at']->diffForHumans();
+        }
+
+        if(empty($allVideoPodcast)){
+            return response()->json([
+                'error' => "No data available right now, please try again later"
+            ]);
+        }else{
+            $viewData = array(
+                'allVideoPodcasts' => $allVideoPodcasts,
+            );
+        }
+
+        return response()->json([
+            'status' => 200,
+            $viewData
+        ]);
+    }
+
+    public function getPodcastDetails(Request $request)
+    {   $request = request();
+        $id = $request->id;
+        $uid = $request->uid;
+
+        $pid = $request->id;   
+        $podcast = Podcast::find($pid);
+        
+        $podcastCategories = $podcast->categories()->pluck('categories.id')->toArray();
+
+        $relatedPodcastsObj = Podcast::where('id', '!=', $pid)->where('status', 1);
+
+        if(empty($podcastCategories)){
+            $relatedPodcasts2 = $relatedPodcastsObj->inRandomOrder()->take(5)->get();
+        }else{
+
+            $relatedPodcasts2 = $relatedPodcastsObj
+                ->whereHas('categories', function ($query) use ($podcastCategories) {
+                    $query->whereIn('categories.id', $podcastCategories);
+                })
+                ->inRandomOrder()
+                ->take(5)
+                ->get();
+        }
+      
+      
+        foreach($relatedPodcasts2 as $relatedPodcast ){
+            if($relatedPodcast['thumbnail']){
+                $relatedPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$relatedPodcast['thumbnail']);
+            }
+            $relatedPodcast["channelName"] = $this->getChannelName($relatedPodcast["channel_id"]);
+            $relatedPodcast["dateDiff"] = $relatedPodcast['created_at']->diffForHumans();
+        }
+        
+        $liked = Like::where('podcast_id', $id)->where('user_id', $uid)->first();
+        if (empty($liked)) {
+            $isLiked = false;
+        }else{
+            $isLiked = true;
+        }
+
+        $podcast["dateDiff"] = $podcast['created_at']->diffForHumans();
+        $podcast["thumbnail"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$podcast['thumbnail']);
+
+        if($podcast){
+            $channelId = $podcast->channel_id;
+            $channelName = $this->getChannelName($channelId);
+            $allCats = DB::table('category_podcast')->where('podcast_id', $id)->get();
+            $allCasts = DB::table('cast_podcast')->where('podcast_id', $id)->get();
+            $allTags = DB::table('podcast_tag')->where('podcast_id', $id)->get();
+            $allLangs = DB::table('language_podcast')->where('podcast_id', $id)->get();
+        
+            $languages = array();
+            foreach($allLangs as $lng){
+                $lngId = $lng->language_id;
+                $language = Language::find($lngId);
+                $languages[] = $language->name;
+            }
+
+            $categories = array();
+            foreach($allCats as $cat){
+                $categoryId = $cat->category_id;
+                $category = Category::find($categoryId);
+                $categories[] = $category->name;
+            }
+
+            $tags = array();
+            foreach($allTags as $tag){
+                $tagId = $tag->tag_id;
+                $tag = Tag::find($tagId);
+                $tags[] = $tag->name;
+            }
+
+            $casts = array();
+            foreach($allCasts as $cast){
+                $castId = $cast->cast_id;
+                $cast = Cast::find($castId);
+                $casts[] = $cast->name;
+            }
+        
+            $subscribed = $this->isSubscribed($uid, $channelId);
+
+            $podcastDetails = array(
+                'podcast' => $podcast,
+                'channelName' => $channelName,
+                'casts' => $casts,
+                'categories' => $categories,
+                'tags' => $tags,
+                "isSubscribed" => $subscribed,
+                "isLiked" => $isLiked,
+                "relatedPodcasts" => $relatedPodcasts2,
+                'languages' => $languages
+            );
+        }else{
+            return response()->json([
+                "error" => "something went wrong, please try again"
+            ]);
+        }
+        
+        return response()->json([
+            'status' => 200,
+            $podcastDetails
+        ]);
+    }
+
+
+    public function isSubscribed($id, $channelId){
+        $subscription = Subscription::where('user_id', $id)->where('channel_id', $channelId)->first();
+        if (empty($subscription)) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function likePodcast(Request $request)
+    {   $request = request();
+        $pid = $request->pid;
+        $uid = $request->uid;
+        $podcast = Podcast::find($pid);
+        $user = User::find($uid);
+        $liked = Like::where('podcast_id', $pid)->where('user_id', $uid)->first();
+
+        if (empty($liked)) {
+            DB::beginTransaction();
+
+            $like = new Like();
+            $like->podcast_id = $pid;
+            $like->user_id = $uid;
+            if ($like->save()) {
+
+                if ($podcast->increment('likes')) {
+                    DB::commit();
+
+                    return new Response([
+                        'status' => 1,
+                        'action' => 'liked',
+                        'likesCount' => $podcast->likes,
+                        "msg" => "Successfully Liked the podcast"
+                    ]);
+                } else {
+                    DB::rollBack();
+
+                    return new Response([
+                        'status' => 0,
+                        'error' => "something went wrong, please try again later"
+                    ]);
+                }
+
+            } else {
+                return new Response([
+                    'status' => 0,
+                    'error' => "something went wrong, please try again later"
+                ]);
+            }
+
+        } else {
+            DB::beginTransaction();
+
+            if ($liked->delete()) {
+
+                if ($podcast->decrement('likes')) {
+                    DB::commit();
+
+                    return new Response([
+                        'status' => 1,
+                        'action' => 'unliked',
+                        'likesCount' => $podcast->likes,
+                        "msg" => "Successfully Unliked the podcast"
+                    ]);
+                } else {
+                    DB::rollBack();
+
+                    return new Response([
+                        'status' => 0,
+                        'error' => "something went wrong, please try again later"
+                    ]);
+                }
+
+            } else {
+                return new Response([
+                    'status' => 0,
+                    'error' => "something went wrong, please try again later"
+                ]);
+            }
+
+        }
+
+    }
+
+    public function deletePodcast(Request $request)
+    {
+        $id = $request->id;
+        $podcast = Podcast::find($id);
+        $oldPodcastFileName = $podcast->thumbnail;
+
+        if ($podcast->delete()) {
+            if ($oldPodcastFileName) {
+                Storage::disk('s3')->delete('public/podcast/thumbnail/' . $oldPodcastFileName);
+            }
+            return new Response([
+                'status' => 0,
+                'msg' => 'Successfully deleted'
+            ]);
+        } else {
+            return new Response([
+                'status' => 0,
+                'error' => 'error, something went wrong, please try again later'
+            ]);
+        }
+
     }
 }

@@ -360,7 +360,7 @@ class LiveStreamsController extends Controller
             $stream->islive = $livestatus;
             $stream->update();
             DB::commit();
-            return new Response(['status' => 1, 'message' => 'Live status changed!');
+            return new Response(['status' => 1, 'message' => 'Live status changed!']);
           }
           catch (\Exception $exception) {
             DB::rollBack();
