@@ -4,8 +4,8 @@ const initialState = {
   totalviews: 0,
   noOfHosts: 0,
   hostsList: {},
-  audioTracks: [],
-  videoTracks: [],
+  audioTracks: {},
+  videoTracks: {},
   numAudioTracks: 0,
   numVideoTracks: 0,
 };

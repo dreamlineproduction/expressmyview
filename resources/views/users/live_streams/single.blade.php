@@ -86,11 +86,13 @@
 
 
                         </div>
-
-
-                        <div id='host-video'></div>
+                        <div class="row">
+                        <div class="col-md-12" id="video-section">
+                          <div id='host-video'></div>
+                          <div id='host-screen'></div>
+                        </div>
                         <div class="col-md-12" id='posterimage'>
-                          
+
                           <div id="statusScreen" class="alert alert-primary align-self-center">
                           <span></span></div>
                           <div class="sk-wave sk-center" id='spinner'>
@@ -102,6 +104,7 @@
                           </div>
 
                         </div>
+                      </div>
                         <!-- <div id='extraplayer'>
                           <video id='fluidplayerdiv' controls>
                             <source src='' type='video/mp4' />

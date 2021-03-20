@@ -3167,8 +3167,8 @@ var initialState = {
   totalviews: 0,
   noOfHosts: 0,
   hostsList: {},
-  audioTracks: [],
-  videoTracks: [],
+  audioTracks: {},
+  videoTracks: {},
   numAudioTracks: 0,
   numVideoTracks: 0
 };
@@ -3385,15 +3385,15 @@ var devices = function devices() {
 
         if (_devicetype3 === 'CAM') {
           return _objectSpread(_objectSpread({}, state), {}, {
-            camList: _camList.append(device)
+            camList: _camList.push(device)
           });
         } else if (_devicetype3 === 'MIC') {
           return _objectSpread(_objectSpread({}, state), {}, {
-            micList: _micList.append(device)
+            micList: _micList.push(device)
           });
         } else if (_devicetype3 === 'PBD') {
           return _objectSpread(_objectSpread({}, state), {}, {
-            playbackList: _playbackList.append(device)
+            playbackList: _playbackList.push(device)
           });
         } else {
           return state;
@@ -3442,6 +3442,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 $(function () {
   console.log('agora sdk version: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.VERSION + ' compatible: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.checkSystemRequirements());
+  var volumeLevelTimers = {};
+  var abruptClose = null;
   var hostvideoDiv = $('#external-broadcasts-container');
   var spinnerDiv = $('#spinner');
   spinnerDiv.show();
@@ -3489,7 +3491,7 @@ $(function () {
 
   if (APP_DEBUG) {
     window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(0);
   } else {
     agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
   }
@@ -3741,7 +3743,8 @@ $(function () {
               });
               bclient.client.on('user-published', /*#__PURE__*/function () {
                 var _ref4 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(user, mediaType) {
-                  var remoteVideoTrack, playerDiv, remoteAudioTrack, audioPlayerDiv;
+                  var _audienceStore$getSta, numVideoTracks, remoteVideoTrack, playerDiv, _audienceStore$getSta2, numAudioTracks, remoteAudioTrack, audioPlayerDiv;
+
                   return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
                     while (1) {
                       switch (_context4.prev = _context4.next) {
@@ -3752,8 +3755,10 @@ $(function () {
 
                         case 3:
                           if (mediaType === 'video') {
+                            _audienceStore$getSta = audienceStore.getState(), numVideoTracks = _audienceStore$getSta.numVideoTracks;
                             remoteVideoTrack = user.videoTrack;
-                            playerDiv = document.createElement('div');
+                            playerDiv = document.createElement('div'); // playerDiv.id = numVideoTracks.toString() + '_' + user.uid.toString();
+
                             playerDiv.id = user.uid.toString();
                             $('#external-broadcasts-container').append(playerDiv);
                             viewersStore.dispatch({
@@ -3763,13 +3768,22 @@ $(function () {
                           }
 
                           if (mediaType === 'audio') {
+                            _audienceStore$getSta2 = audienceStore.getState(), numAudioTracks = _audienceStore$getSta2.numAudioTracks;
                             remoteAudioTrack = user.audioTrack;
-                            audioPlayerDiv = document.createElement('div');
+                            audioPlayerDiv = document.createElement('div'); // audioPlayerDiv.id = numAudioTracks.toString() + '_' + user.uid.toString() + 'audio';
+
                             audioPlayerDiv.id = user.uid.toString() + 'audio';
                             $('#external-broadcasts-container').append(audioPlayerDiv);
                             viewersStore.dispatch({
                               type: 'INCREASE_ATRACK_COUNT'
                             });
+
+                            if (user.uid in volumeLevelTimers === false) {
+                              volumeLevelTimers[user.uid] = setInterval(function () {
+                                var volLevel = remoteAudioTrack.getVolumeLevel(); // console.log('Volume Level of '+user.uid+': ' + volLevel);
+                              }, 1000);
+                            }
+
                             remoteAudioTrack.play(audioPlayerDiv);
                           }
 
@@ -3808,6 +3822,11 @@ $(function () {
                   viewersStore.dispatch({
                     type: 'DECREASE_ATRACK_COUNT'
                   });
+
+                  if (user.uid in volumeLevelTimers === true) {
+                    clearInterval(volumeLevelTimers[user.uid]);
+                    delete volumeLevelTimers[user.uid];
+                  }
                 }
               });
               bclient.client.on('user-joined', function (user) {
@@ -3919,6 +3938,11 @@ $(function () {
       emoji: true
     });
     sendChatMessage(textmsg, true);
+  });
+  window.addEventListener('beforeunload', abruptClose = function abruptClose(event) {
+    for (var timer in volumeLevelTimers) {
+      clearInterval(timer);
+    }
   });
 });
 

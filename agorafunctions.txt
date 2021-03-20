@@ -1,13 +1,20 @@
+ToDO:
 5) For the host: play the video in the player, with controller enabled.
 6) audience: no player controller needed.
 7) Emjois to be sent in the chat
 8) live view counter to be displayed for the connected viewers
 
-Things to do:
+Done:
 1) whether the stream is live or not
 2) show the list of past live broadcast
 3) option to delete the broadcast
 4) display name to be displayed in the chat.
+
+Agora functions:
+1) Cloud proxy: NOT NEEDED
+2) Display volume level:
+3) remoteUser.audioTrack.setVolume(level);
+4) localAudioTrack.setVolume(level);
 
 
 Remaining functions:

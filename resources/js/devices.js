@@ -55,11 +55,11 @@ const devices = (state = initialState, action) => {
       const { micList, camList, playbackList } = state;
       const { device, devicetype } = action.payload;
       if (devicetype === 'CAM') {
-        return { ...state, camList: camList.append(device) };
+        return { ...state, camList: camList.push(device) };
       } else if (devicetype === 'MIC') {
-        return { ...state, micList: micList.append(device) };
+        return { ...state, micList: micList.push(device) };
       } else if (devicetype === 'PBD') {
-        return { ...state, playbackList: playbackList.append(device) };
+        return { ...state, playbackList: playbackList.push(device) };
       } else {
         return state;
       }

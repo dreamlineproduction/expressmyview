@@ -5,6 +5,7 @@ const initialState = {
   connectionState: 'DISCONNECTED',
   localVideoTrackavailable: false,
   localAudioTrackavailable: false,
+  localScreenTrackavailable: false,
 };
 
 const host = (state = initialState, action) => {
@@ -38,6 +39,12 @@ const host = (state = initialState, action) => {
     {
       const { localVideoTrackavailable } = action.payload;
       return { ...state, localVideoTrackavailable };
+    }
+
+    case 'SCREEN_TRACK_AVAILABLE':
+    {
+      const { localScreenTrackavailable } = action.payload;
+      return { ...state, localScreenTrackavailable };
     }
 
     default:

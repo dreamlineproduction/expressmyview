@@ -13,6 +13,9 @@ $(function(){
       AgoraRTC.checkSystemRequirements()
   );
 
+  let volumeLevelTimers = {};
+  let abruptClose = null;
+
   const hostvideoDiv = $('#external-broadcasts-container');
   const spinnerDiv = $('#spinner');
   spinnerDiv.show();
@@ -60,7 +63,7 @@ $(function(){
   // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
   if (APP_DEBUG) {
     window.AgoraRTC = AgoraRTC;
-    AgoraRTC.setLogLevel(2);
+    AgoraRTC.setLogLevel(0);
   } else {
     AgoraRTC.setLogLevel(2);
   }
@@ -225,19 +228,29 @@ $(function(){
       try {
         await bclient.client.subscribe(user, mediaType);
         if (mediaType === 'video') {
+          const { numVideoTracks } = audienceStore.getState();
           const remoteVideoTrack = user.videoTrack;
           const playerDiv = document.createElement('div');
+          // playerDiv.id = numVideoTracks.toString() + '_' + user.uid.toString();
           playerDiv.id = user.uid.toString();
           $('#external-broadcasts-container').append(playerDiv);
           viewersStore.dispatch({type: 'INCREASE_VTRACK_COUNT'});
           remoteVideoTrack.play(playerDiv);
         }
         if (mediaType === 'audio') {
+          const { numAudioTracks } = audienceStore.getState();
           const remoteAudioTrack = user.audioTrack;
           const audioPlayerDiv = document.createElement('div');
+          // audioPlayerDiv.id = numAudioTracks.toString() + '_' + user.uid.toString() + 'audio';
           audioPlayerDiv.id = user.uid.toString() + 'audio';
           $('#external-broadcasts-container').append(audioPlayerDiv);
           viewersStore.dispatch({type: 'INCREASE_ATRACK_COUNT'});
+          if (user.uid in volumeLevelTimers === false) {
+            volumeLevelTimers[user.uid] = setInterval(() => {
+              const volLevel = remoteAudioTrack.getVolumeLevel();
+              // console.log('Volume Level of '+user.uid+': ' + volLevel);
+            }, 1000);
+          }
           remoteAudioTrack.play(audioPlayerDiv);
         }
       } catch(error) {
@@ -255,6 +268,10 @@ $(function(){
         $('#'+user.uid.toString()+'audio').remove();
         console.log('user unpulished audio track: '+ user);
         viewersStore.dispatch({type: 'DECREASE_ATRACK_COUNT'});
+        if (user.uid in volumeLevelTimers === true) {
+          clearInterval(volumeLevelTimers[user.uid]);
+          delete volumeLevelTimers[user.uid];
+        }
       }
     });
 
@@ -304,6 +321,12 @@ $(function(){
     const msgt = $(msg).parent().html();
     const textmsg = JSON.stringify({msg: msgt,displayname,profilepic, emoji: true});
     sendChatMessage(textmsg, true);
+  });
+
+  window.addEventListener('beforeunload', abruptClose = (event) => {
+    for (const timer in volumeLevelTimers) {
+      clearInterval(timer);
+    }
   });
 
 });

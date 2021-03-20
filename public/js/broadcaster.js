@@ -1288,6 +1288,17 @@ Cb.onMicrophoneChanged(a)}),ib.on(Wb.PLAYOUT_DEVICE_CHANGED,a=>{h.debug("playout
 
 /***/ }),
 
+/***/ "./node_modules/bowser/es5.js":
+/*!************************************!*\
+  !*** ./node_modules/bowser/es5.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(e,t){ true?module.exports=t():undefined}(this,(function(){return function(e){var t={};function r(n){if(t[n])return t[n].exports;var i=t[n]={i:n,l:!1,exports:{}};return e[n].call(i.exports,i,i.exports,r),i.l=!0,i.exports}return r.m=e,r.c=t,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var i in e)r.d(n,i,function(t){return e[t]}.bind(null,i));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=90)}({17:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n=r(18),i=function(){function e(){}return e.getFirstMatch=function(e,t){var r=t.match(e);return r&&r.length>0&&r[1]||""},e.getSecondMatch=function(e,t){var r=t.match(e);return r&&r.length>1&&r[2]||""},e.matchAndReturnConst=function(e,t,r){if(e.test(t))return r},e.getWindowsVersionName=function(e){switch(e){case"NT":return"NT";case"XP":return"XP";case"NT 5.0":return"2000";case"NT 5.1":return"XP";case"NT 5.2":return"2003";case"NT 6.0":return"Vista";case"NT 6.1":return"7";case"NT 6.2":return"8";case"NT 6.3":return"8.1";case"NT 10.0":return"10";default:return}},e.getMacOSVersionName=function(e){var t=e.split(".").splice(0,2).map((function(e){return parseInt(e,10)||0}));if(t.push(0),10===t[0])switch(t[1]){case 5:return"Leopard";case 6:return"Snow Leopard";case 7:return"Lion";case 8:return"Mountain Lion";case 9:return"Mavericks";case 10:return"Yosemite";case 11:return"El Capitan";case 12:return"Sierra";case 13:return"High Sierra";case 14:return"Mojave";case 15:return"Catalina";default:return}},e.getAndroidVersionName=function(e){var t=e.split(".").splice(0,2).map((function(e){return parseInt(e,10)||0}));if(t.push(0),!(1===t[0]&&t[1]<5))return 1===t[0]&&t[1]<6?"Cupcake":1===t[0]&&t[1]>=6?"Donut":2===t[0]&&t[1]<2?"Eclair":2===t[0]&&2===t[1]?"Froyo":2===t[0]&&t[1]>2?"Gingerbread":3===t[0]?"Honeycomb":4===t[0]&&t[1]<1?"Ice Cream Sandwich":4===t[0]&&t[1]<4?"Jelly Bean":4===t[0]&&t[1]>=4?"KitKat":5===t[0]?"Lollipop":6===t[0]?"Marshmallow":7===t[0]?"Nougat":8===t[0]?"Oreo":9===t[0]?"Pie":void 0},e.getVersionPrecision=function(e){return e.split(".").length},e.compareVersions=function(t,r,n){void 0===n&&(n=!1);var i=e.getVersionPrecision(t),s=e.getVersionPrecision(r),a=Math.max(i,s),o=0,u=e.map([t,r],(function(t){var r=a-e.getVersionPrecision(t),n=t+new Array(r+1).join(".0");return e.map(n.split("."),(function(e){return new Array(20-e.length).join("0")+e})).reverse()}));for(n&&(o=a-Math.min(i,s)),a-=1;a>=o;){if(u[0][a]>u[1][a])return 1;if(u[0][a]===u[1][a]){if(a===o)return 0;a-=1}else if(u[0][a]<u[1][a])return-1}},e.map=function(e,t){var r,n=[];if(Array.prototype.map)return Array.prototype.map.call(e,t);for(r=0;r<e.length;r+=1)n.push(t(e[r]));return n},e.find=function(e,t){var r,n;if(Array.prototype.find)return Array.prototype.find.call(e,t);for(r=0,n=e.length;r<n;r+=1){var i=e[r];if(t(i,r))return i}},e.assign=function(e){for(var t,r,n=e,i=arguments.length,s=new Array(i>1?i-1:0),a=1;a<i;a++)s[a-1]=arguments[a];if(Object.assign)return Object.assign.apply(Object,[e].concat(s));var o=function(){var e=s[t];"object"==typeof e&&null!==e&&Object.keys(e).forEach((function(t){n[t]=e[t]}))};for(t=0,r=s.length;t<r;t+=1)o();return e},e.getBrowserAlias=function(e){return n.BROWSER_ALIASES_MAP[e]},e.getBrowserTypeByAlias=function(e){return n.BROWSER_MAP[e]||""},e}();t.default=i,e.exports=t.default},18:function(e,t,r){"use strict";t.__esModule=!0,t.ENGINE_MAP=t.OS_MAP=t.PLATFORMS_MAP=t.BROWSER_MAP=t.BROWSER_ALIASES_MAP=void 0;t.BROWSER_ALIASES_MAP={"Amazon Silk":"amazon_silk","Android Browser":"android",Bada:"bada",BlackBerry:"blackberry",Chrome:"chrome",Chromium:"chromium",Electron:"electron",Epiphany:"epiphany",Firefox:"firefox",Focus:"focus",Generic:"generic","Google Search":"google_search",Googlebot:"googlebot","Internet Explorer":"ie","K-Meleon":"k_meleon",Maxthon:"maxthon","Microsoft Edge":"edge","MZ Browser":"mz","NAVER Whale Browser":"naver",Opera:"opera","Opera Coast":"opera_coast",PhantomJS:"phantomjs",Puffin:"puffin",QupZilla:"qupzilla",QQ:"qq",QQLite:"qqlite",Safari:"safari",Sailfish:"sailfish","Samsung Internet for Android":"samsung_internet",SeaMonkey:"seamonkey",Sleipnir:"sleipnir",Swing:"swing",Tizen:"tizen","UC Browser":"uc",Vivaldi:"vivaldi","WebOS Browser":"webos",WeChat:"wechat","Yandex Browser":"yandex",Roku:"roku"};t.BROWSER_MAP={amazon_silk:"Amazon Silk",android:"Android Browser",bada:"Bada",blackberry:"BlackBerry",chrome:"Chrome",chromium:"Chromium",electron:"Electron",epiphany:"Epiphany",firefox:"Firefox",focus:"Focus",generic:"Generic",googlebot:"Googlebot",google_search:"Google Search",ie:"Internet Explorer",k_meleon:"K-Meleon",maxthon:"Maxthon",edge:"Microsoft Edge",mz:"MZ Browser",naver:"NAVER Whale Browser",opera:"Opera",opera_coast:"Opera Coast",phantomjs:"PhantomJS",puffin:"Puffin",qupzilla:"QupZilla",qq:"QQ Browser",qqlite:"QQ Browser Lite",safari:"Safari",sailfish:"Sailfish",samsung_internet:"Samsung Internet for Android",seamonkey:"SeaMonkey",sleipnir:"Sleipnir",swing:"Swing",tizen:"Tizen",uc:"UC Browser",vivaldi:"Vivaldi",webos:"WebOS Browser",wechat:"WeChat",yandex:"Yandex Browser"};t.PLATFORMS_MAP={tablet:"tablet",mobile:"mobile",desktop:"desktop",tv:"tv"};t.OS_MAP={WindowsPhone:"Windows Phone",Windows:"Windows",MacOS:"macOS",iOS:"iOS",Android:"Android",WebOS:"WebOS",BlackBerry:"BlackBerry",Bada:"Bada",Tizen:"Tizen",Linux:"Linux",ChromeOS:"Chrome OS",PlayStation4:"PlayStation 4",Roku:"Roku"};t.ENGINE_MAP={EdgeHTML:"EdgeHTML",Blink:"Blink",Trident:"Trident",Presto:"Presto",Gecko:"Gecko",WebKit:"WebKit"}},90:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n,i=(n=r(91))&&n.__esModule?n:{default:n},s=r(18);function a(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}var o=function(){function e(){}var t,r,n;return e.getParser=function(e,t){if(void 0===t&&(t=!1),"string"!=typeof e)throw new Error("UserAgent should be a string");return new i.default(e,t)},e.parse=function(e){return new i.default(e).getResult()},t=e,n=[{key:"BROWSER_MAP",get:function(){return s.BROWSER_MAP}},{key:"ENGINE_MAP",get:function(){return s.ENGINE_MAP}},{key:"OS_MAP",get:function(){return s.OS_MAP}},{key:"PLATFORMS_MAP",get:function(){return s.PLATFORMS_MAP}}],(r=null)&&a(t.prototype,r),n&&a(t,n),e}();t.default=o,e.exports=t.default},91:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n=u(r(92)),i=u(r(93)),s=u(r(94)),a=u(r(95)),o=u(r(17));function u(e){return e&&e.__esModule?e:{default:e}}var d=function(){function e(e,t){if(void 0===t&&(t=!1),null==e||""===e)throw new Error("UserAgent parameter can't be empty");this._ua=e,this.parsedResult={},!0!==t&&this.parse()}var t=e.prototype;return t.getUA=function(){return this._ua},t.test=function(e){return e.test(this._ua)},t.parseBrowser=function(){var e=this;this.parsedResult.browser={};var t=o.default.find(n.default,(function(t){if("function"==typeof t.test)return t.test(e);if(t.test instanceof Array)return t.test.some((function(t){return e.test(t)}));throw new Error("Browser's test function is not valid")}));return t&&(this.parsedResult.browser=t.describe(this.getUA())),this.parsedResult.browser},t.getBrowser=function(){return this.parsedResult.browser?this.parsedResult.browser:this.parseBrowser()},t.getBrowserName=function(e){return e?String(this.getBrowser().name).toLowerCase()||"":this.getBrowser().name||""},t.getBrowserVersion=function(){return this.getBrowser().version},t.getOS=function(){return this.parsedResult.os?this.parsedResult.os:this.parseOS()},t.parseOS=function(){var e=this;this.parsedResult.os={};var t=o.default.find(i.default,(function(t){if("function"==typeof t.test)return t.test(e);if(t.test instanceof Array)return t.test.some((function(t){return e.test(t)}));throw new Error("Browser's test function is not valid")}));return t&&(this.parsedResult.os=t.describe(this.getUA())),this.parsedResult.os},t.getOSName=function(e){var t=this.getOS().name;return e?String(t).toLowerCase()||"":t||""},t.getOSVersion=function(){return this.getOS().version},t.getPlatform=function(){return this.parsedResult.platform?this.parsedResult.platform:this.parsePlatform()},t.getPlatformType=function(e){void 0===e&&(e=!1);var t=this.getPlatform().type;return e?String(t).toLowerCase()||"":t||""},t.parsePlatform=function(){var e=this;this.parsedResult.platform={};var t=o.default.find(s.default,(function(t){if("function"==typeof t.test)return t.test(e);if(t.test instanceof Array)return t.test.some((function(t){return e.test(t)}));throw new Error("Browser's test function is not valid")}));return t&&(this.parsedResult.platform=t.describe(this.getUA())),this.parsedResult.platform},t.getEngine=function(){return this.parsedResult.engine?this.parsedResult.engine:this.parseEngine()},t.getEngineName=function(e){return e?String(this.getEngine().name).toLowerCase()||"":this.getEngine().name||""},t.parseEngine=function(){var e=this;this.parsedResult.engine={};var t=o.default.find(a.default,(function(t){if("function"==typeof t.test)return t.test(e);if(t.test instanceof Array)return t.test.some((function(t){return e.test(t)}));throw new Error("Browser's test function is not valid")}));return t&&(this.parsedResult.engine=t.describe(this.getUA())),this.parsedResult.engine},t.parse=function(){return this.parseBrowser(),this.parseOS(),this.parsePlatform(),this.parseEngine(),this},t.getResult=function(){return o.default.assign({},this.parsedResult)},t.satisfies=function(e){var t=this,r={},n=0,i={},s=0;if(Object.keys(e).forEach((function(t){var a=e[t];"string"==typeof a?(i[t]=a,s+=1):"object"==typeof a&&(r[t]=a,n+=1)})),n>0){var a=Object.keys(r),u=o.default.find(a,(function(e){return t.isOS(e)}));if(u){var d=this.satisfies(r[u]);if(void 0!==d)return d}var c=o.default.find(a,(function(e){return t.isPlatform(e)}));if(c){var f=this.satisfies(r[c]);if(void 0!==f)return f}}if(s>0){var l=Object.keys(i),h=o.default.find(l,(function(e){return t.isBrowser(e,!0)}));if(void 0!==h)return this.compareVersion(i[h])}},t.isBrowser=function(e,t){void 0===t&&(t=!1);var r=this.getBrowserName().toLowerCase(),n=e.toLowerCase(),i=o.default.getBrowserTypeByAlias(n);return t&&i&&(n=i.toLowerCase()),n===r},t.compareVersion=function(e){var t=[0],r=e,n=!1,i=this.getBrowserVersion();if("string"==typeof i)return">"===e[0]||"<"===e[0]?(r=e.substr(1),"="===e[1]?(n=!0,r=e.substr(2)):t=[],">"===e[0]?t.push(1):t.push(-1)):"="===e[0]?r=e.substr(1):"~"===e[0]&&(n=!0,r=e.substr(1)),t.indexOf(o.default.compareVersions(i,r,n))>-1},t.isOS=function(e){return this.getOSName(!0)===String(e).toLowerCase()},t.isPlatform=function(e){return this.getPlatformType(!0)===String(e).toLowerCase()},t.isEngine=function(e){return this.getEngineName(!0)===String(e).toLowerCase()},t.is=function(e,t){return void 0===t&&(t=!1),this.isBrowser(e,t)||this.isOS(e)||this.isPlatform(e)},t.some=function(e){var t=this;return void 0===e&&(e=[]),e.some((function(e){return t.is(e)}))},e}();t.default=d,e.exports=t.default},92:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n,i=(n=r(17))&&n.__esModule?n:{default:n};var s=/version\/(\d+(\.?_?\d+)+)/i,a=[{test:[/googlebot/i],describe:function(e){var t={name:"Googlebot"},r=i.default.getFirstMatch(/googlebot\/(\d+(\.\d+))/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/opera/i],describe:function(e){var t={name:"Opera"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:opera)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/opr\/|opios/i],describe:function(e){var t={name:"Opera"},r=i.default.getFirstMatch(/(?:opr|opios)[\s/](\S+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/SamsungBrowser/i],describe:function(e){var t={name:"Samsung Internet for Android"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:SamsungBrowser)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/Whale/i],describe:function(e){var t={name:"NAVER Whale Browser"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:whale)[\s/](\d+(?:\.\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/MZBrowser/i],describe:function(e){var t={name:"MZ Browser"},r=i.default.getFirstMatch(/(?:MZBrowser)[\s/](\d+(?:\.\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/focus/i],describe:function(e){var t={name:"Focus"},r=i.default.getFirstMatch(/(?:focus)[\s/](\d+(?:\.\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/swing/i],describe:function(e){var t={name:"Swing"},r=i.default.getFirstMatch(/(?:swing)[\s/](\d+(?:\.\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/coast/i],describe:function(e){var t={name:"Opera Coast"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:coast)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/opt\/\d+(?:.?_?\d+)+/i],describe:function(e){var t={name:"Opera Touch"},r=i.default.getFirstMatch(/(?:opt)[\s/](\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/yabrowser/i],describe:function(e){var t={name:"Yandex Browser"},r=i.default.getFirstMatch(/(?:yabrowser)[\s/](\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/ucbrowser/i],describe:function(e){var t={name:"UC Browser"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:ucbrowser)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/Maxthon|mxios/i],describe:function(e){var t={name:"Maxthon"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:Maxthon|mxios)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/epiphany/i],describe:function(e){var t={name:"Epiphany"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:epiphany)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/puffin/i],describe:function(e){var t={name:"Puffin"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:puffin)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/sleipnir/i],describe:function(e){var t={name:"Sleipnir"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:sleipnir)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/k-meleon/i],describe:function(e){var t={name:"K-Meleon"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/(?:k-meleon)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/micromessenger/i],describe:function(e){var t={name:"WeChat"},r=i.default.getFirstMatch(/(?:micromessenger)[\s/](\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/qqbrowser/i],describe:function(e){var t={name:/qqbrowserlite/i.test(e)?"QQ Browser Lite":"QQ Browser"},r=i.default.getFirstMatch(/(?:qqbrowserlite|qqbrowser)[/](\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/msie|trident/i],describe:function(e){var t={name:"Internet Explorer"},r=i.default.getFirstMatch(/(?:msie |rv:)(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/\sedg\//i],describe:function(e){var t={name:"Microsoft Edge"},r=i.default.getFirstMatch(/\sedg\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/edg([ea]|ios)/i],describe:function(e){var t={name:"Microsoft Edge"},r=i.default.getSecondMatch(/edg([ea]|ios)\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/vivaldi/i],describe:function(e){var t={name:"Vivaldi"},r=i.default.getFirstMatch(/vivaldi\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/seamonkey/i],describe:function(e){var t={name:"SeaMonkey"},r=i.default.getFirstMatch(/seamonkey\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/sailfish/i],describe:function(e){var t={name:"Sailfish"},r=i.default.getFirstMatch(/sailfish\s?browser\/(\d+(\.\d+)?)/i,e);return r&&(t.version=r),t}},{test:[/silk/i],describe:function(e){var t={name:"Amazon Silk"},r=i.default.getFirstMatch(/silk\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/phantom/i],describe:function(e){var t={name:"PhantomJS"},r=i.default.getFirstMatch(/phantomjs\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/slimerjs/i],describe:function(e){var t={name:"SlimerJS"},r=i.default.getFirstMatch(/slimerjs\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/blackberry|\bbb\d+/i,/rim\stablet/i],describe:function(e){var t={name:"BlackBerry"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/blackberry[\d]+\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/(web|hpw)[o0]s/i],describe:function(e){var t={name:"WebOS Browser"},r=i.default.getFirstMatch(s,e)||i.default.getFirstMatch(/w(?:eb)?[o0]sbrowser\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/bada/i],describe:function(e){var t={name:"Bada"},r=i.default.getFirstMatch(/dolfin\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/tizen/i],describe:function(e){var t={name:"Tizen"},r=i.default.getFirstMatch(/(?:tizen\s?)?browser\/(\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/qupzilla/i],describe:function(e){var t={name:"QupZilla"},r=i.default.getFirstMatch(/(?:qupzilla)[\s/](\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/firefox|iceweasel|fxios/i],describe:function(e){var t={name:"Firefox"},r=i.default.getFirstMatch(/(?:firefox|iceweasel|fxios)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/electron/i],describe:function(e){var t={name:"Electron"},r=i.default.getFirstMatch(/(?:electron)\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/MiuiBrowser/i],describe:function(e){var t={name:"Miui"},r=i.default.getFirstMatch(/(?:MiuiBrowser)[\s/](\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/chromium/i],describe:function(e){var t={name:"Chromium"},r=i.default.getFirstMatch(/(?:chromium)[\s/](\d+(\.?_?\d+)+)/i,e)||i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/chrome|crios|crmo/i],describe:function(e){var t={name:"Chrome"},r=i.default.getFirstMatch(/(?:chrome|crios|crmo)\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/GSA/i],describe:function(e){var t={name:"Google Search"},r=i.default.getFirstMatch(/(?:GSA)\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:function(e){var t=!e.test(/like android/i),r=e.test(/android/i);return t&&r},describe:function(e){var t={name:"Android Browser"},r=i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/playstation 4/i],describe:function(e){var t={name:"PlayStation 4"},r=i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/safari|applewebkit/i],describe:function(e){var t={name:"Safari"},r=i.default.getFirstMatch(s,e);return r&&(t.version=r),t}},{test:[/.*/i],describe:function(e){var t=-1!==e.search("\\(")?/^(.*)\/(.*)[ \t]\((.*)/:/^(.*)\/(.*) /;return{name:i.default.getFirstMatch(t,e),version:i.default.getSecondMatch(t,e)}}}];t.default=a,e.exports=t.default},93:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n,i=(n=r(17))&&n.__esModule?n:{default:n},s=r(18);var a=[{test:[/Roku\/DVP/],describe:function(e){var t=i.default.getFirstMatch(/Roku\/DVP-(\d+\.\d+)/i,e);return{name:s.OS_MAP.Roku,version:t}}},{test:[/windows phone/i],describe:function(e){var t=i.default.getFirstMatch(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i,e);return{name:s.OS_MAP.WindowsPhone,version:t}}},{test:[/windows /i],describe:function(e){var t=i.default.getFirstMatch(/Windows ((NT|XP)( \d\d?.\d)?)/i,e),r=i.default.getWindowsVersionName(t);return{name:s.OS_MAP.Windows,version:t,versionName:r}}},{test:[/Macintosh(.*?) FxiOS(.*?)\//],describe:function(e){var t={name:s.OS_MAP.iOS},r=i.default.getSecondMatch(/(Version\/)(\d[\d.]+)/,e);return r&&(t.version=r),t}},{test:[/macintosh/i],describe:function(e){var t=i.default.getFirstMatch(/mac os x (\d+(\.?_?\d+)+)/i,e).replace(/[_\s]/g,"."),r=i.default.getMacOSVersionName(t),n={name:s.OS_MAP.MacOS,version:t};return r&&(n.versionName=r),n}},{test:[/(ipod|iphone|ipad)/i],describe:function(e){var t=i.default.getFirstMatch(/os (\d+([_\s]\d+)*) like mac os x/i,e).replace(/[_\s]/g,".");return{name:s.OS_MAP.iOS,version:t}}},{test:function(e){var t=!e.test(/like android/i),r=e.test(/android/i);return t&&r},describe:function(e){var t=i.default.getFirstMatch(/android[\s/-](\d+(\.\d+)*)/i,e),r=i.default.getAndroidVersionName(t),n={name:s.OS_MAP.Android,version:t};return r&&(n.versionName=r),n}},{test:[/(web|hpw)[o0]s/i],describe:function(e){var t=i.default.getFirstMatch(/(?:web|hpw)[o0]s\/(\d+(\.\d+)*)/i,e),r={name:s.OS_MAP.WebOS};return t&&t.length&&(r.version=t),r}},{test:[/blackberry|\bbb\d+/i,/rim\stablet/i],describe:function(e){var t=i.default.getFirstMatch(/rim\stablet\sos\s(\d+(\.\d+)*)/i,e)||i.default.getFirstMatch(/blackberry\d+\/(\d+([_\s]\d+)*)/i,e)||i.default.getFirstMatch(/\bbb(\d+)/i,e);return{name:s.OS_MAP.BlackBerry,version:t}}},{test:[/bada/i],describe:function(e){var t=i.default.getFirstMatch(/bada\/(\d+(\.\d+)*)/i,e);return{name:s.OS_MAP.Bada,version:t}}},{test:[/tizen/i],describe:function(e){var t=i.default.getFirstMatch(/tizen[/\s](\d+(\.\d+)*)/i,e);return{name:s.OS_MAP.Tizen,version:t}}},{test:[/linux/i],describe:function(){return{name:s.OS_MAP.Linux}}},{test:[/CrOS/],describe:function(){return{name:s.OS_MAP.ChromeOS}}},{test:[/PlayStation 4/],describe:function(e){var t=i.default.getFirstMatch(/PlayStation 4[/\s](\d+(\.\d+)*)/i,e);return{name:s.OS_MAP.PlayStation4,version:t}}}];t.default=a,e.exports=t.default},94:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n,i=(n=r(17))&&n.__esModule?n:{default:n},s=r(18);var a=[{test:[/googlebot/i],describe:function(){return{type:"bot",vendor:"Google"}}},{test:[/huawei/i],describe:function(e){var t=i.default.getFirstMatch(/(can-l01)/i,e)&&"Nova",r={type:s.PLATFORMS_MAP.mobile,vendor:"Huawei"};return t&&(r.model=t),r}},{test:[/nexus\s*(?:7|8|9|10).*/i],describe:function(){return{type:s.PLATFORMS_MAP.tablet,vendor:"Nexus"}}},{test:[/ipad/i],describe:function(){return{type:s.PLATFORMS_MAP.tablet,vendor:"Apple",model:"iPad"}}},{test:[/Macintosh(.*?) FxiOS(.*?)\//],describe:function(){return{type:s.PLATFORMS_MAP.tablet,vendor:"Apple",model:"iPad"}}},{test:[/kftt build/i],describe:function(){return{type:s.PLATFORMS_MAP.tablet,vendor:"Amazon",model:"Kindle Fire HD 7"}}},{test:[/silk/i],describe:function(){return{type:s.PLATFORMS_MAP.tablet,vendor:"Amazon"}}},{test:[/tablet(?! pc)/i],describe:function(){return{type:s.PLATFORMS_MAP.tablet}}},{test:function(e){var t=e.test(/ipod|iphone/i),r=e.test(/like (ipod|iphone)/i);return t&&!r},describe:function(e){var t=i.default.getFirstMatch(/(ipod|iphone)/i,e);return{type:s.PLATFORMS_MAP.mobile,vendor:"Apple",model:t}}},{test:[/nexus\s*[0-6].*/i,/galaxy nexus/i],describe:function(){return{type:s.PLATFORMS_MAP.mobile,vendor:"Nexus"}}},{test:[/[^-]mobi/i],describe:function(){return{type:s.PLATFORMS_MAP.mobile}}},{test:function(e){return"blackberry"===e.getBrowserName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.mobile,vendor:"BlackBerry"}}},{test:function(e){return"bada"===e.getBrowserName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.mobile}}},{test:function(e){return"windows phone"===e.getBrowserName()},describe:function(){return{type:s.PLATFORMS_MAP.mobile,vendor:"Microsoft"}}},{test:function(e){var t=Number(String(e.getOSVersion()).split(".")[0]);return"android"===e.getOSName(!0)&&t>=3},describe:function(){return{type:s.PLATFORMS_MAP.tablet}}},{test:function(e){return"android"===e.getOSName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.mobile}}},{test:function(e){return"macos"===e.getOSName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.desktop,vendor:"Apple"}}},{test:function(e){return"windows"===e.getOSName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.desktop}}},{test:function(e){return"linux"===e.getOSName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.desktop}}},{test:function(e){return"playstation 4"===e.getOSName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.tv}}},{test:function(e){return"roku"===e.getOSName(!0)},describe:function(){return{type:s.PLATFORMS_MAP.tv}}}];t.default=a,e.exports=t.default},95:function(e,t,r){"use strict";t.__esModule=!0,t.default=void 0;var n,i=(n=r(17))&&n.__esModule?n:{default:n},s=r(18);var a=[{test:function(e){return"microsoft edge"===e.getBrowserName(!0)},describe:function(e){if(/\sedg\//i.test(e))return{name:s.ENGINE_MAP.Blink};var t=i.default.getFirstMatch(/edge\/(\d+(\.?_?\d+)+)/i,e);return{name:s.ENGINE_MAP.EdgeHTML,version:t}}},{test:[/trident/i],describe:function(e){var t={name:s.ENGINE_MAP.Trident},r=i.default.getFirstMatch(/trident\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:function(e){return e.test(/presto/i)},describe:function(e){var t={name:s.ENGINE_MAP.Presto},r=i.default.getFirstMatch(/presto\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:function(e){var t=e.test(/gecko/i),r=e.test(/like gecko/i);return t&&!r},describe:function(e){var t={name:s.ENGINE_MAP.Gecko},r=i.default.getFirstMatch(/gecko\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}},{test:[/(apple)?webkit\/537\.36/i],describe:function(){return{name:s.ENGINE_MAP.Blink}}},{test:[/(apple)?webkit/i],describe:function(e){var t={name:s.ENGINE_MAP.WebKit},r=i.default.getFirstMatch(/webkit\/(\d+(\.?_?\d+)+)/i,e);return r&&(t.version=r),t}}];t.default=a,e.exports=t.default}})}));
+
+/***/ }),
+
 /***/ "./node_modules/process/browser.js":
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
@@ -3087,11 +3098,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _host__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./host */ "./resources/js/host.js");
 /* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./devices */ "./resources/js/devices.js");
 /* harmony import */ var _connectedViewers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./connectedViewers */ "./resources/js/connectedViewers.js");
+/* harmony import */ var _deviceInfo__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./deviceInfo */ "./resources/js/deviceInfo.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -3106,8 +3119,22 @@ $(function () {
   var camList;
   var micList;
   var playbackList;
+  var volumeLevelTimer = null;
+  var abruptClose = null;
+  var encoderConfig = {
+    width: {
+      max: 1280,
+      min: 640
+    },
+    height: {
+      max: 720,
+      min: 480
+    }
+  };
   var hostvideoDiv = $('#host-video');
   hostvideoDiv.hide();
+  var hostscreenDiv = $('#host-screen');
+  hostscreenDiv.hide();
   var spinnerDiv = $('#spinner');
   spinnerDiv.hide();
   var posterimage = $('#posterimage');
@@ -3139,17 +3166,48 @@ $(function () {
       $('#statusScreen span').html('STATUS: ' + hostState.connectionState + '. WEBCAM IS OFF.');
     }
 
+    if (hostState.localVideoTrackavailable && hostState.localScreenTrackavailable) {
+      // const vheight = $('#host-screen video').height();
+      // $('#video-section').height(vheight+5);
+      hostscreenDiv.css({
+        position: 'absolute'
+      });
+      hostvideoDiv.addClass("col-md-3");
+      hostvideoDiv.css({
+        position: 'absolute',
+        'z-index': 500,
+        width: '100%',
+        height: 'auto'
+      });
+    }
+
     if (hostState.localVideoTrackavailable) {
       hostvideoDiv.show();
     }
 
-    if (!hostState.localVideoTrackavailable) {
+    if (hostState.localScreenTrackavailable) {
+      hostscreenDiv.show();
+    }
+
+    if (!hostState.localVideoTrackavailable && !hostState.localScreenTrackavailable) {
+      console.log(hostState);
       posterimage.show();
       posterimage.css({
         'background-color': '#EBEDEF'
       });
       spinnerDiv.show();
       hostvideoDiv.hide();
+      hostvideoDiv.css({
+        position: 'relative'
+      });
+      hostvideoDiv.removeClass("col-md-3");
+      hostscreenDiv.css({
+        position: 'relative',
+        'z-index': 'auto'
+      });
+      console.log('hostscreendiv hidden here1');
+      hostscreenDiv.hide();
+      hostscreenDiv.empty();
     }
 
     if (hostState.connectionState === 'DISCONNECTED') {
@@ -3164,7 +3222,7 @@ $(function () {
       $('#connectionState').html('DISCONNECTED!! ' + hostState.connectionState + '...');
     }
 
-    if (hostState.webcamOff) {
+    if (hostState.webcamOff && !hostState.localScreenTrackavailable) {
       $('#statusScreen').show();
       posterimage.show();
       posterimage.css({
@@ -3172,6 +3230,17 @@ $(function () {
       });
       $('#statusScreen span').html('STATUS: ' + hostState.connectionState + '. WEBCAM IS OFF');
       hostvideoDiv.hide();
+      hostvideoDiv.css({
+        position: 'relative'
+      });
+      hostvideoDiv.removeClass("col-md-3");
+      hostscreenDiv.css({
+        position: 'relative',
+        'z-index': 'auto'
+      });
+      console.log('hostscreendiv hidden here2');
+      hostscreenDiv.hide();
+      hostscreenDiv.empty();
     }
 
     if (!hostState.webcamOff && (hostState.connectionState === 'CONNECTED' || hostState.connectionState === 'DISCONNECTED')) {
@@ -3187,7 +3256,7 @@ $(function () {
       $('#connectionState').html(hostState.connectionState + ', click on <i class="fas fa-phone-slash"></i>' + ' to offline!');
     }
 
-    if (!hostState.micMuted && !hostState.webcamOff && hostState.localAudioTrackavailable && hostState.localVideoTrackavailable) {
+    if (!hostState.micMuted && !hostState.webcamOff && hostState.localAudioTrackavailable && (hostState.localVideoTrackavailable || hostState.localScreenTrackavailable)) {
       $('#golive-btn').prop('disabled', false);
     } else {
       $('#golive-btn').prop('disabled', true);
@@ -3201,14 +3270,18 @@ $(function () {
     if (devicesState.camList !== camList) {
       camList = devicesState.camList;
       var camdd = $('#camera-list-select');
+      camdd.val('');
       $.each(devicesState.camList, function (indx, cam) {
         camdd.append($('<option></option>').val(cam.deviceId).html(cam.label));
       });
+      camdd.append($('<option>').val('screen').html('Share screen'));
+      camdd.append($('<option>').val('screenandvideo').html('Share screen + webcam'));
     }
 
     if (devicesState.micList !== micList) {
       micList = devicesState.micList;
       var micdd = $('#mic-list-select');
+      micdd.val('');
       $.each(devicesState.micList, function (indx, mic) {
         micdd.append($('<option></option>').val(mic.deviceId).html(mic.label));
       });
@@ -3226,9 +3299,12 @@ $(function () {
   var bclient = {
     // For the local client.
     client: null,
+    screenclient: null,
     // For the local audio and video tracks.
     localAudioTrack: null,
-    localVideoTrack: null
+    localVideoTrack: null,
+    localScreenTrack: null,
+    localAddScreenTrack: null
   };
   var options = {
     appId: AGORA_APP_ID,
@@ -3333,6 +3409,94 @@ $(function () {
     }
   };
 
+  function startScreenCall() {
+    return _startScreenCall.apply(this, arguments);
+  }
+
+  function _startScreenCall() {
+    _startScreenCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var screenuid, localAddScreenTrack, screenDiv;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              bclient.screenclient = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createClient({
+                mode: 'live',
+                codec: 'vp8'
+              });
+              bclient.screenclient.setClientRole(options.role);
+              _context.next = 4;
+              return bclient.screenclient.join(options.appId, options.channel, options.token, null);
+
+            case 4:
+              screenuid = _context.sent;
+              _context.next = 7;
+              return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createScreenVideoTrack({
+                encoderConfig: '1080p_1',
+                screenSourceType: _deviceInfo__WEBPACK_IMPORTED_MODULE_7__["default"].flag === 'firefox' ? 'screen' : null
+              }, 'auto');
+
+            case 7:
+              localAddScreenTrack = _context.sent;
+              bclient.localAddScreenTrack = localAddScreenTrack;
+              console.log('playing screen track in next line');
+              screenDiv = document.getElementById('host-screen');
+              bclient.localAddScreenTrack.play(screenDiv); // $('#host-screen').show();
+
+              bclient.localAddScreenTrack.on('track-ended', function () {
+                console.log('screen track ended');
+                var deviceId = $('#camera-list-select').val();
+                $('#camera-list-select').prop("selectedIndex", 0);
+                bclient.screenclient.leave();
+                bclient.screenclient = null;
+                bclient.localAddScreenTrack = null;
+
+                if (deviceId === 'screenandvideo') {}
+              });
+
+            case 13:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+    return _startScreenCall.apply(this, arguments);
+  }
+
+  function addCameraCall(_x) {
+    return _addCameraCall.apply(this, arguments);
+  }
+
+  function _addCameraCall() {
+    _addCameraCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(deviceId) {
+      var vtrack, hostvideoDiv;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
+                cameraId: deviceId,
+                encoderConfig: encoderConfig
+              });
+
+            case 2:
+              vtrack = _context2.sent;
+              bclient.localVideoTrack = vtrack;
+              hostvideoDiv = document.getElementById('host-video');
+              bclient.localVideoTrack.play(hostvideoDiv); // $('#host-video').show();
+
+            case 6:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+    return _addCameraCall.apply(this, arguments);
+  }
+
   var RTM = {
     rtmclient: null,
     loggedIn: false
@@ -3344,12 +3508,21 @@ $(function () {
   }
 
   function _JoinChat() {
-    _JoinChat = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+    _JoinChat = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              RTM.rtmclient = agora_rtm_sdk__WEBPACK_IMPORTED_MODULE_2___default.a.createInstance(AGORA_APP_ID);
+              RTM.rtmclient = agora_rtm_sdk__WEBPACK_IMPORTED_MODULE_2___default.a.createInstance(AGORA_APP_ID); // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
+
+              if (APP_DEBUG) {
+                RTM.rtmclient.setParameters({
+                  logFilter: agora_rtm_sdk__WEBPACK_IMPORTED_MODULE_2___default.a.LOG_FILTER_WARNING
+                }); // AgoraRTM.LOG_FILTER_INFO
+              } else {
+                RTM.rtmclient.logFilter(agora_rtm_sdk__WEBPACK_IMPORTED_MODULE_2___default.a.LOG_FILTER_WARNING);
+              }
+
               RTM.rtmclient.on('ConnectionStateChanged', function (newState, reason) {
                 console.log('on connection state changed to ' + newState + ' reason: ' + reason);
               });
@@ -3358,11 +3531,9 @@ $(function () {
                 uid: userrtm
               }).then(function () {
                 RTM.loggedIn = true;
-                console.log('RTM login successfull');
                 rtmchannel = RTM.rtmclient.createChannel(channelname);
                 rtmchannel.on('ChannelMessage', function (_ref, senderId) {
                   var text = _ref.text;
-                  console.log('Message received: ', text);
 
                   var _JSON$parse2 = JSON.parse(text),
                       msg = _JSON$parse2.msg,
@@ -3393,7 +3564,6 @@ $(function () {
                   chatDiv.append(chatBody);
                   chatDiv.attr('class', 'media media-chat');
                   $('#chat-content').append(chatDiv);
-                  console.log(chatDiv);
                 });
                 rtmchannel.join().then(function () {
                   console.log('chat channel joining success');
@@ -3404,12 +3574,12 @@ $(function () {
                 console.log('RTM login error: ' + error);
               });
 
-            case 3:
+            case 4:
             case "end":
-              return _context.stop();
+              return _context3.stop();
           }
         }
-      }, _callee);
+      }, _callee3);
     }));
     return _JoinChat.apply(this, arguments);
   }
@@ -3484,11 +3654,304 @@ $(function () {
     sendChatMessage(textmsg);
   });
   $('#camera-list-select').change(function () {
-    console.log($('#camera-list-select').val(), $('#camera-list-select').text());
     var deviceId = $('#camera-list-select').val();
 
-    if (bclient.localVideoTrack) {
-      bclient.localVideoTrack.setDevice(deviceId);
+    if (deviceId === 'screen') {
+      if (bclient.localAddScreenTrack !== null) {
+        console.log('removing localAddScreenTrack');
+
+        if (bclient.screenclient === null) {
+          console.log('bclient.screenclient === null');
+          bclient.localAddScreenTrack.close();
+        } else {
+          bclient.screenclient.unpublish(bclient.localAddScreenTrack).then(function () {
+            console.log('bclient.screenclient.unpublish');
+            bclient.localAddScreenTrack.close();
+            bclient.screenclient.leave();
+            bclient.screenclient = null;
+            bclient.localAddScreenTrack = null;
+          })["catch"](function (error) {
+            console.log(error);
+            return;
+          });
+        }
+      }
+
+      if (bclient.localVideoTrack !== null) {
+        if (bclient.client === null) {
+          $('#camera-list-select').prop("selectedIndex", 0);
+          console.log('start broadcasting first to share the screen');
+        } else {
+          bclient.client.unpublish(bclient.localVideoTrack).then(function () {
+            bclient.localVideoTrack.close();
+            bclient.localVideoTrack = null;
+            hostStore.dispatch({
+              type: 'VIDEO_TRACK_AVAILABLE',
+              payload: {
+                localVideoTrackavailable: false
+              }
+            });
+            hostStore.dispatch({
+              type: 'SET_WEBCAM_OFF',
+              payload: {
+                flag: true
+              }
+            });
+            agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createScreenVideoTrack({
+              encoderConfig: '1080p_1',
+              screenSourceType: _deviceInfo__WEBPACK_IMPORTED_MODULE_7__["default"].flag === 'firefox' ? 'screen' : null
+            }, 'auto').then(function (localScreenTrack) {
+              bclient.localScreenTrack = localScreenTrack;
+
+              if (bclient.client === null) {
+                var screenElem = document.getElementById('host-screen');
+                localScreenTrack.play(screenElem);
+                hostStore.dispatch({
+                  type: 'SCREEN_TRACK_AVAILABLE',
+                  payload: {
+                    localScreenTrackavailable: true
+                  }
+                });
+                $('#camtoggle-btn').prop('disabled', true);
+                hostStore.dispatch({
+                  type: 'SET_WEBCAM_OFF',
+                  payload: {
+                    flag: false
+                  }
+                });
+              } else {
+                bclient.client.publish(localScreenTrack).then(function () {
+                  var screenElem = document.getElementById('host-screen');
+                  localScreenTrack.play(screenElem);
+                  hostStore.dispatch({
+                    type: 'SCREEN_TRACK_AVAILABLE',
+                    payload: {
+                      localScreenTrackavailable: true
+                    }
+                  });
+                  $('#camtoggle-btn').prop('disabled', true);
+                  hostStore.dispatch({
+                    type: 'SET_WEBCAM_OFF',
+                    payload: {
+                      flag: false
+                    }
+                  });
+                })["catch"](function (error) {
+                  console.log(error);
+                  return;
+                });
+              }
+
+              bclient.localScreenTrack.on('track-ended', function () {
+                console.log('screen track ended');
+                bclient.client.unpublish(bclient.localScreenTrack).then(function () {
+                  bclient.localScreenTrack = null;
+                  hostStore.dispatch({
+                    type: 'SCREEN_TRACK_AVAILABLE',
+                    payload: {
+                      localScreenTrackavailable: false
+                    }
+                  });
+                  hostStore.dispatch({
+                    type: 'SET_WEBCAM_OFF',
+                    payload: {
+                      flag: true
+                    }
+                  });
+                  $('#camera-list-select').prop("selectedIndex", 0);
+                  $('#camtoggle-btn').prop('disabled', false);
+                })["catch"](function (err) {
+                  console.log(err);
+                  bclient.localScreenTrack = null;
+                  hostStore.dispatch({
+                    type: 'SCREEN_TRACK_AVAILABLE',
+                    payload: {
+                      localScreenTrackavailable: false
+                    }
+                  });
+                  hostStore.dispatch({
+                    type: 'SET_WEBCAM_OFF',
+                    payload: {
+                      flag: true
+                    }
+                  });
+                  $('#camera-list-select').prop("selectedIndex", 0);
+                  $('#camtoggle-btn').prop('disabled', false);
+                });
+              });
+            })["catch"](function (error) {
+              console.log(error);
+              bclient.localScreenTrack = null;
+              hostStore.dispatch({
+                type: 'SCREEN_TRACK_AVAILABLE',
+                payload: {
+                  localScreenTrackavailable: false
+                }
+              });
+              hostStore.dispatch({
+                type: 'SET_WEBCAM_OFF',
+                payload: {
+                  flag: true
+                }
+              });
+              $('#camera-list-select').prop("selectedIndex", 0);
+              $('#camtoggle-btn').prop('disabled', false);
+              return;
+            });
+          })["catch"](function (error) {
+            console.log(error);
+            return;
+          });
+        }
+      }
+    } else if (deviceId === 'screenandvideo') {
+      if (bclient.client === null) {
+        $('#camera-list-select').prop("selectedIndex", 0);
+        console.log('start broadcasting first to share the screen');
+        return;
+      }
+
+      if (bclient.localScreenTrack) {
+        console.log('here1');
+
+        if (bclient.client === null) {
+          console.log('here2');
+          bclient.localScreenTrack.close();
+        } else {
+          console.log('here3');
+          bclient.client.unpublish(bclient.localScreenTrack).then(function () {
+            console.log('here4');
+            bclient.localScreenTrack.close();
+            console.log('here5');
+          })["catch"](function (error) {
+            console.log(error);
+            return;
+          });
+        }
+      }
+
+      if (bclient.localAddScreenTrack === null && bclient.localVideoTrack !== null) {
+        console.log('here6');
+        startScreenCall().then(function () {
+          console.log('here7');
+          bclient.screenclient.publish(bclient.localAddScreenTrack);
+          console.log('here8');
+          var hostState = hostStore.getState();
+          hostStore.dispatch({
+            type: 'SCREEN_TRACK_AVAILABLE',
+            payload: {
+              localScreenTrackavailable: true
+            }
+          });
+          hostStore.dispatch({
+            type: 'VIDEO_TRACK_AVAILABLE',
+            payload: {
+              localVideoTrackavailable: true
+            }
+          });
+          $('#camtoggle-btn').prop('disabled', true);
+
+          if (hostState.webcamOff) {
+            bclient.localVideoTrack.setEnabled(true).then(function () {
+              $('#camtoggle-icon.fas').toggleClass('fa-video-slash fa-video');
+              $('#camtoggle-icon').css('color', 'green');
+              hostStore.dispatch({
+                type: 'SET_WEBCAM_OFF',
+                payload: {
+                  flag: false
+                }
+              });
+            });
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+
+      if (bclient.localAddScreenTrack === null && bclient.localVideoTrack === null) {
+        console.log('here9');
+        Promise.all([startScreenCall(), addCameraCall()]).then(function () {
+          console.log('here10');
+          bclient.screenclient.publish(bclient.localAddScreenTrack);
+          bclient.client.publish(bclient.localVideoTrack);
+          hostStore.dispatch({
+            type: 'SCREEN_TRACK_AVAILABLE',
+            payload: {
+              localScreenTrackavailable: true
+            }
+          });
+          hostStore.dispatch({
+            type: 'VIDEO_TRACK_AVAILABLE',
+            payload: {
+              localVideoTrackavailable: true
+            }
+          });
+          $('#camtoggle-btn').prop('disabled', true);
+          hostStore.dispatch({
+            type: 'SET_WEBCAM_OFF',
+            payload: {
+              flag: false
+            }
+          });
+        })["catch"](function (err) {
+          console.log(err);
+        });
+      }
+    } else {
+      if (bclient.localScreenTrack !== null) {
+        if (bclient.client === null) {
+          bclient.localScreenTrack.close();
+        } else {
+          bclient.client.unpublish(bclient.localScreenTrack).then(function () {
+            bclient.localScreenTrack.close();
+          })["catch"](function (error) {
+            console.log(error);
+            return;
+          });
+        }
+      }
+
+      if (bclient.localAddScreenTrack !== null) {
+        if (bclient.screenclient === null) {
+          bclient.localAddScreenTrack.close();
+        } else {
+          bclient.screenclient.unpublish(bclient.localAddScreenTrack).then(function () {
+            bclient.localAddScreenTrack.close();
+            bclient.screenclient.leave();
+            bclient.screenclient = null;
+            bclient.localAddScreenTrack = null;
+          })["catch"](function (error) {
+            console.log(error);
+          });
+          return;
+        }
+      }
+
+      if (bclient.localVideoTrack !== null) {
+        bclient.localVideoTrack.setDevice(deviceId);
+        $('#camtoggle-btn').prop('disabled', false);
+        $('#camtoggle-icon').css('color', 'green');
+      } else {
+        agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
+          cameraId: deviceId,
+          encoderConfig: encoderConfig
+        }).then(function (vtrack) {
+          bclient.localVideoTrack = vtrack;
+          var videoElem = document.getElementById('host-video');
+          vtrack.play(videoElem);
+          hostStore.dispatch({
+            type: 'VIDEO_TRACK_AVAILABLE',
+            payload: {
+              localVideoTrackavailable: true
+            }
+          });
+          $('#camtoggle-btn').prop('disabled', false);
+          $('#camtoggle-icon').css('color', 'green');
+          if (bclient.client !== null) bclient.client.publish(vtrack);
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
     }
   });
   $('#mic-list-select').change(function () {
@@ -3505,12 +3968,12 @@ $(function () {
   }
 
   function _startBroadcasting() {
-    _startBroadcasting = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+    _startBroadcasting = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
       var uid, deviceId, _deviceId, videoElem;
 
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               bclient.client = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createClient({
                 mode: 'live',
@@ -3526,35 +3989,35 @@ $(function () {
                   }
                 });
               });
-              bclient.client.on('token-privilege-will-expire', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+              bclient.client.on('token-privilege-will-expire', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
                   while (1) {
-                    switch (_context2.prev = _context2.next) {
+                    switch (_context4.prev = _context4.next) {
                       case 0:
-                        _context2.next = 2;
+                        _context4.next = 2;
                         return bclient.client.renewToken(options.token);
 
                       case 2:
                       case "end":
-                        return _context2.stop();
+                        return _context4.stop();
                     }
                   }
-                }, _callee2);
+                }, _callee4);
               })));
-              bclient.client.on('token-privilege-did-expire', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+              bclient.client.on('token-privilege-did-expire', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
                   while (1) {
-                    switch (_context3.prev = _context3.next) {
+                    switch (_context5.prev = _context5.next) {
                       case 0:
-                        _context3.next = 2;
+                        _context5.next = 2;
                         return bclient.client.renewToken(options.token);
 
                       case 2:
                       case "end":
-                        return _context3.stop();
+                        return _context5.stop();
                     }
                   }
-                }, _callee3);
+                }, _callee5);
               })));
               bclient.client.on('network-quality', function (quality) {// const { downlinkNetworkQuality, uplinkNetworkQuality } = quality;
                 // console.log(quality);
@@ -3565,34 +4028,34 @@ $(function () {
               bclient.client.on('user-joined', function (user) {
                 console.log('user-joined', user);
                 viewersStore.dispatch({
-                  payload: 'INCREASE_VIEWERS_COUNT'
+                  type: 'INCREASE_VIEWERS_COUNT'
                 });
               });
               bclient.client.on('user-left', function (user) {
                 console.log('user-left', user);
                 viewersStore.dispatch({
-                  payload: 'DECREASE_VIEWERS_COUNT'
+                  type: 'DECREASE_VIEWERS_COUNT'
                 });
               });
-              _context4.next = 11;
+              _context6.next = 11;
               return bclient.client.join(options.appId, options.channel, options.token, null);
 
             case 11:
-              uid = _context4.sent;
+              uid = _context6.sent;
 
               if (!(bclient.localAudioTrack === null)) {
-                _context4.next = 22;
+                _context6.next = 24;
                 break;
               }
 
               deviceId = $('#mic-list-select').val();
-              _context4.next = 16;
+              _context6.next = 16;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createMicrophoneAudioTrack({
                 microphoneId: deviceId
               });
 
             case 16:
-              bclient.localAudioTrack = _context4.sent;
+              bclient.localAudioTrack = _context6.sent;
               hostStore.dispatch({
                 type: 'AUDIO_TRACK_AVAILABLE',
                 payload: {
@@ -3605,27 +4068,37 @@ $(function () {
                   flag: false
                 }
               });
+
+              if (volumeLevelTimer !== null) {
+                clearInterval(volumeLevelTimer);
+                volumeLevelTimer = null;
+              }
+
+              volumeLevelTimer = setInterval(function () {
+                var volLevel = bclient.localAudioTrack.getVolumeLevel(); // console.log('Volume Level: ' + volLevel);
+              }, 1000);
               $('#mictoggle-btn').prop('disabled', false);
               $('#mictoggle-icon').css('color', 'green');
               $('#mictoggle-icon.fas').attr('class', 'fas fa-microphone');
 
-            case 22:
+            case 24:
               // Save this host uid on MySQL DB
               console.log(uid);
 
               if (!(bclient.localVideoTrack === null)) {
-                _context4.next = 35;
+                _context6.next = 37;
                 break;
               }
 
               _deviceId = $('#camera-list-select').val();
-              _context4.next = 27;
+              _context6.next = 29;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
-                cameraId: _deviceId
+                cameraId: _deviceId,
+                encoderConfig: encoderConfig
               });
 
-            case 27:
-              bclient.localVideoTrack = _context4.sent;
+            case 29:
+              bclient.localVideoTrack = _context6.sent;
               videoElem = document.getElementById('host-video');
               bclient.localVideoTrack.play(videoElem);
               hostStore.dispatch({
@@ -3644,22 +4117,22 @@ $(function () {
               $('#camtoggle-icon').css('color', 'green');
               $('#camtoggle-icon.fas').attr('class', 'fas fa-video');
 
-            case 35:
-              _context4.next = 37;
+            case 37:
+              _context6.next = 39;
               return bclient.client.publish([bclient.localAudioTrack, bclient.localVideoTrack]);
 
-            case 37:
+            case 39:
               $('#golive-btn').prop('disabled', true);
               $('#exit-btn').prop('disabled', false);
-              _context4.next = 41;
+              _context6.next = 43;
               return JoinChat();
 
-            case 41:
+            case 43:
             case "end":
-              return _context4.stop();
+              return _context6.stop();
           }
         }
-      }, _callee4);
+      }, _callee6);
     }));
     return _startBroadcasting.apply(this, arguments);
   }
@@ -3669,16 +4142,25 @@ $(function () {
   }
 
   function _leaveCall() {
-    _leaveCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+    _leaveCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
               // Destroy the local audio and video tracks.
-              bclient.localAudioTrack.close();
-              bclient.localVideoTrack.close();
+              if (bclient.localAudioTrack !== null) bclient.localAudioTrack.close();
+              if (bclient.localVideoTrack !== null) bclient.localVideoTrack.close();
+              if (bclient.localScreenTrack !== null) bclient.localScreenTrack.close();
+              if (bclient.localAddScreenTrack !== null) bclient.localAddScreenTrack.close();
+
+              if (volumeLevelTimer !== null) {
+                clearInterval(volumeLevelTimer);
+                volumeLevelTimer = null;
+              }
+
               bclient.localAudioTrack = null;
-              bclient.localVideoTrack = null;
+              bclient.localVideoTrack = null; // bclient.localScreenTrack = null;
+
               hostStore.dispatch({
                 type: 'AUDIO_TRACK_AVAILABLE',
                 payload: {
@@ -3689,6 +4171,12 @@ $(function () {
                 type: 'VIDEO_TRACK_AVAILABLE',
                 payload: {
                   localVideoTrackavailable: false
+                }
+              });
+              hostStore.dispatch({
+                type: 'SCREEN_TRACK_AVAILABLE',
+                payload: {
+                  localScreenTrackavailable: false
                 }
               });
               hostStore.dispatch({
@@ -3704,22 +4192,24 @@ $(function () {
                 }
               }); // Leave the channel.
 
-              _context5.next = 10;
+              _context7.next = 14;
               return bclient.client.leave();
 
-            case 10:
+            case 14:
+              if (bclient.screenclient !== null) bclient.screenclient.leave();
               rtmchannel.leave();
               RTM.rtmclient.logout();
               bclient.client = null;
+              $('#camera-list-select').prop("selectedIndex", 0);
               $('#exit-btn').prop('disabled', true);
               $('#golive-btn').prop('disabled', false);
 
-            case 15:
+            case 21:
             case "end":
-              return _context5.stop();
+              return _context7.stop();
           }
         }
-      }, _callee5);
+      }, _callee7);
     }));
     return _leaveCall.apply(this, arguments);
   }
@@ -3735,6 +4225,16 @@ $(function () {
         localAudioTrackavailable: true
       }
     });
+
+    if (volumeLevelTimer !== null) {
+      clearInterval(volumeLevelTimer);
+      volumeLevelTimer = null;
+    }
+
+    ;
+    volumeLevelTimer = setInterval(function () {
+      var volLevel = bclient.localAudioTrack.getVolumeLevel(); // console.log('Volume Level: ' + volLevel);
+    }, 1000);
     $('#mictoggle-btn').prop('disabled', false);
     $('#mictoggle-icon').css('color', 'green');
   })["catch"](function (error) {
@@ -3742,7 +4242,8 @@ $(function () {
   });
   var deviceIdcam = $('#camera-list-select').val();
   agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
-    cameraId: deviceIdcam
+    cameraId: deviceIdcam,
+    encoderConfig: encoderConfig
   }).then(function (vtrack) {
     bclient.localVideoTrack = vtrack;
     var videoElem = document.getElementById('host-video');
@@ -3794,7 +4295,44 @@ $(function () {
   });
   $('#camtoggle-btn').prop('disabled', true);
   $('#camtoggle-btn').on('click', function () {
-    if (bclient.localVideoTrack) {
+    console.log('1');
+    if (bclient.localScreenTrack !== null) return;
+    console.log('2');
+
+    if (bclient.localVideoTrack === null) {
+      var _deviceIdcam = $('#camera-list-select').val();
+
+      console.log(_deviceIdcam);
+      agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
+        cameraId: _deviceIdcam,
+        encoderConfig: encoderConfig
+      }).then(function (vtrack) {
+        bclient.localVideoTrack = vtrack;
+        var videoElem = document.getElementById('host-video');
+        vtrack.play(videoElem);
+        hostStore.dispatch({
+          type: 'VIDEO_TRACK_AVAILABLE',
+          payload: {
+            localVideoTrackavailable: true
+          }
+        });
+        hostStore.dispatch({
+          type: 'SET_WEBCAM_OFF',
+          payload: {
+            flag: false
+          }
+        });
+        $('#camtoggle-btn').prop('disabled', false);
+        $('#camtoggle-icon').css('color', 'green');
+        if (bclient.client !== null) bclient.client.publish(vtrack);
+      })["catch"](function (error) {
+        console.log(error);
+        return;
+      });
+    }
+
+    if (bclient.localVideoTrack !== null) {
+      console.log('3');
       var hostState = hostStore.getState();
 
       if (hostState.webcamOff) {
@@ -3891,6 +4429,14 @@ $(function () {
       emoji: true
     });
     sendChatMessage(textmsg, true);
+  });
+  window.addEventListener('beforeunload', abruptClose = function abruptClose(event) {
+    if (volumeLevelTimer !== null) {
+      clearInterval(volumeLevelTimer);
+      volumeLevelTimer = null;
+    }
+
+    ;
   }); // const player = fluidPlayer('fluidplayerdiv');
 });
 
@@ -3917,8 +4463,8 @@ var initialState = {
   totalviews: 0,
   noOfHosts: 0,
   hostsList: {},
-  audioTracks: [],
-  videoTracks: [],
+  audioTracks: {},
+  videoTracks: {},
   numAudioTracks: 0,
   numVideoTracks: 0
 };
@@ -4014,6 +4560,45 @@ var connectedViewers = function connectedViewers() {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (connectedViewers);
+
+/***/ }),
+
+/***/ "./resources/js/deviceInfo.js":
+/*!************************************!*\
+  !*** ./resources/js/deviceInfo.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var bowser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bowser */ "./node_modules/bowser/es5.js");
+/* harmony import */ var bowser__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bowser__WEBPACK_IMPORTED_MODULE_0__);
+ // TODO: For testing.
+// window.BOWSER = bowser;
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var ua = navigator.userAgent;
+  var browser = bowser__WEBPACK_IMPORTED_MODULE_0___default.a.getParser(ua);
+  var flag;
+  if (browser.satisfies({
+    chrome: '>=0',
+    chromium: '>=0'
+  })) flag = 'chrome';else if (browser.satisfies({
+    firefox: '>=0'
+  })) flag = 'firefox';else if (browser.satisfies({
+    safari: '>=0'
+  })) flag = 'safari';else if (browser.satisfies({
+    opera: '>=0'
+  })) flag = 'opera';else if (browser.satisfies({
+    'microsoft edge': '>=0'
+  })) flag = 'edge';else flag = 'unknown';
+  return {
+    flag: flag,
+    name: browser.getBrowserName(),
+    version: browser.getBrowserVersion()
+  };
+});
 
 /***/ }),
 
@@ -4135,15 +4720,15 @@ var devices = function devices() {
 
         if (_devicetype3 === 'CAM') {
           return _objectSpread(_objectSpread({}, state), {}, {
-            camList: _camList.append(device)
+            camList: _camList.push(device)
           });
         } else if (_devicetype3 === 'MIC') {
           return _objectSpread(_objectSpread({}, state), {}, {
-            micList: _micList.append(device)
+            micList: _micList.push(device)
           });
         } else if (_devicetype3 === 'PBD') {
           return _objectSpread(_objectSpread({}, state), {}, {
-            playbackList: _playbackList.append(device)
+            playbackList: _playbackList.push(device)
           });
         } else {
           return state;
@@ -4180,7 +4765,8 @@ var initialState = {
   micMuted: false,
   connectionState: 'DISCONNECTED',
   localVideoTrackavailable: false,
-  localAudioTrackavailable: false
+  localAudioTrackavailable: false,
+  localScreenTrackavailable: false
 };
 
 var host = function host() {
@@ -4225,6 +4811,14 @@ var host = function host() {
         var localVideoTrackavailable = action.payload.localVideoTrackavailable;
         return _objectSpread(_objectSpread({}, state), {}, {
           localVideoTrackavailable: localVideoTrackavailable
+        });
+      }
+
+    case 'SCREEN_TRACK_AVAILABLE':
+      {
+        var localScreenTrackavailable = action.payload.localScreenTrackavailable;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          localScreenTrackavailable: localScreenTrackavailable
         });
       }
 
