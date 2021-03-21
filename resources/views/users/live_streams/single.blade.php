@@ -25,6 +25,10 @@
                       <div class="alert alert-primary">
                       <span id="connectionState"></span></div>
                         <div id="buttons-container" class="row justify-content-end">
+                          <div class="col-md-6 text-center">
+                            <label for="volumelevel">Mic check: </label>
+                            <meter id="volumelevel" value="0" min="0" max="1"></meter>
+                          </div>
                           <div class="col-md-2 text-center">
                               <button id="golive-btn" type="button" class="btn btn-block btn-success btn-lg">
                                   <i id="golive-icon" class="fas fa-podcast"></i>
@@ -86,8 +90,8 @@
 
 
                         </div>
-                        <div class="row">
-                        <div class="col-md-12" id="video-section">
+
+                        <div id="video-section">
                           <div id='host-video'></div>
                           <div id='host-screen'></div>
                         </div>
@@ -104,7 +108,7 @@
                           </div>
 
                         </div>
-                      </div>
+
                         <!-- <div id='extraplayer'>
                           <video id='fluidplayerdiv' controls>
                             <source src='' type='video/mp4' />
