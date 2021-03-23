@@ -3119,6 +3119,10 @@ $(function () {
   var playbackList;
   var volumeLevelTimer = null;
   var abruptClose = null;
+  var clientscreenuid = null;
+  var clientuid = null; // 0: no recording 1: recording in progress
+
+  var recordingstatus = 0;
   var encoderConfig = {
     width: {
       max: 1280,
@@ -3426,7 +3430,7 @@ $(function () {
 
   function _startScreenCall() {
     _startScreenCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var screenuid, localAddScreenTrack, screenDiv;
+      var localAddScreenTrack, screenDiv;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -3440,7 +3444,7 @@ $(function () {
               return bclient.screenclient.join(options.appId, options.channel, options.token, null);
 
             case 4:
-              screenuid = _context.sent;
+              clientscreenuid = _context.sent;
               _context.next = 7;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createScreenVideoTrack({
                 encoderConfig: '1080p_1',
@@ -3996,7 +4000,7 @@ $(function () {
 
   function _startBroadcasting() {
     _startBroadcasting = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
-      var uid, deviceId, _deviceId, videoElem;
+      var deviceId, _deviceId, videoElem;
 
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
         while (1) {
@@ -4062,7 +4066,7 @@ $(function () {
               return bclient.client.join(options.appId, options.channel, options.token, null);
 
             case 11:
-              uid = _context6.sent;
+              clientuid = _context6.sent;
 
               if (!(bclient.localAudioTrack === null)) {
                 _context6.next = 24;
@@ -4104,22 +4108,19 @@ $(function () {
               $('#mictoggle-icon.fas').attr('class', 'fas fa-microphone');
 
             case 24:
-              // Save this host uid on MySQL DB
-              console.log(uid);
-
               if (!(bclient.localVideoTrack === null)) {
-                _context6.next = 37;
+                _context6.next = 36;
                 break;
               }
 
               _deviceId = $('#camera-list-select').val();
-              _context6.next = 29;
+              _context6.next = 28;
               return agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createCameraVideoTrack({
                 cameraId: _deviceId,
                 encoderConfig: encoderConfig
               });
 
-            case 29:
+            case 28:
               bclient.localVideoTrack = _context6.sent;
               videoElem = document.getElementById('host-video');
               bclient.localVideoTrack.play(videoElem);
@@ -4139,17 +4140,17 @@ $(function () {
               $('#camtoggle-icon').css('color', 'green');
               $('#camtoggle-icon.fas').attr('class', 'fas fa-video');
 
-            case 37:
-              _context6.next = 39;
+            case 36:
+              _context6.next = 38;
               return bclient.client.publish([bclient.localAudioTrack, bclient.localVideoTrack]);
 
-            case 39:
+            case 38:
               $('#golive-btn').prop('disabled', true);
               $('#exit-btn').prop('disabled', false);
-              _context6.next = 43;
+              _context6.next = 42;
               return JoinChat();
 
-            case 43:
+            case 42:
             case "end":
               return _context6.stop();
           }
@@ -4413,6 +4414,51 @@ $(function () {
       complete: function complete() {}
     });
   });
+  $('#record-button').on('click', function () {
+    var action;
+
+    if (recordingstatus === 0) {
+      action = 'start';
+    } else {
+      action = 'stop';
+    }
+
+    $('#record-button').prop('disabled', true);
+    $.ajax({
+      url: APP_URL + '/live-stream/cloudrecording',
+      dataType: 'json',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        channelname: channelname,
+        action: action,
+        clientuid: clientuid
+      },
+      success: function success(data) {
+        console.log(data); // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
+
+        if (data.status === 1) {
+          $('#record-button').css({
+            color: 'red'
+          });
+          recordingstatus = 1;
+        } else if (data.status === 2) {
+          $('#record-button').css({
+            color: 'orange'
+          });
+          recordingstatus = 0;
+        } else {}
+      },
+      error: function error(_error2) {
+        console.log(_error2);
+      },
+      complete: function complete() {
+        $('#record-button').prop('disabled', false);
+      }
+    });
+  });
   $('#exit-btn').prop('disabled', true);
   $('#exit-btn').on('click', function () {
     leaveCall();
@@ -4435,8 +4481,8 @@ $(function () {
           console.log(data);
         }
       },
-      error: function error(_error2) {
-        console.log(_error2);
+      error: function error(_error3) {
+        console.log(_error3);
       },
       complete: function complete() {}
     });
@@ -4460,6 +4506,31 @@ $(function () {
     }
 
     ;
+    leaveCall();
+    $.ajax({
+      url: APP_URL + '/live-stream/setlive',
+      // contentType: "application/json",
+      dataType: 'json',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        streamid: streamid,
+        livestatus: false
+      },
+      success: function success(data) {
+        if (data.status === 1) {
+          console.log('Stream set to not live!');
+        } else {
+          console.log(data);
+        }
+      },
+      error: function error(_error4) {
+        console.log(_error4);
+      },
+      complete: function complete() {}
+    });
   }); // const player = fluidPlayer('fluidplayerdiv');
 });
 

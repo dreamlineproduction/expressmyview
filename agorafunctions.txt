@@ -1,3 +1,11 @@
+Things to DO
+1) Chat only after user login
+2) Implement Fluid player for viewers
+3) Camera, Mic dropdown is not working
+4) Save live stream after stream is complete to Digital Ocean storage
+5) Edit live stream and Delete live stream si not working
+6) Publish live stream as a normal podcast from digital ocean
+
 Things done (some items may need minor bug fixing, especially php related stuff)
 1) video, audio live streaming
 2) chatting (with emoji, display name, profile pic)

@@ -40,6 +40,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::get('/live-stream/{stream}/delete', 'LiveStreamsController@destroy')->name('live-stream.delete');
     Route::post('/live-stream/setlive', 'LiveStreamsController@editLiveStatus')->name('live-stream.setlive');
     Route::match(['put', 'patch'], '/live-stream/{stream}/update', 'LiveStreamsController@update')->name('live-stream.update');
+    Route::post('/live-stream/cloudrecording', 'LiveStreamsController@cloudrecording')->name('live-stream.cloudrecording');
 
     Route::get('/podcast/create', 'PodcastsController@create')->name('podcast.create');
     Route::post('/podcast/upload', 'PodcastsController@upload')->name('podcast.upload');

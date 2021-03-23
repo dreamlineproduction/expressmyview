@@ -6,7 +6,7 @@ Streaming Now - {{ $stream->title }}
 
 @section('header')
 <!-- Fluid Player -->
-<link rel="stylesheet" href="https://cdn.fluidplayer.com/v2/current/fluidplayer.min.css" type="text/css" />
+<!-- <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css" type="text/css" /> -->
 
 <!-- Emoji Set -->
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
@@ -59,6 +59,11 @@ Streaming Now - {{ $stream->title }}
                             </div>
 
                           </div>
+                          <!-- <div id="fluid-player">
+                            <video id='fluidplayerdiv'>
+                              <source src='/videos/bannerg004.mp4' />
+                            </video>
+                          </div> -->
 
 
 
@@ -173,12 +178,14 @@ Streaming Now - {{ $stream->title }}
 
                             <div class="page-content w-100 page-container" id="page-content">
                                 <div class="1">
+
                                     <div class="chat-ui">
                                         <div class="col-md-12">
                                             <div class="card card-bordered">
                                                 <div class="card-header">
                                                     <h4 class="card-title"><strong>Live Chat</strong></h4>
                                                 </div>
+                                                @if($usersignedin)
                                                 <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
                                                     style="overflow-y: scroll !important; height:500px !important;">
 
@@ -271,6 +278,14 @@ Streaming Now - {{ $stream->title }}
                                                             class="fa fa-paper-plane"></i></a>
 
                                                 </div>
+                                                @else
+                                                  <div class="col-md-12 mb-3 text-center">
+                                                    <h6 class="mt-4">
+                                                      Sign in to participate in the chat!
+                                                    </h6>
+                                                    <a href="{{ route('login') }}" class="btn btn-primary mt-4">Login</a>
+                                                  </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -298,9 +313,8 @@ Streaming Now - {{ $stream->title }}
 
 @section('footer')
 <!-- Fluid Player -->
-<script src="https://cdn.fluidplayer.com/v2/current/fluidplayer.min.js" defer></script>
+<script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js" defer></script>
 <script src="{{ asset('js/clipboard.js') }}"></script>
-<script src="{{ asset('js/podcast.js') }}"></script>
 <script src="{{ asset('js/viewer.js') }}"></script>
 <script>
 var channelname = "{{ $stream->channelname }}";
@@ -311,6 +325,7 @@ var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
+var usersignedin = "{{ $usersignedin }}";
 var displayname = "{{ $displayname }}";
 var profilepic = "{{ $profilepic }}";
 var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"

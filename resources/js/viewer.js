@@ -13,6 +13,23 @@ $(function(){
       AgoraRTC.checkSystemRequirements()
   );
 
+  // <source src='/videos/bannerg004.mp4' />
+  // const player = fluidPlayer('fluidplayerdiv', {
+  //   layoutControls: {
+  //     posterImage: thumbnailurl,
+  //     playButtonShowing: false,
+  //     autoPlay: true,
+  //   },
+  // });
+  const layoutControls = {
+      posterImage: thumbnailurl,
+      playButtonShowing: false,
+      autoPlay: true,
+      keyboardControl: false,
+      controlBar: false,
+      fillToContainer: false,
+    };
+
   let volumeLevelTimers = {};
   let abruptClose = null;
   const hostTracks = {};
@@ -72,7 +89,7 @@ $(function(){
       $('#statusScreen').hide()
       spinnerDiv.hide()
     }
-    if (viewersState.numVideoTracks > 1 && viewersState.noOfHosts > 1) {
+    if (viewersState.numVideoTracks === 2 && viewersState.noOfHosts === 2) {
       console.log('multiple video tracks detected');
       console.log(hostTracks);
       let counter = 0;
@@ -85,6 +102,7 @@ $(function(){
               counter = counter + 1;
               $('#'+divname).css({position: 'absolute'});
               if (counter === viewersState.numVideoTracks) {
+                console.log('counter === viewersState.numVideoTracks');
                 $('#'+divname).addClass("col-md-3");
                 $('#'+divname).css({'z-index': 500, width: '100%', height: 'auto'});
               }
@@ -111,7 +129,7 @@ $(function(){
   // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
   if (APP_DEBUG) {
     window.AgoraRTC = AgoraRTC;
-    AgoraRTC.setLogLevel(0);
+    AgoraRTC.setLogLevel(2);
   } else {
     AgoraRTC.setLogLevel(2);
   }
@@ -162,6 +180,14 @@ $(function(){
 
   async function JoinChat() {
     RTM.rtmclient = AgoraRTM.createInstance(AGORA_APP_ID);
+
+    // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
+    if (APP_DEBUG) {
+      RTM.rtmclient.setParameters({logFilter: AgoraRTM.LOG_FILTER_WARNING}); // AgoraRTM.LOG_FILTER_INFO
+    } else {
+      RTM.rtmclient.logFilter(AgoraRTM.LOG_FILTER_WARNING);
+    }
+
     RTM.rtmclient.on('ConnectionStateChanged', (newState, reason) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
@@ -280,13 +306,33 @@ $(function(){
         await bclient.client.subscribe(user, mediaType);
         if (mediaType === 'video') {
           const remoteVideoTrack = user.videoTrack;
-          const playerDiv = document.createElement('div');
           const idvname = 'video_'+remoteVideoTrack.getTrackId();
-          playerDiv.id = idvname;
+          const playerDiv = $('<div>', {id: idvname});document.createElement('div');
+          const videodiv = $('<video />', {id: 'fluid_'+idvname});
+          playerDiv.append(videodiv);
           $('#external-broadcasts-container').append(playerDiv);
+
+          const track = remoteVideoTrack.getMediaStreamTrack();
+          const stream = new MediaStream;
+          stream.addTrack(track);
+          const playerdiv = document.getElementById('fluid_'+idvname);
+          playerdiv.srcObject = stream;
+          const ff = fluidPlayer('fluid_'+idvname, {
+            layoutControls: {
+              posterImage: thumbnailurl,
+              playButtonShowing: false,
+              autoPlay: true,
+              keyboardControl: false,
+              controlBar: false,
+              fillToContainer: false,
+            }
+          });
+          // ff.play();
+          playerdiv.play();
+
+          // remoteVideoTrack.play(playerDiv);
+          hostTracks[user.uid].push({divname: idvname, mediaType, ff});
           hostsStore.dispatch({type: 'INCREASE_VTRACK_COUNT'});
-          remoteVideoTrack.play(playerDiv);
-          hostTracks[user.uid].push({divname: idvname, mediaType});
         }
         if (mediaType === 'audio') {
           const { numAudioTracks } = audienceStore.getState();
@@ -295,7 +341,6 @@ $(function(){
           const idaname = 'audio_'+remoteAudioTrack.getTrackId();
           audioPlayerDiv.id = idaname;
           $('#external-broadcasts-container').append(audioPlayerDiv);
-          hostsStore.dispatch({type: 'INCREASE_ATRACK_COUNT'});
           if (user.uid in volumeLevelTimers === false) {
             volumeLevelTimers[user.uid] = setInterval(() => {
               const volLevel = remoteAudioTrack.getVolumeLevel();
@@ -305,6 +350,7 @@ $(function(){
           }
           remoteAudioTrack.play(audioPlayerDiv);
           hostTracks[user.uid].push({divname: idaname, mediaType});
+          hostsStore.dispatch({type: 'INCREASE_ATRACK_COUNT'});
         }
       } catch(error) {
         console.log('Error in user-published:' + error);
@@ -317,6 +363,7 @@ $(function(){
       const newlist = hostTracks[user.uid].filter((lld) => {return lld.mediaType !== mediaType});
       hostTracks[user.uid] = newlist;
       if (mediaType === 'video') {
+        divname[0].ff.destroy();
         $('#'+divname[0].divname).remove();
         hostsStore.dispatch({type: 'DECREASE_VTRACK_COUNT'});
       }
@@ -332,6 +379,7 @@ $(function(){
 
     bclient.client.on('user-joined', (user) => {
       // console.log('host joined', user);
+      hostTracks[user.uid] = [];
       hostsStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: true }});
       hostsStore.dispatch({type: 'ADD_HOST_TO_LIST', payload: {host: user}});
       hostsStore.dispatch({type: 'INCREASE_VIEWERS_COUNT'})
@@ -339,6 +387,7 @@ $(function(){
 
     bclient.client.on('user-left', (user) => {
       // console.log('host left', user);
+      delete hostTracks[user.uid];
       hostsStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: false }});
       hostsStore.dispatch({type: 'REMOVE_HOST_FROM_LIST', payload: {hostid: user.uid}});
       hostsStore.dispatch({type: 'DECREASE_VIEWERS_COUNT'})
@@ -351,10 +400,25 @@ $(function(){
   };
 
   async function leaveCall() {
-    bclient.client.remoteUsers.forEach(user => {
-      const playerContainer = document.getElementById(user.uid);
-      playerContainer && playerContainer.remove();
-    });
+    for (const hostid in hostTracks) {
+      if (hostTracks[hostid].length > 0) {
+        hostTracks[hostid].forEach((val, idx) => {
+          const { divname, mediaType, ff } = val;
+          if (mediaType === 'video') {
+            hostsStore.dispatch({type: 'DECREASE_VTRACK_COUNT'});
+            ff.destroy();
+          }
+          if (mediaType === 'audio') hostsStore.dispatch({type: 'DECREASE_ATRACK_COUNT'});
+          $('#'+divname).remove();
+        });
+      }
+      delete hostTracks[hostid];
+      hostsStore.dispatch({type: 'REMOVE_HOST_FROM_LIST', payload: {hostid}});
+      hostsStore.dispatch({type: 'DECREASE_VIEWERS_COUNT'});
+    }
+
+    hostsStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: false }});
+
     await bclient.client.leave();
     rtmchannel.leave();
     RTM.rtmclient.logout();
@@ -384,6 +448,7 @@ $(function(){
     for (const timer in volumeLevelTimers) {
       clearInterval(timer);
     }
+    leaveCall()
   });
 
 });

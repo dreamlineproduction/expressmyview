@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+// use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
 use App\agora\RtcTokenBuilder;
 use App\agora\RtmTokenBuilder;
@@ -306,9 +308,11 @@ class LiveStreamsController extends Controller
                 $stream->views += 1;
                 $stream->save();
             }
+            $usersignedin = true;
         } else {
             $stream->views += 1;
             $stream->save();
+            $usersignedin = false;
         }
 
         $appID = env('AGORA_APP_ID');
@@ -341,6 +345,7 @@ class LiveStreamsController extends Controller
             'userrtm' => $userrtm,
             'displayname' => $displayname,
             'profilepic' => $profilepic,
+            'usersignedin' => $usersignedin,
         );
         return view('users.live_streams.watch', $viewData);
     }
@@ -430,7 +435,7 @@ class LiveStreamsController extends Controller
                 $coverFilename = $request->file('thumbnail')->hashName();
                 if (!empty($oldCoverFilename)) {
 
-                    unlink(storage_path('app/public/podcast/thumbnail') . '/' . $oldCoverFilename);
+                    unlink(storage_path('/app/public/podcast/thumbnail') . '/' . $oldCoverFilename);
                 }
 
             } else {
@@ -439,7 +444,7 @@ class LiveStreamsController extends Controller
                 ]);
             }
         } else {
-            $thumbfile = storage_path('public/podcast/thumbnail') . '/' . $stream->thumbnail;
+            $thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $stream->thumbnail;
 
             Storage::disk('s3')->put('public/podcast/thumbnail/' . $stream->thumbnail, file_get_contents($thumbfile), 'public');
 
@@ -574,5 +579,51 @@ class LiveStreamsController extends Controller
         'type' => $type,
       );
       return view('users.live_streams.index', $viewData);
+    }
+
+    public function cloudrecording(Request $request) {
+      if (Auth::check()) {
+        $action = $request->input('action');
+        $channelname = $request->input('channelname');
+        $clientuid = $request->input('clientuid');
+        $userId = Auth::user()->id;
+
+        $customerKey = env('AGORA_CLOUD_REC_KEY');
+        $customerSecret = env('AGORA_CLOUD_REC_SECRET');
+        $credentials = $customerKey.':'.$customerSecret;
+        $base64Credentials = base64_encode($credentials);
+
+        $res = 99;
+        if ($action == 'start') {
+          $response = Http::withHeaders([
+            'Authorization' => 'Basic '.$base64Credentials
+          ])->post('https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/acquire', [
+            'cname' => $channelname,
+            'uid' => strval($userId),
+            'clientRequest' => ['resourceExpiredHour' => 24, 'scene' => 0]
+          ]);
+          if ($response->successful()) {
+            $resourceId = $response['resourceId'];
+
+          } else if ($response->failed()) {
+            return new Response(['status' => 0, 'error' => json_encode($response->json())]);
+          } else {
+            return new Response(['status' => 0, 'error' => 'Unexpected error']);
+          }
+        } else if ($action == 'stop') {
+          $res = 2;
+        } else {
+          $res = 99;
+        }
+      } else {
+        return new Response([
+          'status' => 0,
+          'error' => 'Access denied',
+        ]);
+      }
+    }
+
+    public function stoprecording(Request $request) {
+
     }
 }

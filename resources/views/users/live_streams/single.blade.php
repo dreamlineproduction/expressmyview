@@ -6,7 +6,7 @@
 
 @section('header')
 <!-- Fluid Player -->
-
+<!-- <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css" type="text/css" /> -->
 
 <!-- Emoji Set -->
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
@@ -25,11 +25,11 @@
                       <div class="alert alert-primary">
                       <span id="connectionState"></span></div>
                         <div id="buttons-container" class="row justify-content-end">
-                          <div class="col-md-6 text-center">
+                          <div class="col-md-2 text-center">
                             <label for="volumelevel">Mic check: </label>
                             <meter id="volumelevel" value="0" min="0" max="1"></meter>
                           </div>
-                          <div class="col-md-2 text-center">
+                          <div class="col-md-1 text-center">
                               <button id="golive-btn" type="button" class="btn btn-block btn-success btn-lg">
                                   <i id="golive-icon" class="fas fa-podcast"></i>
                               </button>
@@ -82,10 +82,15 @@
 
 
 
-                            <div class="col-md-2 text-center">
+                            <div class="col-md-1 text-center">
                                 <button id="exit-btn" type="button" class="btn btn-block btn-danger btn-lg">
                                     <i id="exit-icon" class="fas fa-phone-slash"></i>
                                 </button>
+                            </div>
+                            <div class="col-md-1 text-center">
+                              <button id="record-button" type="button" style="font-size: 2em;color: orange" class="btn btn-block btn-light btn-lg">
+                                <i id="record-icon" class="fas fa-record-vinyl"></i>
+                              </button>
                             </div>
 
 

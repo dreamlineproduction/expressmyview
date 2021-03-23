@@ -23,6 +23,12 @@ $(function(){
   let volumeLevelTimer = null;
   let abruptClose = null;
 
+  let clientscreenuid = null;
+  let clientuid = null;
+
+  // 0: no recording 1: recording in progress
+  let recordingstatus = 0;
+
   const encoderConfig = {
     width: {max: 1280, min: 640},
     height: {max: 720, min: 480}
@@ -230,7 +236,7 @@ $(function(){
   async function startScreenCall() {
     bclient.screenclient = AgoraRTC.createClient({ mode: 'live', codec: 'vp8'});
     bclient.screenclient.setClientRole(options.role);
-    const screenuid = await bclient.screenclient.join(options.appId, options.channel, options.token, null);
+    clientscreenuid = await bclient.screenclient.join(options.appId, options.channel, options.token, null);
     const localAddScreenTrack = await AgoraRTC.createScreenVideoTrack({
       encoderConfig: '1080p_1',
       screenSourceType: deviceInfo.flag === 'firefox' ? 'screen' : null }
@@ -623,7 +629,7 @@ $(function(){
       // viewersStore.dispatch({type: 'DECREASE_VIEWERS_COUNT'})
     });
 
-    const uid = await bclient.client.join(options.appId, options.channel, options.token, null);
+    clientuid = await bclient.client.join(options.appId, options.channel, options.token, null);
     if (bclient.localAudioTrack === null) {
       const deviceId = $('#mic-list-select').val();
       bclient.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({microphoneId: deviceId});
@@ -642,7 +648,7 @@ $(function(){
       $('#mictoggle-icon.fas').attr('class','fas fa-microphone');
     }
     // Save this host uid on MySQL DB
-    console.log(uid);
+    // console.log(clientuid);
     if (bclient.localVideoTrack === null) {
       const deviceId = $('#camera-list-select').val();
       bclient.localVideoTrack = await AgoraRTC.createCameraVideoTrack({cameraId: deviceId, encoderConfig});
@@ -824,6 +830,42 @@ $(function(){
     });
   });
 
+  $('#record-button').on('click', () => {
+    let action;
+    if (recordingstatus === 0 ) {
+      action = 'start'
+    } else {
+      action = 'stop'
+    }
+    $('#record-button').prop('disabled', true);
+    $.ajax({
+      url: APP_URL + '/live-stream/cloudrecording',
+      dataType: 'json',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+      method: 'post',
+      data: { channelname, action, clientuid },
+      success: (data) => {
+        console.log(data);
+        // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
+        if (data.status === 1) {
+          $('#record-button').css({color: 'red'})
+          recordingstatus = 1;
+        } else if (data.status === 2 ){
+          $('#record-button').css({color: 'orange'})
+          recordingstatus = 0;
+        } else {
+
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      },
+      complete: () => {
+        $('#record-button').prop('disabled', false);
+      },
+    });
+  });
+
   $('#exit-btn').prop('disabled', true);
   $('#exit-btn').on('click', () => {
     leaveCall();
@@ -861,6 +903,26 @@ $(function(){
       clearInterval(volumeLevelTimer);
       volumeLevelTimer = null;
     };
+    leaveCall();
+    $.ajax({
+      url: APP_URL + '/live-stream/setlive',
+      // contentType: "application/json",
+      dataType: 'json',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+      method: 'post',
+      data: { streamid, livestatus: false},
+      success: (data) => {
+        if (data.status === 1) {
+          console.log('Stream set to not live!');
+        } else {
+          console.log(data);
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      },
+      complete: () => {},
+    });
   });
 
   // const player = fluidPlayer('fluidplayerdiv');
