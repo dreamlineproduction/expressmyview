@@ -28,7 +28,7 @@
                           <div class="text-left">
                           <div class="alert alert-primary">
                       <span id="connectionState"></span></div>
-                           
+
                             <div class="row">
                             <div class="col-md-6">
                             <div id="mic-list" class="form-group">
@@ -40,16 +40,16 @@
                             <div class="col-md-6">
                             <div id="camera-list"  class="form-group">
 
-                           
+
 <label for="video_source">Video Source</label>
 <select class="form-control" name="camera-list-select" id="camera-list-select"></select>
-         
+
        </div>
                             </div>
-                            
+
                             </div>
-                           
-                           
+
+
                           </div>
                           </div>
                           <div class="col-md-6">
@@ -125,7 +125,7 @@
                        </div>
 
 
-                       
+
                           </div>
                       </div>
 
@@ -416,7 +416,7 @@
 <!-- Fluid Player -->
 <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js" defer></script>
 <script src="{{ asset('js/clipboard.js') }}"></script>
-<script src="{{ asset('js/podcast.js') }}"></script>
+<!-- <script src="{{ asset('js/podcast.js') }}"></script> -->
 <script src="{{ asset('js/broadcaster.js') }}"></script>
 <!-- <script src="{{ asset('js/loademoji.js') }}"></script> -->
 
@@ -432,6 +432,7 @@ var clipboard = new ClipboardJS('.btn');
 var streamid = "{{ $stream->id }}";
 var displayname = "{{ $stream->user->name }}";
 var profilepic = "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
+var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
 
 clipboard.on('success', function(e) {
     console.log(e);
