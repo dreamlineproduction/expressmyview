@@ -38,6 +38,9 @@ button:focus {
   font-size: 21px;
 }
 
+.audio-meter {
+}
+
 .volume-meter {
   width: 100%;
   height: 25px;
