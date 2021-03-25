@@ -9,6 +9,8 @@ use App\Language;
 use App\License;
 use App\LiveStream;
 use App\Tag;
+use App\User;
+use App\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\agora\RtcTokenBuilder;
 use App\agora\RtmTokenBuilder;
+use App\RtcTokenBuilders;
 use \DateTime;
 use \DateTimeZone;
 
@@ -579,6 +582,140 @@ class LiveStreamsController extends Controller
         'type' => $type,
       );
       return view('users.live_streams.index', $viewData);
+    }
+
+    public function getLiveStreams(Request $request)
+    {
+        $streams = LiveStream::where('islive',"1")->orderBy('created_at', 'desc')->get();
+
+        if($streams){
+            foreach ($streams as $stream ){
+                if($stream['thumbnail']){
+                    $stream["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$stream['thumbnail']);
+                }
+                $stream["channelName"] = $this->getChannelName($stream["channel_id"]);
+                $stream["dateDiff"] = $stream['created_at']->diffForHumans();
+            }
+            return new Response([
+                'status' => 0,
+                'streams' => $streams,
+            ]);
+        }else{
+            return new Response([
+                'status' => 0,
+                'error' => 'No live streams available right now.',
+            ]);
+        }
+    }
+
+    public function watchAPI(Request $request)
+    {
+        $userid = $request->id;
+        $user = User::find($userid);
+        $userprofile = UserProfile::where('user_id', $userid)->get();
+        $lid = $request->lid;
+        $stream = LiveStream::find($lid);
+
+        if($stream){
+            if ($userid !== $stream->user_id) {
+                $stream->views += 1;
+                $stream->save();
+            }
+          
+            $appID = env('AGORA_APP_ID');
+            $appCertificate = env('AGORA_APP_CERTIFICATE');
+            $channelName = $stream->channelname;
+            $uid= $userid;
+            $role = RtcTokenBuilder::RoleSubscriber;
+            $expireTimeInSeconds = 10800;
+            $currentTimestamp = (new DateTime("now", new DateTimeZone('UTC')))->getTimestamp();
+            $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+            // $token = RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, null, $role, $privilegeExpiredTs);
+            $token = $this->generateToken($appID, $appCertificate, $channelName);
+            $userrtm = 'u_'.strval($userid);
+            $rolertm = RtmTokenBuilder::RoleRtmUser;
+            $tokenrtm = RtmTokenBuilder::buildToken($appID, $appCertificate, $userrtm, $rolertm, $privilegeExpiredTs);
+    
+            $displayname = $user->name;
+            $profilepic = !empty($userprofile[0]->avatar) ? url('/storage/users/avatar/' . $userprofile[0]->avatar) : asset('img/user.png');
+            $casts = $stream->casts;
+            $categories = $stream->categories;
+            $tags = $stream->tags;
+            $channel = $this->getChannelName($stream->channel_id);
+            $stream["thumbnail"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$stream['thumbnail']);
+            $stream["dateDiff"] = $stream['created_at']->diffForHumans();
+
+            $viewData = array(
+                'stream' => $stream,
+                'casts' => $casts,
+                'categories' => $categories,
+                'tags' => $tags,
+                'token' => $token,
+                'tokenrtm' => $tokenrtm,
+                'userrtm' => $userrtm,
+                'displayname' => $displayname,
+                'profilepic' => $profilepic,
+                "channelName" => $channel,
+                "appID" => $appID,
+                "stream_channel" => $channelName
+
+            );
+    
+            return response()->json([
+                'status' => 0,
+                'livestreams' => $viewData
+            ]);
+        }
+       else{
+        return response()->json([
+            'status' => 0,
+            'error' => "No Live stream found, please try again"
+        ]);
+       }
+    }
+
+    public function getChannelName($channelId){
+        $channel = Channel::find($channelId);
+
+        if($channel){
+            return $channel->name;
+        }else{
+            return "";
+        }
+    }
+
+    public function generateToken($appID, $appCertificate, $channelName){
+
+        // $app_id = \Config::get('app.app_id');
+        // $app_key = \Config::get('app.app_key');
+        // $app_secret = \Config::get('app.app_secret');
+        
+        // $appID = $app_id;
+        // $appCertificate = $app_secret;
+        // $channelName = "New Channel";
+        // $uid = 2882341273;
+        // $uidStr = "2882341273";
+        $role =  RtcTokenBuilders::RoleSubscriber;
+        $expireTimeInSeconds = 3600;
+        $currentTimestamp = (new DateTime("now", new \DateTimeZone('UTC')))->getTimestamp();
+        $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+        $tokenClass = new RtcTokenBuilders();
+        $token = $tokenClass->buildTokenWithUid($appID, $appCertificate, $channelName, null, 2, $privilegeExpiredTs);
+        // echo "app_id is";
+        // echo $app_id;  
+        // echo "appCertificate is";
+        // echo $appCertificate;  
+        // echo "channelName is";
+        // echo $channelName;  
+        // echo "uid is";
+        // echo $uid;  
+        // echo "role is";
+        // echo $role;  
+        // exit();
+        // $token = \RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, $uid, $role, $privilegeExpiredTs);
+
+        return $token;
+        
     }
 
     public function cloudrecording(Request $request) {
