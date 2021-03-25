@@ -30,13 +30,17 @@ $(function(){
   let recordingstatus = 0;
 
   const encoderConfig = {
-    width: {max: 1280, min: 640},
-    height: {max: 720, min: 480}
+    width: {max: 1920, min: 640},
+    height: {max: 1080, min: 480}
   };
 
   const hostvideoDiv = $('#host-video');
+  let ffvideo = null;
+  let ffvideodiv = null;
   hostvideoDiv.hide();
   const hostscreenDiv = $('#host-screen');
+  let ffscreen = null;
+  let ffscreendiv = null;
   hostscreenDiv.hide();
   const spinnerDiv = $('#spinner');
   spinnerDiv.hide();
@@ -67,7 +71,7 @@ $(function(){
     if (hostState.localVideoTrackavailable && hostState.localScreenTrackavailable) {
       // const vheight = $('#host-screen video').height();
       // $('#video-section').height(vheight+5);
-      hostscreenDiv.css({position: 'absolute'});
+      // hostscreenDiv.css({position: 'absolute'});
       hostvideoDiv.addClass("col-md-3");
       hostvideoDiv.css({position: 'absolute', 'z-index': 500, width: '100%', height: 'auto'});
     }
@@ -82,7 +86,7 @@ $(function(){
       console.log('reset the css here');
       hostvideoDiv.css({position: 'relative'});
       hostvideoDiv.removeClass("col-md-3");
-      hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
+      // hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
     }
     if (!hostState.localVideoTrackavailable && !hostState.localScreenTrackavailable) {
       console.log(hostState);
@@ -92,7 +96,7 @@ $(function(){
       hostvideoDiv.hide();
       hostvideoDiv.css({position: 'relative'});
       hostvideoDiv.removeClass("col-md-3");
-      hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
+      // hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
       console.log('hostscreendiv hidden here1');
       hostscreenDiv.hide();
       hostscreenDiv.empty();
@@ -114,7 +118,7 @@ $(function(){
       hostvideoDiv.hide();
       hostvideoDiv.css({position: 'relative'});
       hostvideoDiv.removeClass("col-md-3");
-      hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
+      // hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
       console.log('hostscreendiv hidden here2');
       hostscreenDiv.hide();
       hostscreenDiv.empty();
@@ -233,6 +237,45 @@ $(function(){
     }
   }
 
+  function playVTrack(trackObject, vtype) {
+    const divname = 'video_'+trackObject.getTrackId()
+    const newdiv = $('<div>', {id: divname});
+    const velement = $('<video />', {id: 'fluid_'+divname});
+    if (vtype === 'camera') {
+      newdiv.append(velement);
+      hostvideoDiv.append(newdiv);
+    } else if (vtype === 'screen') {
+      newdiv.append(velement)
+      hostscreenDiv.append(newdiv);
+    } else {
+      return;
+    }
+    console.log('creating mediastream');
+    const track = trackObject.getMediaStreamTrack();
+    const stream = new MediaStream;
+    stream.addTrack(track);
+    const ff = fluidPlayer('fluid_'+divname, {
+      layoutControls: {
+        posterImage: thumbnailurl,
+        playButtonShowing: false,
+        autoPlay: true,
+        keyboardControl: false,
+        controlBar: false,
+        fillToContainer: false,
+      }
+    });
+    if (vtype === 'camera') {
+      ffvideo = ff;
+      ffvideodiv = divname;
+    } else if (vtype === 'screen'){
+      ffscreen = ff;
+      ffscreendiv = divname;
+    }
+    const playerdiv = document.getElementById('fluid_'+divname);
+    playerdiv.srcObject = stream;
+    playerdiv.play();
+  }
+
   async function startScreenCall() {
     bclient.screenclient = AgoraRTC.createClient({ mode: 'live', codec: 'vp8'});
     bclient.screenclient.setClientRole(options.role);
@@ -243,13 +286,17 @@ $(function(){
       ,'auto');
     bclient.localAddScreenTrack = localAddScreenTrack;
     console.log('playing screen track in next line');
-    const screenDiv = document.getElementById('host-screen');
-    bclient.localAddScreenTrack.play(screenDiv);
+    // const screenDiv = document.getElementById('host-screen');
+    // bclient.localAddScreenTrack.play(screenDiv);
+    playVTrack(bclient.localAddScreenTrack, 'screen');
     // $('#host-screen').show();
     bclient.localAddScreenTrack.on('track-ended', () => {
       console.log('screen track ended');
       const deviceId = $('#camera-list-select').val();
       $('#camera-list-select').prop("selectedIndex", 0);
+      console.log('ffscreen.destroy();')
+      if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+      $('#'+ffscreendiv).remove();
       bclient.screenclient.leave();
       bclient.screenclient = null;
       bclient.localAddScreenTrack = null;
@@ -262,8 +309,9 @@ $(function(){
   async function addCameraCall(deviceId) {
     const vtrack = await AgoraRTC.createCameraVideoTrack({cameraId: deviceId, encoderConfig})
     bclient.localVideoTrack = vtrack;
-    const hostvideoDiv = document.getElementById('host-video');
-    bclient.localVideoTrack.play(hostvideoDiv);
+    // const hostvideoDiv = document.getElementById('host-video');
+    playVTrack(bclient.localVideoTrack, 'camera');
+    // bclient.localVideoTrack.play(hostvideoDiv);
     // $('#host-video').show();
   }
 
@@ -372,11 +420,17 @@ $(function(){
         if (bclient.screenclient === null) {
           console.log('bclient.screenclient === null');
           bclient.localAddScreenTrack.close();
+          console.log('ffscreen.destroy();')
+          if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+          $('#'+ffscreendiv).remove();
         } else {
           bclient.screenclient.unpublish(bclient.localAddScreenTrack)
           .then(() => {
             console.log('bclient.screenclient.unpublish');
             bclient.localAddScreenTrack.close();
+            console.log('ffscreen.destroy();')
+            if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+            $('#'+ffscreendiv).remove();
             bclient.screenclient.leave();
             bclient.screenclient = null;
             bclient.localAddScreenTrack = null;
@@ -395,6 +449,9 @@ $(function(){
           bclient.client.unpublish(bclient.localVideoTrack)
           .then(() => {
             bclient.localVideoTrack.close();
+            console.log('ffvideo.destroy();')
+            if (ffvideo !== null) {ffvideo.destroy();ffvideo=null;}
+            $('#'+ffvideodiv).remove();
             bclient.localVideoTrack = null;
             hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: false }});
             hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: true}});
@@ -404,17 +461,20 @@ $(function(){
               ,'auto')
               .then((localScreenTrack) => {
                 bclient.localScreenTrack = localScreenTrack;
+                console.log('!!!!!!!'+localScreenTrack.getTrackId());
                 if (bclient.client === null) {
-                  const screenElem = document.getElementById('host-screen');
-                  localScreenTrack.play(screenElem);
+                  // const screenElem = document.getElementById('host-screen');
+                  playVTrack(bclient.localScreenTrack, 'screen');
+                  // localScreenTrack.play(screenElem);
                   hostStore.dispatch({type: 'SCREEN_TRACK_AVAILABLE', payload: { localScreenTrackavailable: true }});
                   $('#camtoggle-btn').prop('disabled', true);
                   hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: false}});
                 } else {
                   bclient.client.publish(localScreenTrack)
                   .then(() => {
-                    const screenElem = document.getElementById('host-screen');
-                    localScreenTrack.play(screenElem);
+                    // const screenElem = document.getElementById('host-screen');
+                    playVTrack(bclient.localScreenTrack, 'screen');
+                    // localScreenTrack.play(screenElem);
                     hostStore.dispatch({type: 'SCREEN_TRACK_AVAILABLE', payload: { localScreenTrackavailable: true }});
                     $('#camtoggle-btn').prop('disabled', true);
                     hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: false}});
@@ -428,6 +488,9 @@ $(function(){
                   console.log('screen track ended');
                   bclient.client.unpublish(bclient.localScreenTrack)
                   .then(() => {
+                    console.log('ffscreen.destroy();')
+                    if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+                    $('#'+ffscreendiv).remove();
                     bclient.localScreenTrack = null;
                     console.log('bclient.client.unpublish(bclient.localScreenTrack)');
                     hostStore.dispatch({type: 'SCREEN_TRACK_AVAILABLE', payload: { localScreenTrackavailable: false }});
@@ -487,6 +550,9 @@ $(function(){
             return;
           })
         }
+        console.log('ffscreen.destroy();')
+        if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+        $('#'+ffscreendiv).remove();
       }
       if (bclient.localAddScreenTrack === null && bclient.localVideoTrack !== null) {
         console.log('here6');
@@ -531,11 +597,17 @@ $(function(){
       if (bclient.localScreenTrack !== null) {
         if (bclient.client === null) {
           bclient.localScreenTrack.close();
+          console.log('ffscreen.destroy();')
+          if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+          $('#'+ffscreendiv).remove();
         }
         else {
           bclient.client.unpublish(bclient.localScreenTrack)
           .then(() => {
             bclient.localScreenTrack.close();
+            console.log('ffscreen.destroy();')
+            if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+            $('#'+ffscreendiv).remove();
             bclient.localScreenTrack = null;
             console.log('switchin to webcam, localScreenTrack unpublished');
             hostStore.dispatch({type: 'SCREEN_TRACK_AVAILABLE', payload: { localScreenTrackavailable: false }});
@@ -549,10 +621,16 @@ $(function(){
       if (bclient.localAddScreenTrack !== null) {
         if (bclient.screenclient === null) {
           bclient.localAddScreenTrack.close();
+          console.log('ffscreen.destroy();')
+          if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+          $('#'+ffscreendiv).remove();
         } else {
           bclient.screenclient.unpublish(bclient.localAddScreenTrack)
           .then(() => {
             bclient.localAddScreenTrack.close();
+            console.log('ffscreen.destroy();')
+            if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+            $('#'+ffscreendiv).remove();
             bclient.screenclient.leave();
             bclient.screenclient = null;
             bclient.localAddScreenTrack = null;
@@ -571,8 +649,9 @@ $(function(){
         AgoraRTC.createCameraVideoTrack({cameraId: deviceId, encoderConfig})
         .then((vtrack) => {
           bclient.localVideoTrack = vtrack;
-          const videoElem = document.getElementById('host-video');
-          vtrack.play(videoElem);
+          // const videoElem = document.getElementById('host-video');
+          // vtrack.play(videoElem);
+          playVTrack(bclient.localVideoTrack, 'camera');
           hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: true }});
           $('#camtoggle-btn').prop('disabled', false);
           $('#camtoggle-icon').css('color','green');
@@ -652,8 +731,9 @@ $(function(){
     if (bclient.localVideoTrack === null) {
       const deviceId = $('#camera-list-select').val();
       bclient.localVideoTrack = await AgoraRTC.createCameraVideoTrack({cameraId: deviceId, encoderConfig});
-      const videoElem = document.getElementById('host-video');
-      bclient.localVideoTrack.play(videoElem);
+      // const videoElem = document.getElementById('host-video');
+      playVTrack(bclient.localVideoTrack, 'camera');
+      // bclient.localVideoTrack.play(videoElem);
       hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: true }});
       hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: false}});
       $('#camtoggle-btn').prop('disabled', false);
@@ -674,6 +754,12 @@ $(function(){
     if (bclient.localVideoTrack !== null) bclient.localVideoTrack.close();
     if (bclient.localScreenTrack !== null) bclient.localScreenTrack.close();
     if (bclient.localAddScreenTrack !== null) bclient.localAddScreenTrack.close();
+    console.log('ffscreen.destroy();')
+    if (ffvideo !== null) {ffvideo.destroy(); ffvideo=null;};
+    $('#'+ffvideodiv).remove();
+    console.log('ffscreen.destroy();')
+    if (ffscreen !== null) {ffscreen.destroy();ffscreen=null;}
+    $('#'+ffscreendiv).remove();
 
     if (volumeLevelTimer !== null) {
       clearInterval(volumeLevelTimer);
@@ -722,8 +808,9 @@ $(function(){
   const deviceIdcam = $('#camera-list-select').val();
   AgoraRTC.createCameraVideoTrack({cameraId: deviceIdcam, encoderConfig}).then((vtrack) => {
     bclient.localVideoTrack = vtrack;
-    const videoElem = document.getElementById('host-video');
-    vtrack.play(videoElem);
+    playVTrack(bclient.localVideoTrack, 'camera');
+    // const videoElem = document.getElementById('host-video');
+    // vtrack.play(videoElem);
     hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: true }});
     $('#camtoggle-btn').prop('disabled', false);
     $('#camtoggle-icon').css('color','green');
@@ -770,8 +857,9 @@ $(function(){
       console.log(deviceIdcam);
       AgoraRTC.createCameraVideoTrack({cameraId: deviceIdcam, encoderConfig}).then((vtrack) => {
         bclient.localVideoTrack = vtrack;
-        const videoElem = document.getElementById('host-video');
-        vtrack.play(videoElem);
+        playVTrack(bclient.localVideoTrack, 'camera');
+        // const videoElem = document.getElementById('host-video');
+        // vtrack.play(videoElem);
         hostStore.dispatch({type: 'VIDEO_TRACK_AVAILABLE', payload: { localVideoTrackavailable: true }});
         hostStore.dispatch({type: 'SET_WEBCAM_OFF', payload: {flag: false}});
         $('#camtoggle-btn').prop('disabled', false);

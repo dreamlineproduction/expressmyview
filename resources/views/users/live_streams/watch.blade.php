@@ -31,6 +31,11 @@ Streaming Now - {{ $stream->title }}
                               <meter id="volumelevel" value="0" min="0" max="1"></meter>
                             </div>
                             <div class="col-md-2 text-center">
+                                <button id="switchWindow" type="button" class="btn btn-block btn-success btn-lg">
+                                    <i class="far fa-window-restore"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-2 text-center">
                                 <button id="golive-btn" type="button" class="btn btn-block btn-success btn-lg">
                                     <i id="golive-icon" class="fas fa-podcast"></i>
                                 </button>

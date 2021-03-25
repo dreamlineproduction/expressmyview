@@ -3125,17 +3125,21 @@ $(function () {
   var recordingstatus = 0;
   var encoderConfig = {
     width: {
-      max: 1280,
+      max: 1920,
       min: 640
     },
     height: {
-      max: 720,
+      max: 1080,
       min: 480
     }
   };
   var hostvideoDiv = $('#host-video');
+  var ffvideo = null;
+  var ffvideodiv = null;
   hostvideoDiv.hide();
   var hostscreenDiv = $('#host-screen');
+  var ffscreen = null;
+  var ffscreendiv = null;
   hostscreenDiv.hide();
   var spinnerDiv = $('#spinner');
   spinnerDiv.hide();
@@ -3172,9 +3176,7 @@ $(function () {
     if (hostState.localVideoTrackavailable && hostState.localScreenTrackavailable) {
       // const vheight = $('#host-screen video').height();
       // $('#video-section').height(vheight+5);
-      hostscreenDiv.css({
-        position: 'absolute'
-      });
+      // hostscreenDiv.css({position: 'absolute'});
       hostvideoDiv.addClass("col-md-3");
       hostvideoDiv.css({
         position: 'absolute',
@@ -3197,11 +3199,7 @@ $(function () {
       hostvideoDiv.css({
         position: 'relative'
       });
-      hostvideoDiv.removeClass("col-md-3");
-      hostscreenDiv.css({
-        position: 'relative',
-        'z-index': 'auto'
-      });
+      hostvideoDiv.removeClass("col-md-3"); // hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
     }
 
     if (!hostState.localVideoTrackavailable && !hostState.localScreenTrackavailable) {
@@ -3215,11 +3213,8 @@ $(function () {
       hostvideoDiv.css({
         position: 'relative'
       });
-      hostvideoDiv.removeClass("col-md-3");
-      hostscreenDiv.css({
-        position: 'relative',
-        'z-index': 'auto'
-      });
+      hostvideoDiv.removeClass("col-md-3"); // hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
+
       console.log('hostscreendiv hidden here1');
       hostscreenDiv.hide();
       hostscreenDiv.empty();
@@ -3248,11 +3243,8 @@ $(function () {
       hostvideoDiv.css({
         position: 'relative'
       });
-      hostvideoDiv.removeClass("col-md-3");
-      hostscreenDiv.css({
-        position: 'relative',
-        'z-index': 'auto'
-      });
+      hostvideoDiv.removeClass("col-md-3"); // hostscreenDiv.css({position: 'relative', 'z-index': 'auto'});
+
       console.log('hostscreendiv hidden here2');
       hostscreenDiv.hide();
       hostscreenDiv.empty();
@@ -3424,13 +3416,60 @@ $(function () {
     }
   };
 
+  function playVTrack(trackObject, vtype) {
+    var divname = 'video_' + trackObject.getTrackId();
+    var newdiv = $('<div>', {
+      id: divname
+    });
+    var velement = $('<video />', {
+      id: 'fluid_' + divname
+    });
+
+    if (vtype === 'camera') {
+      newdiv.append(velement);
+      hostvideoDiv.append(newdiv);
+    } else if (vtype === 'screen') {
+      newdiv.append(velement);
+      hostscreenDiv.append(newdiv);
+    } else {
+      return;
+    }
+
+    console.log('creating mediastream');
+    var track = trackObject.getMediaStreamTrack();
+    var stream = new MediaStream();
+    stream.addTrack(track);
+    var ff = fluidPlayer('fluid_' + divname, {
+      layoutControls: {
+        posterImage: thumbnailurl,
+        playButtonShowing: false,
+        autoPlay: true,
+        keyboardControl: false,
+        controlBar: false,
+        fillToContainer: false
+      }
+    });
+
+    if (vtype === 'camera') {
+      ffvideo = ff;
+      ffvideodiv = divname;
+    } else if (vtype === 'screen') {
+      ffscreen = ff;
+      ffscreendiv = divname;
+    }
+
+    var playerdiv = document.getElementById('fluid_' + divname);
+    playerdiv.srcObject = stream;
+    playerdiv.play();
+  }
+
   function startScreenCall() {
     return _startScreenCall.apply(this, arguments);
   }
 
   function _startScreenCall() {
     _startScreenCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var localAddScreenTrack, screenDiv;
+      var localAddScreenTrack;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -3454,14 +3493,23 @@ $(function () {
             case 7:
               localAddScreenTrack = _context.sent;
               bclient.localAddScreenTrack = localAddScreenTrack;
-              console.log('playing screen track in next line');
-              screenDiv = document.getElementById('host-screen');
-              bclient.localAddScreenTrack.play(screenDiv); // $('#host-screen').show();
+              console.log('playing screen track in next line'); // const screenDiv = document.getElementById('host-screen');
+              // bclient.localAddScreenTrack.play(screenDiv);
+
+              playVTrack(bclient.localAddScreenTrack, 'screen'); // $('#host-screen').show();
 
               bclient.localAddScreenTrack.on('track-ended', function () {
                 console.log('screen track ended');
                 var deviceId = $('#camera-list-select').val();
                 $('#camera-list-select').prop("selectedIndex", 0);
+                console.log('ffscreen.destroy();');
+
+                if (ffscreen !== null) {
+                  ffscreen.destroy();
+                  ffscreen = null;
+                }
+
+                $('#' + ffscreendiv).remove();
                 bclient.screenclient.leave();
                 bclient.screenclient = null;
                 bclient.localAddScreenTrack = null;
@@ -3469,7 +3517,7 @@ $(function () {
                 if (deviceId === 'screenandvideo') {}
               });
 
-            case 13:
+            case 12:
             case "end":
               return _context.stop();
           }
@@ -3485,7 +3533,7 @@ $(function () {
 
   function _addCameraCall() {
     _addCameraCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(deviceId) {
-      var vtrack, hostvideoDiv;
+      var vtrack;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -3498,11 +3546,12 @@ $(function () {
 
             case 2:
               vtrack = _context2.sent;
-              bclient.localVideoTrack = vtrack;
-              hostvideoDiv = document.getElementById('host-video');
-              bclient.localVideoTrack.play(hostvideoDiv); // $('#host-video').show();
+              bclient.localVideoTrack = vtrack; // const hostvideoDiv = document.getElementById('host-video');
 
-            case 6:
+              playVTrack(bclient.localVideoTrack, 'camera'); // bclient.localVideoTrack.play(hostvideoDiv);
+              // $('#host-video').show();
+
+            case 5:
             case "end":
               return _context2.stop();
           }
@@ -3678,10 +3727,26 @@ $(function () {
         if (bclient.screenclient === null) {
           console.log('bclient.screenclient === null');
           bclient.localAddScreenTrack.close();
+          console.log('ffscreen.destroy();');
+
+          if (ffscreen !== null) {
+            ffscreen.destroy();
+            ffscreen = null;
+          }
+
+          $('#' + ffscreendiv).remove();
         } else {
           bclient.screenclient.unpublish(bclient.localAddScreenTrack).then(function () {
             console.log('bclient.screenclient.unpublish');
             bclient.localAddScreenTrack.close();
+            console.log('ffscreen.destroy();');
+
+            if (ffscreen !== null) {
+              ffscreen.destroy();
+              ffscreen = null;
+            }
+
+            $('#' + ffscreendiv).remove();
             bclient.screenclient.leave();
             bclient.screenclient = null;
             bclient.localAddScreenTrack = null;
@@ -3699,6 +3764,14 @@ $(function () {
         } else {
           bclient.client.unpublish(bclient.localVideoTrack).then(function () {
             bclient.localVideoTrack.close();
+            console.log('ffvideo.destroy();');
+
+            if (ffvideo !== null) {
+              ffvideo.destroy();
+              ffvideo = null;
+            }
+
+            $('#' + ffvideodiv).remove();
             bclient.localVideoTrack = null;
             hostStore.dispatch({
               type: 'VIDEO_TRACK_AVAILABLE',
@@ -3717,10 +3790,12 @@ $(function () {
               screenSourceType: _deviceInfo__WEBPACK_IMPORTED_MODULE_6__["default"].flag === 'firefox' ? 'screen' : null
             }, 'auto').then(function (localScreenTrack) {
               bclient.localScreenTrack = localScreenTrack;
+              console.log('!!!!!!!' + localScreenTrack.getTrackId());
 
               if (bclient.client === null) {
-                var screenElem = document.getElementById('host-screen');
-                localScreenTrack.play(screenElem);
+                // const screenElem = document.getElementById('host-screen');
+                playVTrack(bclient.localScreenTrack, 'screen'); // localScreenTrack.play(screenElem);
+
                 hostStore.dispatch({
                   type: 'SCREEN_TRACK_AVAILABLE',
                   payload: {
@@ -3736,8 +3811,9 @@ $(function () {
                 });
               } else {
                 bclient.client.publish(localScreenTrack).then(function () {
-                  var screenElem = document.getElementById('host-screen');
-                  localScreenTrack.play(screenElem);
+                  // const screenElem = document.getElementById('host-screen');
+                  playVTrack(bclient.localScreenTrack, 'screen'); // localScreenTrack.play(screenElem);
+
                   hostStore.dispatch({
                     type: 'SCREEN_TRACK_AVAILABLE',
                     payload: {
@@ -3760,6 +3836,14 @@ $(function () {
               bclient.localScreenTrack.on('track-ended', function () {
                 console.log('screen track ended');
                 bclient.client.unpublish(bclient.localScreenTrack).then(function () {
+                  console.log('ffscreen.destroy();');
+
+                  if (ffscreen !== null) {
+                    ffscreen.destroy();
+                    ffscreen = null;
+                  }
+
+                  $('#' + ffscreendiv).remove();
                   bclient.localScreenTrack = null;
                   console.log('bclient.client.unpublish(bclient.localScreenTrack)');
                   hostStore.dispatch({
@@ -3844,6 +3928,15 @@ $(function () {
             return;
           });
         }
+
+        console.log('ffscreen.destroy();');
+
+        if (ffscreen !== null) {
+          ffscreen.destroy();
+          ffscreen = null;
+        }
+
+        $('#' + ffscreendiv).remove();
       }
 
       if (bclient.localAddScreenTrack === null && bclient.localVideoTrack !== null) {
@@ -3917,9 +4010,25 @@ $(function () {
       if (bclient.localScreenTrack !== null) {
         if (bclient.client === null) {
           bclient.localScreenTrack.close();
+          console.log('ffscreen.destroy();');
+
+          if (ffscreen !== null) {
+            ffscreen.destroy();
+            ffscreen = null;
+          }
+
+          $('#' + ffscreendiv).remove();
         } else {
           bclient.client.unpublish(bclient.localScreenTrack).then(function () {
             bclient.localScreenTrack.close();
+            console.log('ffscreen.destroy();');
+
+            if (ffscreen !== null) {
+              ffscreen.destroy();
+              ffscreen = null;
+            }
+
+            $('#' + ffscreendiv).remove();
             bclient.localScreenTrack = null;
             console.log('switchin to webcam, localScreenTrack unpublished');
             hostStore.dispatch({
@@ -3938,9 +4047,25 @@ $(function () {
       if (bclient.localAddScreenTrack !== null) {
         if (bclient.screenclient === null) {
           bclient.localAddScreenTrack.close();
+          console.log('ffscreen.destroy();');
+
+          if (ffscreen !== null) {
+            ffscreen.destroy();
+            ffscreen = null;
+          }
+
+          $('#' + ffscreendiv).remove();
         } else {
           bclient.screenclient.unpublish(bclient.localAddScreenTrack).then(function () {
             bclient.localAddScreenTrack.close();
+            console.log('ffscreen.destroy();');
+
+            if (ffscreen !== null) {
+              ffscreen.destroy();
+              ffscreen = null;
+            }
+
+            $('#' + ffscreendiv).remove();
             bclient.screenclient.leave();
             bclient.screenclient = null;
             bclient.localAddScreenTrack = null;
@@ -3967,9 +4092,10 @@ $(function () {
           cameraId: deviceId,
           encoderConfig: encoderConfig
         }).then(function (vtrack) {
-          bclient.localVideoTrack = vtrack;
-          var videoElem = document.getElementById('host-video');
-          vtrack.play(videoElem);
+          bclient.localVideoTrack = vtrack; // const videoElem = document.getElementById('host-video');
+          // vtrack.play(videoElem);
+
+          playVTrack(bclient.localVideoTrack, 'camera');
           hostStore.dispatch({
             type: 'VIDEO_TRACK_AVAILABLE',
             payload: {
@@ -4000,7 +4126,7 @@ $(function () {
 
   function _startBroadcasting() {
     _startBroadcasting = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
-      var deviceId, _deviceId, videoElem;
+      var deviceId, _deviceId;
 
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
         while (1) {
@@ -4109,7 +4235,7 @@ $(function () {
 
             case 24:
               if (!(bclient.localVideoTrack === null)) {
-                _context6.next = 36;
+                _context6.next = 35;
                 break;
               }
 
@@ -4122,8 +4248,9 @@ $(function () {
 
             case 28:
               bclient.localVideoTrack = _context6.sent;
-              videoElem = document.getElementById('host-video');
-              bclient.localVideoTrack.play(videoElem);
+              // const videoElem = document.getElementById('host-video');
+              playVTrack(bclient.localVideoTrack, 'camera'); // bclient.localVideoTrack.play(videoElem);
+
               hostStore.dispatch({
                 type: 'VIDEO_TRACK_AVAILABLE',
                 payload: {
@@ -4140,17 +4267,17 @@ $(function () {
               $('#camtoggle-icon').css('color', 'green');
               $('#camtoggle-icon.fas').attr('class', 'fas fa-video');
 
-            case 36:
-              _context6.next = 38;
+            case 35:
+              _context6.next = 37;
               return bclient.client.publish([bclient.localAudioTrack, bclient.localVideoTrack]);
 
-            case 38:
+            case 37:
               $('#golive-btn').prop('disabled', true);
               $('#exit-btn').prop('disabled', false);
-              _context6.next = 42;
+              _context6.next = 41;
               return JoinChat();
 
-            case 42:
+            case 41:
             case "end":
               return _context6.stop();
           }
@@ -4175,6 +4302,23 @@ $(function () {
               if (bclient.localVideoTrack !== null) bclient.localVideoTrack.close();
               if (bclient.localScreenTrack !== null) bclient.localScreenTrack.close();
               if (bclient.localAddScreenTrack !== null) bclient.localAddScreenTrack.close();
+              console.log('ffscreen.destroy();');
+
+              if (ffvideo !== null) {
+                ffvideo.destroy();
+                ffvideo = null;
+              }
+
+              ;
+              $('#' + ffvideodiv).remove();
+              console.log('ffscreen.destroy();');
+
+              if (ffscreen !== null) {
+                ffscreen.destroy();
+                ffscreen = null;
+              }
+
+              $('#' + ffscreendiv).remove();
 
               if (volumeLevelTimer !== null) {
                 clearInterval(volumeLevelTimer);
@@ -4215,10 +4359,10 @@ $(function () {
                 }
               }); // Leave the channel.
 
-              _context7.next = 14;
+              _context7.next = 21;
               return bclient.client.leave();
 
-            case 14:
+            case 21:
               if (bclient.screenclient !== null) bclient.screenclient.leave();
               rtmchannel.leave();
               RTM.rtmclient.logout();
@@ -4227,7 +4371,7 @@ $(function () {
               $('#exit-btn').prop('disabled', true);
               $('#golive-btn').prop('disabled', false);
 
-            case 21:
+            case 28:
             case "end":
               return _context7.stop();
           }
@@ -4270,8 +4414,9 @@ $(function () {
     encoderConfig: encoderConfig
   }).then(function (vtrack) {
     bclient.localVideoTrack = vtrack;
-    var videoElem = document.getElementById('host-video');
-    vtrack.play(videoElem);
+    playVTrack(bclient.localVideoTrack, 'camera'); // const videoElem = document.getElementById('host-video');
+    // vtrack.play(videoElem);
+
     hostStore.dispatch({
       type: 'VIDEO_TRACK_AVAILABLE',
       payload: {
@@ -4332,8 +4477,9 @@ $(function () {
         encoderConfig: encoderConfig
       }).then(function (vtrack) {
         bclient.localVideoTrack = vtrack;
-        var videoElem = document.getElementById('host-video');
-        vtrack.play(videoElem);
+        playVTrack(bclient.localVideoTrack, 'camera'); // const videoElem = document.getElementById('host-video');
+        // vtrack.play(videoElem);
+
         hostStore.dispatch({
           type: 'VIDEO_TRACK_AVAILABLE',
           payload: {
