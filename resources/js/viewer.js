@@ -90,6 +90,7 @@ $(function(){
       spinnerDiv.hide()
     }
     if (viewersState.numVideoTracks === 2 && viewersState.noOfHosts === 2) {
+      $('#switchWindow').show();
       console.log('multiple video tracks detected');
       console.log(hostTracks);
       let counter = 0;
@@ -100,11 +101,12 @@ $(function(){
             console.log(divname, mediaType);
             if (mediaType === 'video') {
               counter = counter + 1;
-              $('#'+divname).css({position: 'absolute'});
               if (counter === viewersState.numVideoTracks) {
                 console.log('counter === viewersState.numVideoTracks');
+                $('#'+divname).css({position: 'absolute', 'z-index': 500});
                 $('#'+divname).addClass("col-md-3");
-                $('#'+divname).css({'z-index': 500, width: '100%', height: 'auto'});
+                $('#'+divname).prependTo($('#external-broadcast-container'));
+                // $('#external-broadcast-container').prepend($('#'+divname));
               }
             }
           });
@@ -112,6 +114,7 @@ $(function(){
       }
     }
     if (viewersState.numVideoTracks === 1 && viewersState.noOfHosts === 1) {
+      $('#switchWindow').hide();
       for (const hostid in hostTracks) {
         if (hostTracks[hostid].length > 0) {
           hostTracks[hostid].forEach((val, idx) => {
@@ -126,17 +129,6 @@ $(function(){
     }
   });
 
-  // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
-  if (APP_DEBUG) {
-    window.AgoraRTC = AgoraRTC;
-    AgoraRTC.setLogLevel(2);
-  } else {
-    AgoraRTC.setLogLevel(2);
-  }
-
-  var token = servertoken;
-  var tokenrtm = servertokenrtm;
-
   var bclient = {
     // For the local client.
     client: null,
@@ -145,6 +137,18 @@ $(function(){
     localVideoTrack: null,
     hosts: null,
   };
+
+  // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
+  if (APP_DEBUG) {
+    window.AgoraRTC = AgoraRTC;
+    window.bclient = bclient;
+    AgoraRTC.setLogLevel(2);
+  } else {
+    AgoraRTC.setLogLevel(2);
+  }
+
+  var token = servertoken;
+  var tokenrtm = servertokenrtm;
 
   $('#golive-btn').prop('disabled', true);
   $('#exit-btn').prop('disabled', true);
@@ -307,7 +311,7 @@ $(function(){
         if (mediaType === 'video') {
           const remoteVideoTrack = user.videoTrack;
           const idvname = 'video_'+remoteVideoTrack.getTrackId();
-          const playerDiv = $('<div>', {id: idvname});document.createElement('div');
+          const playerDiv = $('<div>', {id: idvname}); // document.createElement('div');
           const videodiv = $('<video />', {id: 'fluid_'+idvname});
           playerDiv.append(videodiv);
           $('#external-broadcasts-container').append(playerDiv);
@@ -449,6 +453,28 @@ $(function(){
       clearInterval(timer);
     }
     leaveCall()
+  });
+
+  $('#switchWindow').on('click', () => {
+    for (const hostid in hostTracks) {
+      if (hostTracks[hostid].length > 0) {
+        hostTracks[hostid].forEach((val, idx) => {
+          const { divname, mediaType } = val;
+          if (mediaType === 'video') {
+            const pos = $('#'+divname).css('position');
+            console.log(pos);
+            if (pos === 'absolute') {
+              $('#'+divname).css({position: 'relative', 'z-index': 'auto'});
+              $('#'+divname).removeClass("col-md-3");
+            } else if (pos === 'relative') {
+              $('#'+divname).css({position: 'absolute', 'z-index': 500});
+              $('#'+divname).addClass("col-md-3");
+              // $('#external-broadcast-container').prepend($('#'+divname));
+            }
+          }
+        });
+      }
+    }
   });
 
 });

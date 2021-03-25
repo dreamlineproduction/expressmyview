@@ -3530,6 +3530,7 @@ $(function () {
 
     if (viewersState.numVideoTracks === 2 && viewersState.noOfHosts === 2) {
       (function () {
+        $('#switchWindow').show();
         console.log('multiple video tracks detected');
         console.log(hostTracks);
         var counter = 0;
@@ -3543,18 +3544,15 @@ $(function () {
 
               if (mediaType === 'video') {
                 counter = counter + 1;
-                $('#' + divname).css({
-                  position: 'absolute'
-                });
 
                 if (counter === viewersState.numVideoTracks) {
                   console.log('counter === viewersState.numVideoTracks');
-                  $('#' + divname).addClass("col-md-3");
                   $('#' + divname).css({
-                    'z-index': 500,
-                    width: '100%',
-                    height: 'auto'
+                    position: 'absolute',
+                    'z-index': 500
                   });
+                  $('#' + divname).addClass("col-md-3");
+                  $('#' + divname).prependTo($('#external-broadcast-container')); // $('#external-broadcast-container').prepend($('#'+divname));
                 }
               }
             });
@@ -3564,6 +3562,8 @@ $(function () {
     }
 
     if (viewersState.numVideoTracks === 1 && viewersState.noOfHosts === 1) {
+      $('#switchWindow').hide();
+
       for (var hostid in hostTracks) {
         if (hostTracks[hostid].length > 0) {
           hostTracks[hostid].forEach(function (val, idx) {
@@ -3581,17 +3581,7 @@ $(function () {
         }
       }
     }
-  }); // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
-
-  if (APP_DEBUG) {
-    window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
-  } else {
-    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
-  }
-
-  var token = servertoken;
-  var tokenrtm = servertokenrtm;
+  });
   var bclient = {
     // For the local client.
     client: null,
@@ -3599,7 +3589,18 @@ $(function () {
     localAudioTrack: null,
     localVideoTrack: null,
     hosts: null
-  };
+  }; // Level: 1: INFO, 0: DEBUG, 4: NONE, 2: WARNING, 3: ERROR
+
+  if (APP_DEBUG) {
+    window.AgoraRTC = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a;
+    window.bclient = bclient;
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
+  } else {
+    agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.setLogLevel(2);
+  }
+
+  var token = servertoken;
+  var tokenrtm = servertokenrtm;
   $('#golive-btn').prop('disabled', true);
   $('#exit-btn').prop('disabled', true);
   var options = {
@@ -3867,8 +3868,8 @@ $(function () {
                             idvname = 'video_' + remoteVideoTrack.getTrackId();
                             playerDiv = $('<div>', {
                               id: idvname
-                            });
-                            document.createElement('div');
+                            }); // document.createElement('div');
+
                             videodiv = $('<video />', {
                               id: 'fluid_' + idvname
                             });
@@ -4134,6 +4135,35 @@ $(function () {
 
     leaveCall();
   });
+  $('#switchWindow').on('click', function () {
+    for (var hostid in hostTracks) {
+      if (hostTracks[hostid].length > 0) {
+        hostTracks[hostid].forEach(function (val, idx) {
+          var divname = val.divname,
+              mediaType = val.mediaType;
+
+          if (mediaType === 'video') {
+            var pos = $('#' + divname).css('position');
+            console.log(pos);
+
+            if (pos === 'absolute') {
+              $('#' + divname).css({
+                position: 'relative',
+                'z-index': 'auto'
+              });
+              $('#' + divname).removeClass("col-md-3");
+            } else if (pos === 'relative') {
+              $('#' + divname).css({
+                position: 'absolute',
+                'z-index': 500
+              });
+              $('#' + divname).addClass("col-md-3"); // $('#external-broadcast-container').prepend($('#'+divname));
+            }
+          }
+        });
+      }
+    }
+  });
 });
 
 /***/ }),
@@ -4145,7 +4175,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\viewer.js */"./resources/js/viewer.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\viewer.js */"./resources/js/viewer.js");
 
 
 /***/ })

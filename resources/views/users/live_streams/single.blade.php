@@ -23,53 +23,57 @@
                 <div class="single-video-left">
                     <div class="single-video live-strm">
 
-                      <div class="row">
-                          <div class="col-md-6">
-                          <div class="text-left">
-                          <div class="alert alert-primary">
-                      <span id="connectionState"></span></div>
-                           
-                            <div class="row">
+                        <div class="row">
                             <div class="col-md-6">
-                            <div id="mic-list" class="form-group">
-                            <label for="audio_source">Audio Source</label>
-                                     <select name="mic-list-select" id="mic-list-select" class="form-control"></select>
-                                   </div>
-                            </div>
+                                <div class="text-left">
+                                    <div class="alert alert-primary">
+                                        <span id="connectionState"></span>
+                                    </div>
 
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mic-list" class="form-group">
+                                                <label for="audio_source">Audio Source</label>
+                                                <select name="mic-list-select" id="mic-list-select"
+                                                    class="form-control"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div id="camera-list" class="form-group">
+
+
+                                                <label for="video_source">Video Source</label>
+                                                <select class="form-control" name="camera-list-select"
+                                                    id="camera-list-select"></select>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
                             <div class="col-md-6">
-                            <div id="camera-list"  class="form-group">
+                                <div id="buttons-container" class="row justify-content-end">
 
-                           
-<label for="video_source">Video Source</label>
-<select class="form-control" name="camera-list-select" id="camera-list-select"></select>
-         
-       </div>
-                            </div>
-                            
-                            </div>
-                           
-                           
-                          </div>
-                          </div>
-                          <div class="col-md-6">
-                          <div id="buttons-container" class="row justify-content-end">
+                                    <div class="col-md-1 ">
+                                        <button id="golive-btn" type="button"
+                                            class="btn btn-block btn-success go-live-btn">
+                                            <i id="golive-icon" class="fas fa-podcast"></i>
+                                        </button>
+                                    </div>
 
-                         <div class="col-md-1 ">
-                             <button id="golive-btn" type="button" class="btn btn-block btn-success go-live-btn">
-                                 <i id="golive-icon" class="fas fa-podcast"></i>
-                             </button>
-                         </div>
-
-                         <div class="col-md-1">
-                         <div id="audio-controls" class=" text-center btn-group">
-                               <div class="mic-selection1">
-                         <div id="mic-toggle" class="btn-group">
-                             <div class="mic-selection">
-                                 <button id="mictoggle-btn" type="button" class="mic-selection">
-                                     <i id="mictoggle-icon" class="fas fa-microphone"></i>
-                                 </button>
-                                 <!-- <button id="mic-dropdown" type="button"
+                                    <div class="col-md-1">
+                                        <div id="audio-controls" class=" text-center btn-group">
+                                            <div class="mic-selection1">
+                                                <div id="mic-toggle" class="btn-group">
+                                                    <div class="mic-selection">
+                                                        <button id="mictoggle-btn" type="button" class="mic-selection">
+                                                            <i id="mictoggle-icon" class="fas fa-microphone"></i>
+                                                        </button>
+                                                        <!-- <button id="mic-dropdown" type="button"
                                        class="tgl-drop dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
                                        aria-haspopup="true" aria-expanded="false">
                                        <span class="sr-only">Toggle Dropdown</span>
@@ -78,24 +82,24 @@
                                      <select name="mic-list-select" id="mic-list-select" class="dropdown-item"></select>
                                    </div> -->
 
-                             </div>
-                         </div>
-                             </div>
-                         </div>
-                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
 
-                         <div class="col-md-1">
-                         <div id="video-controls" class=" text-center btn-group">
+                                    <div class="col-md-1">
+                                        <div id="video-controls" class=" text-center btn-group">
 
-                           <div class="mic-selection1">
-                         <div id="video-toggle" class="text-center btn-group">
-                             <div class="mic-selection">
-                                 <button id="camtoggle-btn" type="button" class="mic-selection">
-                                     <i id="camtoggle-icon" class="fas fa-video"></i>
-                                 </button>
-                                 <!-- <button id="cam-dropdown" type="button"
+                                            <div class="mic-selection1">
+                                                <div id="video-toggle" class="text-center btn-group">
+                                                    <div class="mic-selection">
+                                                        <button id="camtoggle-btn" type="button" class="mic-selection">
+                                                            <i id="camtoggle-icon" class="fas fa-video"></i>
+                                                        </button>
+                                                        <!-- <button id="cam-dropdown" type="button"
                                        class="tgl-drop dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
                                        aria-haspopup="true" aria-expanded="false">
                                        <span class="sr-only">Toggle Dropdown</span>
@@ -103,48 +107,50 @@
                                    <div id="camera-list" class="dropdown-menu">
                                      <select name="camera-list-select" id="camera-list-select"></select>
                                    </div> -->
-                             </div>
-                         </div>
-                             </div>
-                         </div>
-                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
 
 
-                           <div class="col-md-1">
-                               <button id="exit-btn" type="button" class="btn btn-block btn-danger stop-stream-btn">
-                                   <i id="exit-icon" class="fas fa-phone-slash"></i>
-                               </button>
-                           </div>
+                                    <div class="col-md-1">
+                                        <button id="exit-btn" type="button"
+                                            class="btn btn-block btn-danger stop-stream-btn">
+                                            <i id="exit-icon" class="fas fa-phone-slash"></i>
+                                        </button>
+                                    </div>
 
-                           <div class="audio-meter">
- <label for="volumelevel">Volume Strength: </label>
- <meter id="volumelevel" class="volume-meter" value="0" min="0" max="1"></meter>
-</div>
-                       </div>
+                                    <div class="audio-meter">
+                                        <label for="volumelevel">Volume Strength: </label>
+                                        <meter id="volumelevel" class="volume-meter" value="0" min="0" max="1"></meter>
+                                    </div>
+                                </div>
 
 
-                       
-                          </div>
-                      </div>
+
+                            </div>
+                        </div>
 
 
                         <div id="video-section">
-                          <div id='host-video'></div>
-                          <div id='host-screen'></div>
+                            <div id='host-video'></div>
+                            <div id='host-screen'></div>
                         </div>
                         <div class="col-md-12" id='posterimage'>
 
-                          <div id="statusScreen" class="alert alert-primary align-self-center">
-                          <span></span></div>
-                          <div class="sk-wave sk-center" id='spinner'>
-                            <div class="sk-wave-rect"></div>
-                            <div class="sk-wave-rect"></div>
-                            <div class="sk-wave-rect"></div>
-                            <div class="sk-wave-rect"></div>
-                            <div class="sk-wave-rect"></div>
-                          </div>
+                            <div id="statusScreen" class="alert alert-primary align-self-center">
+                                <span></span>
+                            </div>
+                            <div class="sk-wave sk-center" id='spinner'>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                                <div class="sk-wave-rect"></div>
+                            </div>
 
                         </div>
 
@@ -173,10 +179,34 @@
                             <div class="col-md-6">
 
                                 <div class="text-right">
-                                    <button class="btn btn-danger" type="button">Subscribe <strong>1.4M</strong>
+                                    @if(Auth::check())
+                                    @if($stream->user_id != Auth::user()->id)
+                                    @if(isSubscribed($stream->channel->id, Auth::user()->id))
+                                    <button class="btn btn-danger" type="button" id="subscribe_btn"
+                                        data-channel="{{ $stream->channel_id }}">
+                                        <span class="sub-status">Unsubscribe</span>
+                                        <strong class="sub-count">{{ $stream->channel->subscribers }}</strong>
                                     </button>
+                                    @else
+                                    <button class="btn btn-danger" type="button" id="subscribe_btn"
+                                        data-channel={{ $stream->channel_id }}>
+                                        <span class="sub-status">Subscribe</span>
+                                        <strong class="sub-count">{{ $stream->channel->subscribers }}</strong>
+                                    </button>
+                                    @endif
                                     <button class="btn btn btn-outline-danger" type="button"><i
                                             class="fas fa-bell"></i></button>
+                                    @else
+                                    <button class="btn btn-danger" type="button">Subscribers
+                                        <strong>{{ $stream->channel->subscribers }}</strong>
+                                    </button>
+                                    @endif
+                                    @else
+                                    <a href="{{ route('login') }}" class="btn btn-danger" role="button">
+                                        Subscribe
+                                        <strong>{{ $stream->channel->subscribers }}</strong>
+                                    </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -186,9 +216,29 @@
                     <div class="single-video-author box mb-2">
                         <div class="float-right">
 
-                            <button class="btn btn btn-outline-danger" type="button"><i class="far fa-thumbs-up"></i>
-                                2.2K
+                            @if(Auth::check())
+                            @if($stream->user_id != Auth::user()->id)
+                            @if(isLiked($stream->id, Auth::user()->id))
+                            <button class="btn btn btn-danger" type="button" id="like_btn"
+                                data-stream="{{ $stream->id }}"><i class="far fa-thumbs-up"></i> <span
+                                    id="likes_count">{{ formatSubscribersCount($stream->likes) }}</span>
                             </button>
+                            @else
+                            <button class="btn btn btn-outline-danger" type="button" id="like_btn"
+                                data-stream="{{ $stream->id }}"><i class="far fa-thumbs-up"></i> <span
+                                    id="likes_count">{{ formatSubscribersCount($stream->likes) }}</span>
+                            </button>
+                            @endif
+                            @else
+                            <button class="btn btn btn-outline-danger" type="button"><i class="far fa-thumbs-up"></i>
+                                {{ formatSubscribersCount($stream->likes) }}
+                            </button>
+                            @endif
+                            @else
+                            <a href="{{ route('login') }}" class="btn btn-danger" role="button">
+                                <i class="far fa-thumbs-up"></i> {{ formatSubscribersCount($stream->likes) }}
+                            </a>
+                            @endif
 
                             <button class="btn btn btn-outline-warning" type="button"><i
                                     class="far fa-share-square"></i></button>
@@ -210,7 +260,8 @@
 
                             <div class="form-row mt-3">
                                 <div class="col-md-10 stream-key">
-                                <input type="text" value="{{ route('live-streams.watch', $stream->id) }}" id="myInput" readonly>
+                                    <input type="text" value="{{ route('live-streams.watch', $stream->id) }}"
+                                        id="myInput" readonly>
 
 
 
@@ -221,11 +272,11 @@
 
                                     <!-- Trigger -->
                                     <div class="tooltip">
-<button class="btn" onclick="myFunction()" onmouseout="outFunc()">
-  <span class="tooltiptext" id="myTooltip"></span>
-  <i class="far fa-copy" alt="Copy to clipboard"></i>
-  </button>
-</div>
+                                        <button class="btn" onclick="myFunction()" onmouseout="outFunc()">
+                                            <span class="tooltiptext" id="myTooltip"></span>
+                                            <i class="far fa-copy" alt="Copy to clipboard"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -389,8 +440,8 @@
                                                 </div>
 
 
-                                                <a class="publisher-btn text-info" href="#" data-abc="true" id='publisher-btn'><i
-                                                        class="fa fa-paper-plane"></i></a>
+                                                <a class="publisher-btn text-info" href="#" data-abc="true"
+                                                    id='publisher-btn'><i class="fa fa-paper-plane"></i></a>
 
                                             </div>
                                         </div>
@@ -416,22 +467,27 @@
 <!-- Fluid Player -->
 <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js" defer></script>
 <script src="{{ asset('js/clipboard.js') }}"></script>
-<script src="{{ asset('js/podcast.js') }}"></script>
+<!-- <script src="{{ asset('js/podcast.js') }}"></script> -->
 <script src="{{ asset('js/broadcaster.js') }}"></script>
 <!-- <script src="{{ asset('js/loademoji.js') }}"></script> -->
 
 <script>
 var channelname = "{{ $stream->channelname }}";
-var APP_ENV = "{{ env("APP_ENV") }}";
-var APP_DEBUG = "{{ env("APP_DEBUG") }}";
-var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
+var APP_ENV = "{{ env("
+APP_ENV ") }}";
+var APP_DEBUG = "{{ env("
+APP_DEBUG ") }}";
+var AGORA_APP_ID = "{{ env("
+AGORA_APP_ID ") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
 var clipboard = new ClipboardJS('.btn');
 var streamid = "{{ $stream->id }}";
 var displayname = "{{ $stream->user->name }}";
-var profilepic = "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
+var profilepic =
+    "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
+var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
 
 clipboard.on('success', function(e) {
     console.log(e);
@@ -442,23 +498,24 @@ clipboard.on('error', function(e) {
 });
 
 function myFunction() {
-  var copyText = document.getElementById("myInput");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
+    var copyText = document.getElementById("myInput");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
 
-  var tooltip = document.getElementById("myTooltip");
-  tooltip.innerHTML = "Copied";
+    var tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copied";
 }
 
 function outFunc() {
-  var tooltip = document.getElementById("myTooltip");
-  tooltip.innerHTML = "Copy Stream Link";
+    var tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copy Stream Link";
 }
 $(document).ready(function() {
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+    $("body").tooltip({
+        selector: '[data-toggle=tooltip]'
+    });
 });
-
 </script>
 
 
