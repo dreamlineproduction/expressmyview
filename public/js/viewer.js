@@ -3450,7 +3450,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 $(function () {
-  console.log('agora sdk version: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.VERSION + ' compatible: ' + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.checkSystemRequirements()); // <source src='/videos/bannerg004.mp4' />
+  console.log("agora sdk version: " + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.VERSION + " compatible: " + agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.checkSystemRequirements()); // <source src='/videos/bannerg004.mp4' />
   // const player = fluidPlayer('fluidplayerdiv', {
   //   layoutControls: {
   //     posterImage: thumbnailurl,
@@ -3470,35 +3470,35 @@ $(function () {
   var volumeLevelTimers = {};
   var abruptClose = null;
   var hostTracks = {};
-  var streamsContainer = $('#external-broadcasts-container');
-  var spinnerDiv = $('#spinner');
+  var streamsContainer = $("#external-broadcasts-container");
+  var spinnerDiv = $("#spinner");
   spinnerDiv.show();
-  var posterimage = $('#posterimage');
+  var posterimage = $("#posterimage");
   posterimage.height(480).show();
   posterimage.css({
-    'background-image': 'url(' + thumbnailurl + ')',
-    'background-position': 'center',
-    'background-repeat': 'no-repeat',
-    'background-size': 'cover'
+    "background-image": "url(" + thumbnailurl + ")",
+    "background-position": "center",
+    "background-repeat": "no-repeat",
+    "background-size": "cover"
   });
-  $('#statusScreen').show();
-  $('#statusScreen span').html('Host has not joined yet or left the broadcast.');
+  $("#statusScreen").show();
+  $("#statusScreen span").html("Host has not joined yet or left the broadcast.");
   var audienceStore = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_audience__WEBPACK_IMPORTED_MODULE_4__["default"]);
   audienceStore.subscribe(function () {
     var audienceState = audienceStore.getState();
-    $('#connectionState').html(audienceState.connectionState);
+    $("#connectionState").html(audienceState.connectionState);
 
-    if (audienceState.connectionState === 'CONNECTED') {
+    if (audienceState.connectionState === "CONNECTED") {
       posterimage.show();
-      $('#statusScreen').show();
-      $('#statusScreen span').html('You are connected to the live stream! Host is yet to join.');
+      $("#statusScreen").show();
+      $("#statusScreen span").html("You are connected to the live stream! Host is yet to join.");
       spinnerDiv.show();
     }
 
-    if (audienceState.connectionState !== 'CONNECTED') {
+    if (audienceState.connectionState !== "CONNECTED") {
       posterimage.show();
-      $('#statusScreen').show();
-      $('#statusScreen span').html('You are not connected to the live stream!');
+      $("#statusScreen").show();
+      $("#statusScreen span").html("You are not connected to the live stream!");
       spinnerDiv.show();
     }
   });
@@ -3506,31 +3506,31 @@ $(function () {
   hostsStore.subscribe(function () {
     var viewersState = hostsStore.getState();
     console.log(viewersState);
-    $('#liveviewerscount').html(viewersState.viewersCount);
+    $("#liveviewerscount").html(viewersState.viewersCount);
 
     if (!viewersState.hostConnected) {
       posterimage.show();
-      $('#statusScreen').show();
-      $('#statusScreen span').html('Host got disconnected or left the broadcast');
+      $("#statusScreen").show();
+      $("#statusScreen span").html("Host got disconnected or left the broadcast");
       spinnerDiv.show();
     }
 
     if (viewersState.numVideoTracks === 0 && viewersState.noOfHosts > 0) {
       posterimage.show();
-      $('#statusScreen').show();
-      $('#statusScreen span').html('Host is not broadcasting any video stream');
+      $("#statusScreen").show();
+      $("#statusScreen span").html("Host is not broadcasting any video stream");
       spinnerDiv.show();
     }
 
     if (viewersState.numVideoTracks > 0 && viewersState.noOfHosts > 0) {
       posterimage.hide();
-      $('#statusScreen').hide();
+      $("#statusScreen").hide();
       spinnerDiv.hide();
     }
 
     if (viewersState.numVideoTracks === 2 && viewersState.noOfHosts === 2) {
       (function () {
-        console.log('multiple video tracks detected');
+        console.log("multiple video tracks detected");
         console.log(hostTracks);
         var counter = 0;
 
@@ -3541,19 +3541,19 @@ $(function () {
                   mediaType = val.mediaType;
               console.log(divname, mediaType);
 
-              if (mediaType === 'video') {
+              if (mediaType === "video") {
                 counter = counter + 1;
-                $('#' + divname).css({
-                  position: 'absolute'
+                $("#" + divname).css({
+                  position: "absolute"
                 });
 
                 if (counter === viewersState.numVideoTracks) {
-                  console.log('counter === viewersState.numVideoTracks');
-                  $('#' + divname).addClass("col-md-3");
-                  $('#' + divname).css({
-                    'z-index': 500,
-                    width: '100%',
-                    height: 'auto'
+                  console.log("counter === viewersState.numVideoTracks");
+                  $("#" + divname).addClass("col-md-3");
+                  $("#" + divname).css({
+                    "z-index": 500,
+                    width: "100%",
+                    height: "auto"
                   });
                 }
               }
@@ -3570,12 +3570,12 @@ $(function () {
             var divname = val.divname,
                 mediaType = val.mediaType;
 
-            if (mediaType === 'video') {
-              $('#' + divname).css({
-                position: 'relative',
-                'z-index': 'auto'
+            if (mediaType === "video") {
+              $("#" + divname).css({
+                position: "relative",
+                "z-index": "auto"
               });
-              $('#' + divname).removeClass("col-md-3");
+              $("#" + divname).removeClass("col-md-3");
             }
           });
         }
@@ -3600,13 +3600,13 @@ $(function () {
     localVideoTrack: null,
     hosts: null
   };
-  $('#golive-btn').prop('disabled', true);
-  $('#exit-btn').prop('disabled', true);
+  $("#golive-btn").prop("disabled", true);
+  $("#exit-btn").prop("disabled", true);
   var options = {
     appId: AGORA_APP_ID,
     channel: channelname,
     token: token,
-    role: 'audience'
+    role: "audience"
   }; // let isAudioAutoplayFailed = false;
   // AgoraRTC.onAudioAutoplayFailed = () => {
   //   if (isAudioAutoplayFailed) return;
@@ -3649,17 +3649,17 @@ $(function () {
                 RTM.rtmclient.logFilter(agora_rtm_sdk__WEBPACK_IMPORTED_MODULE_2___default.a.LOG_FILTER_WARNING);
               }
 
-              RTM.rtmclient.on('ConnectionStateChanged', function (newState, reason) {
-                console.log('on connection state changed to ' + newState + ' reason: ' + reason);
+              RTM.rtmclient.on("ConnectionStateChanged", function (newState, reason) {
+                console.log("on connection state changed to " + newState + " reason: " + reason);
               });
               RTM.rtmclient.login({
                 token: tokenrtm,
                 uid: userrtm
               }).then(function () {
                 RTM.loggedIn = true;
-                console.log('RTM login successfull');
+                console.log("RTM login successfull");
                 rtmchannel = RTM.rtmclient.createChannel(channelname);
-                rtmchannel.on('ChannelMessage', function (_ref, senderId) {
+                rtmchannel.on("ChannelMessage", function (_ref, senderId) {
                   var text = _ref.text;
 
                   var _JSON$parse2 = JSON.parse(text),
@@ -3667,40 +3667,40 @@ $(function () {
                       displayname = _JSON$parse2.displayname,
                       profilepic = _JSON$parse2.profilepic;
 
-                  var divID = '_' + Math.random().toString(36).substr(2, 9);
-                  var chatDiv = $('<div>', {
+                  var divID = "_" + Math.random().toString(36).substr(2, 9);
+                  var chatDiv = $("<div>", {
                     id: divID,
-                    "class": 'media media-chat'
+                    "class": "media media-chat"
                   });
-                  var imgDiv = $('<img>', {
-                    "class": 'avatar',
+                  var imgDiv = $("<img>", {
+                    "class": "avatar",
                     src: profilepic
                   });
                   chatDiv.append(imgDiv);
-                  var chatBody = $('<div>', {
-                    "class": 'media-body'
+                  var chatBody = $("<div>", {
+                    "class": "media-body"
                   });
-                  var nameBody = $('<p>', {
-                    text: 'From: ' + displayname
+                  var nameBody = $("<p>", {
+                    text: "From: " + displayname
                   });
-                  var textBody = $('<p>', {
+                  var textBody = $("<p>", {
                     html: msg
                   });
                   chatBody.append(nameBody);
                   chatBody.append(textBody);
                   chatDiv.append(chatBody);
-                  chatDiv.attr('class', 'media media-chat');
-                  $('#chat-content').append(chatDiv);
+                  chatDiv.attr("class", "media media-chat");
+                  $("#chat-content").append(chatDiv);
                   console.log(chatDiv);
-                  console.log('Message received: ', text);
+                  console.log("Message received: ", text);
                 });
                 rtmchannel.join().then(function () {
-                  console.log('chat channel joining success');
+                  console.log("chat channel joining success");
                 })["catch"](function (error) {
-                  console.log('Chat channel joining error: ', error);
+                  console.log("Chat channel joining error: ", error);
                 });
               })["catch"](function (error) {
-                console.log('RTM login error: ' + error);
+                console.log("RTM login error: " + error);
               });
 
             case 4:
@@ -3713,8 +3713,6 @@ $(function () {
     return _JoinChat.apply(this, arguments);
   }
 
-  ;
-
   function sendChatMessage(textmsg) {
     var emoji = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -3726,16 +3724,16 @@ $(function () {
       rtmchannel.sendMessage({
         text: textmsg
       }).then(function () {
-        var divID = '_' + Math.random().toString(36).substr(2, 9);
-        var chatDiv = $('<div>', {
+        var divID = "_" + Math.random().toString(36).substr(2, 9);
+        var chatDiv = $("<div>", {
           id: divID,
-          "class": 'media media-chat media-chat-reverse'
+          "class": "media media-chat media-chat-reverse"
         });
-        var chatBody = $('<div>', {
-          "class": 'media-body'
+        var chatBody = $("<div>", {
+          "class": "media-body"
         });
-        var nameBody = $('<p>', {
-          text: 'From: ' + displayname
+        var nameBody = $("<p>", {
+          text: "From: " + displayname
         }); // let textBody;
         // if (emoji) {
         //   textBody = JSON.parse(msg);
@@ -3743,24 +3741,23 @@ $(function () {
         //   textBody = $('<p>', {text: msg});
         // }
 
-        var textBody = $('<p>', {
+        var textBody = $("<p>", {
           html: msg
         }); // chatBody.append(nameBody);
 
         chatBody.append(textBody);
         chatDiv.append(chatBody);
-        $('#chat-content').append(chatDiv);
-        if (!emoji) $('#publisher-input').val('');
+        $("#chat-content").append(chatDiv);
+        if (!emoji) $("#publisher-input").val("");
       })["catch"](function (error) {
         console.log(error);
       });
     }
   }
 
-  ;
-  $('#publisher-input').keyup(function (e) {
+  $("#publisher-input").keyup(function (e) {
     if (e.keyCode == 13) {
-      var msg = $('#publisher-input').val();
+      var msg = $("#publisher-input").val();
       if (msg.length < 1) return;
       var textmsg = JSON.stringify({
         msg: msg,
@@ -3771,8 +3768,8 @@ $(function () {
       sendChatMessage(textmsg);
     }
   });
-  $('#publisher-btn').click(function (e) {
-    var msg = $('#publisher-input').val();
+  $("#publisher-btn").click(function (e) {
+    var msg = $("#publisher-input").val();
     if (msg.length < 1) return;
     var textmsg = JSON.stringify({
       msg: msg,
@@ -3795,20 +3792,20 @@ $(function () {
           switch (_context5.prev = _context5.next) {
             case 0:
               bclient.client = agora_rtc_sdk_ng__WEBPACK_IMPORTED_MODULE_1___default.a.createClient({
-                mode: 'live',
-                codec: 'vp8'
+                mode: "live",
+                codec: "vp8"
               });
               bclient.client.setClientRole(options.role);
-              bclient.client.on('connection-state-change', function (currState, prevState, reason) {
-                console.log('Connection state: ' + currState);
+              bclient.client.on("connection-state-change", function (currState, prevState, reason) {
+                console.log("Connection state: " + currState);
                 audienceStore.dispatch({
-                  type: 'SET_CONN_STATE',
+                  type: "SET_CONN_STATE",
                   payload: {
                     connectionState: currState
                   }
                 });
               });
-              bclient.client.on('token-privilege-will-expire', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+              bclient.client.on("token-privilege-will-expire", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
                 return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
@@ -3823,7 +3820,7 @@ $(function () {
                   }
                 }, _callee2);
               })));
-              bclient.client.on('token-privilege-did-expire', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+              bclient.client.on("token-privilege-did-expire", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
                 return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
                   while (1) {
                     switch (_context3.prev = _context3.next) {
@@ -3838,13 +3835,13 @@ $(function () {
                   }
                 }, _callee3);
               })));
-              bclient.client.on('network-quality', function (quality) {// const { downlinkNetworkQuality, uplinkNetworkQuality } = quality;
+              bclient.client.on("network-quality", function (quality) {// const { downlinkNetworkQuality, uplinkNetworkQuality } = quality;
                 // console.log(quality);
               });
-              bclient.client.on('exception', function (event) {
+              bclient.client.on("exception", function (event) {
                 console.log(event);
               });
-              bclient.client.on('user-published', /*#__PURE__*/function () {
+              bclient.client.on("user-published", /*#__PURE__*/function () {
                 var _ref4 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4(user, mediaType) {
                   var remoteVideoTrack, idvname, playerDiv, videodiv, track, stream, playerdiv, ff, _audienceStore$getSta, numAudioTracks, remoteAudioTrack, audioPlayerDiv, idaname;
 
@@ -3862,24 +3859,24 @@ $(function () {
                           return bclient.client.subscribe(user, mediaType);
 
                         case 4:
-                          if (mediaType === 'video') {
+                          if (mediaType === "video") {
                             remoteVideoTrack = user.videoTrack;
-                            idvname = 'video_' + remoteVideoTrack.getTrackId();
-                            playerDiv = $('<div>', {
+                            idvname = "video_" + remoteVideoTrack.getTrackId();
+                            playerDiv = $("<div>", {
                               id: idvname
                             });
-                            document.createElement('div');
-                            videodiv = $('<video />', {
-                              id: 'fluid_' + idvname
+                            document.createElement("div");
+                            videodiv = $("<video />", {
+                              id: "fluid_" + idvname
                             });
                             playerDiv.append(videodiv);
-                            $('#external-broadcasts-container').append(playerDiv);
+                            $("#external-broadcasts-container").append(playerDiv);
                             track = remoteVideoTrack.getMediaStreamTrack();
                             stream = new MediaStream();
                             stream.addTrack(track);
-                            playerdiv = document.getElementById('fluid_' + idvname);
+                            playerdiv = document.getElementById("fluid_" + idvname);
                             playerdiv.srcObject = stream;
-                            ff = fluidPlayer('fluid_' + idvname, {
+                            ff = fluidPlayer("fluid_" + idvname, {
                               layoutControls: {
                                 posterImage: thumbnailurl,
                                 playButtonShowing: false,
@@ -3898,22 +3895,22 @@ $(function () {
                               ff: ff
                             });
                             hostsStore.dispatch({
-                              type: 'INCREASE_VTRACK_COUNT'
+                              type: "INCREASE_VTRACK_COUNT"
                             });
                           }
 
-                          if (mediaType === 'audio') {
+                          if (mediaType === "audio") {
                             _audienceStore$getSta = audienceStore.getState(), numAudioTracks = _audienceStore$getSta.numAudioTracks;
                             remoteAudioTrack = user.audioTrack;
-                            audioPlayerDiv = document.createElement('div');
-                            idaname = 'audio_' + remoteAudioTrack.getTrackId();
+                            audioPlayerDiv = document.createElement("div");
+                            idaname = "audio_" + remoteAudioTrack.getTrackId();
                             audioPlayerDiv.id = idaname;
-                            $('#external-broadcasts-container').append(audioPlayerDiv);
+                            $("#external-broadcasts-container").append(audioPlayerDiv);
 
                             if (user.uid in volumeLevelTimers === false) {
                               volumeLevelTimers[user.uid] = setInterval(function () {
                                 var volLevel = remoteAudioTrack.getVolumeLevel();
-                                $('#volumelevel').val(volLevel); // console.log('Volume Level of '+user.uid+': ' + volLevel);
+                                $("#volumelevel").val(volLevel); // console.log('Volume Level of '+user.uid+': ' + volLevel);
                               }, 200);
                             }
 
@@ -3923,7 +3920,7 @@ $(function () {
                               mediaType: mediaType
                             });
                             hostsStore.dispatch({
-                              type: 'INCREASE_ATRACK_COUNT'
+                              type: "INCREASE_ATRACK_COUNT"
                             });
                           }
 
@@ -3933,7 +3930,7 @@ $(function () {
                         case 8:
                           _context4.prev = 8;
                           _context4.t0 = _context4["catch"](0);
-                          console.log('Error in user-published:' + _context4.t0);
+                          console.log("Error in user-published:" + _context4.t0);
 
                         case 11:
                         case "end":
@@ -3947,7 +3944,7 @@ $(function () {
                   return _ref4.apply(this, arguments);
                 };
               }());
-              bclient.client.on('user-unpublished', function (user, mediaType) {
+              bclient.client.on("user-unpublished", function (user, mediaType) {
                 console.log(user.uid, hostTracks);
                 var divname = hostTracks[user.uid].filter(function (lld) {
                   return lld.mediaType === mediaType;
@@ -3957,18 +3954,18 @@ $(function () {
                 });
                 hostTracks[user.uid] = newlist;
 
-                if (mediaType === 'video') {
+                if (mediaType === "video") {
                   divname[0].ff.destroy();
-                  $('#' + divname[0].divname).remove();
+                  $("#" + divname[0].divname).remove();
                   hostsStore.dispatch({
-                    type: 'DECREASE_VTRACK_COUNT'
+                    type: "DECREASE_VTRACK_COUNT"
                   });
                 }
 
-                if (mediaType === 'audio') {
-                  $('#' + divname[0].divname).remove();
+                if (mediaType === "audio") {
+                  $("#" + divname[0].divname).remove();
                   hostsStore.dispatch({
-                    type: 'DECREASE_ATRACK_COUNT'
+                    type: "DECREASE_ATRACK_COUNT"
                   });
 
                   if (user.uid in volumeLevelTimers === true) {
@@ -3977,42 +3974,42 @@ $(function () {
                   }
                 }
               });
-              bclient.client.on('user-joined', function (user) {
+              bclient.client.on("user-joined", function (user) {
                 // console.log('host joined', user);
                 hostTracks[user.uid] = [];
                 hostsStore.dispatch({
-                  type: 'HOST_CONNECTED',
+                  type: "HOST_CONNECTED",
                   payload: {
                     hostConnected: true
                   }
                 });
                 hostsStore.dispatch({
-                  type: 'ADD_HOST_TO_LIST',
+                  type: "ADD_HOST_TO_LIST",
                   payload: {
                     host: user
                   }
                 });
                 hostsStore.dispatch({
-                  type: 'INCREASE_VIEWERS_COUNT'
+                  type: "INCREASE_VIEWERS_COUNT"
                 });
               });
-              bclient.client.on('user-left', function (user) {
+              bclient.client.on("user-left", function (user) {
                 // console.log('host left', user);
                 delete hostTracks[user.uid];
                 hostsStore.dispatch({
-                  type: 'HOST_CONNECTED',
+                  type: "HOST_CONNECTED",
                   payload: {
                     hostConnected: false
                   }
                 });
                 hostsStore.dispatch({
-                  type: 'REMOVE_HOST_FROM_LIST',
+                  type: "REMOVE_HOST_FROM_LIST",
                   payload: {
                     hostid: user.uid
                   }
                 });
                 hostsStore.dispatch({
-                  type: 'DECREASE_VIEWERS_COUNT'
+                  type: "DECREASE_VIEWERS_COUNT"
                 });
               });
               _context5.next = 13;
@@ -4020,8 +4017,8 @@ $(function () {
 
             case 13:
               uid = _context5.sent;
-              $('#exit-btn').prop('disabled', false);
-              $('#golive-btn').prop('disabled', true);
+              $("#exit-btn").prop("disabled", false);
+              $("#golive-btn").prop("disabled", true);
               _context5.next = 18;
               return JoinChat();
 
@@ -4034,8 +4031,6 @@ $(function () {
     }));
     return _joinLiveStream.apply(this, arguments);
   }
-
-  ;
 
   function leaveCall() {
     return _leaveCall.apply(this, arguments);
@@ -4055,34 +4050,34 @@ $(function () {
                         mediaType = val.mediaType,
                         ff = val.ff;
 
-                    if (mediaType === 'video') {
+                    if (mediaType === "video") {
                       hostsStore.dispatch({
-                        type: 'DECREASE_VTRACK_COUNT'
+                        type: "DECREASE_VTRACK_COUNT"
                       });
                       ff.destroy();
                     }
 
-                    if (mediaType === 'audio') hostsStore.dispatch({
-                      type: 'DECREASE_ATRACK_COUNT'
+                    if (mediaType === "audio") hostsStore.dispatch({
+                      type: "DECREASE_ATRACK_COUNT"
                     });
-                    $('#' + divname).remove();
+                    $("#" + divname).remove();
                   });
                 }
 
                 delete hostTracks[hostid];
                 hostsStore.dispatch({
-                  type: 'REMOVE_HOST_FROM_LIST',
+                  type: "REMOVE_HOST_FROM_LIST",
                   payload: {
                     hostid: hostid
                   }
                 });
                 hostsStore.dispatch({
-                  type: 'DECREASE_VIEWERS_COUNT'
+                  type: "DECREASE_VIEWERS_COUNT"
                 });
               }
 
               hostsStore.dispatch({
-                type: 'HOST_CONNECTED',
+                type: "HOST_CONNECTED",
                 payload: {
                   hostConnected: false
                 }
@@ -4094,8 +4089,8 @@ $(function () {
               rtmchannel.leave();
               RTM.rtmclient.logout();
               bclient.client = null;
-              $('#golive-btn').prop('disabled', false);
-              $('#exit-btn').prop('disabled', true);
+              $("#golive-btn").prop("disabled", false);
+              $("#exit-btn").prop("disabled", true);
 
             case 9:
             case "end":
@@ -4107,15 +4102,14 @@ $(function () {
     return _leaveCall.apply(this, arguments);
   }
 
-  ;
   joinLiveStream();
-  $('#exit-btn').on('click', function () {
+  $("#exit-btn").on("click", function () {
     leaveCall();
   });
-  $('#golive-btn').on('click', function () {
+  $("#golive-btn").on("click", function () {
     joinLiveStream();
   });
-  $('.dropdown-menu.emoji-item a').on('click', function (e) {
+  $(".dropdown-menu.emoji-item a").on("click", function (e) {
     e.preventDefault();
     var msg = e.target;
     var msgt = $(msg).parent().html();
@@ -4127,7 +4121,7 @@ $(function () {
     });
     sendChatMessage(textmsg, true);
   });
-  window.addEventListener('beforeunload', abruptClose = function abruptClose(event) {
+  window.addEventListener("beforeunload", abruptClose = function abruptClose(event) {
     for (var timer in volumeLevelTimers) {
       clearInterval(timer);
     }
