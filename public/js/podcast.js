@@ -407,15 +407,10 @@ $(function () {
           });
       }
   });*/
-  // fluidPlayer method is global when CDN distribution is used.
 
-
-  var player = fluidPlayer('full-screen-video');
 
   if ($('#single-video').length > 0) {
-    fluidPlayer('single-video'); // fluidPlayer method is global when CDN distribution is used.
-
-    var player = fluidPlayer('example-player');
+    fluidPlayer('single-video');
   }
 
   var $singleAudio = $('#single-audio');
@@ -602,7 +597,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\podcast.js */"./resources/js/podcast.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\podcast.js */"./resources/js/podcast.js");
 
 
 /***/ })

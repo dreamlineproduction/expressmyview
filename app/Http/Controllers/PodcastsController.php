@@ -1286,7 +1286,7 @@ class PodcastsController extends Controller
 
         $podcast["dateDiff"] = $podcast['created_at']->diffForHumans();
         $podcast["thumbnail"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$podcast['thumbnail']);
-        $podcast["videoPath"] = public_path().'/podcast/'.$podcast['filename'];
+        $podcast["videoPath"] =Storage::disk('s3')->url('public/podcast/1080/' . $podcast['filename']);
 
         if($podcast){
             $channelId = $podcast->channel_id;

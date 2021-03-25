@@ -1919,7 +1919,7 @@ function buildMap() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\emoji\config.js */"./resources/js/emoji/config.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\emoji\config.js */"./resources/js/emoji/config.js");
 
 
 /***/ })

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use ApiVideo\Client\Client;
+use App\Channel;
 use App\Cast;
 use App\Category;
 use App\Language;

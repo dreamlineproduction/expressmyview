@@ -318,14 +318,8 @@ $(function() {
     });*/
 
 
-    // fluidPlayer method is global when CDN distribution is used.
-    var player = fluidPlayer('full-screen-video');
-
-
     if ($('#single-video').length > 0) {
         fluidPlayer('single-video');
-        // fluidPlayer method is global when CDN distribution is used.
-        var player = fluidPlayer('example-player');
     }
 
     var $singleAudio = $('#single-audio');
