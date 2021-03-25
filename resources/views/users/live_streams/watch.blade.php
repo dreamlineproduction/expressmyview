@@ -24,47 +24,48 @@ Streaming Now - {{ $stream->title }}
                 <div class="col-md-8">
                     <div class="single-video-left">
                         <div class="single-video live-strm">
-                        <span id="connectionState"></span>
-                          <div id="buttons-container" class="row justify-content-end">
-                            <div class="col-md-6 text-center">
-                              <label for="volumelevel">Decible level: </label>
-                              <meter id="volumelevel" value="0" min="0" max="1"></meter>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <button id="switchWindow" type="button" class="btn btn-block btn-success btn-lg">
-                                    <i class="far fa-window-restore"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <button id="golive-btn" type="button" class="btn btn-block btn-success btn-lg">
-                                    <i id="golive-icon" class="fas fa-podcast"></i>
-                                </button>
-                            </div>
+                            <span id="connectionState"></span>
+                            <div id="buttons-container" class="row justify-content-end">
+                                <div class="col-md-6 text-center">
+                                    <label for="volumelevel">Decible level: </label>
+                                    <meter id="volumelevel" value="0" min="0" max="1"></meter>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <button id="switchWindow" type="button" class="btn btn-block btn-success btn-lg">
+                                        <i class="far fa-window-restore"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <button id="golive-btn" type="button" class="btn btn-block btn-success btn-lg">
+                                        <i id="golive-icon" class="fas fa-podcast"></i>
+                                    </button>
+                                </div>
 
-                              <div class="col-md-2 text-center">
-                                  <button id="exit-btn" type="button" class="btn btn-block btn-danger btn-lg">
-                                      <i id="exit-icon" class="fas fa-phone-slash"></i>
-                                  </button>
-                              </div>
-                          </div>
-
-
-                          <div id="external-broadcasts-container">
-
-                          </div>
-                          <div class="col-md-12" id='posterimage'>
-                            <div id="statusScreen" class="alert alert-primary align-self-center">
-                            <span></span></div>
-                            <div class="sk-wave sk-center" id='spinner'>
-                              <div class="sk-wave-rect"></div>
-                              <div class="sk-wave-rect"></div>
-                              <div class="sk-wave-rect"></div>
-                              <div class="sk-wave-rect"></div>
-                              <div class="sk-wave-rect"></div>
+                                <div class="col-md-2 text-center">
+                                    <button id="exit-btn" type="button" class="btn btn-block btn-danger btn-lg">
+                                        <i id="exit-icon" class="fas fa-phone-slash"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                          </div>
-                          <!-- <div id="fluid-player">
+
+                            <div id="external-broadcasts-container">
+
+                            </div>
+                            <div class="col-md-12" id='posterimage'>
+                                <div id="statusScreen" class="alert alert-primary align-self-center">
+                                    <span></span>
+                                </div>
+                                <div class="sk-wave sk-center" id='spinner'>
+                                    <div class="sk-wave-rect"></div>
+                                    <div class="sk-wave-rect"></div>
+                                    <div class="sk-wave-rect"></div>
+                                    <div class="sk-wave-rect"></div>
+                                    <div class="sk-wave-rect"></div>
+                                </div>
+
+                            </div>
+                            <!-- <div id="fluid-player">
                             <video id='fluidplayerdiv'>
                               <source src='/videos/bannerg004.mp4' />
                             </video>
@@ -88,10 +89,34 @@ Streaming Now - {{ $stream->title }}
                                 <div class="col-md-6">
 
                                     <div class="text-right">
-                                        <button class="btn btn-danger" type="button">Subscribe <strong>1.4M</strong>
+                                        @if(Auth::check())
+                                        @if($stream->user_id != Auth::user()->id)
+                                        @if(isSubscribed($stream->channel->id, Auth::user()->id))
+                                        <button class="btn btn-danger" type="button" id="subscribe_btn"
+                                            data-channel="{{ $stream->channel_id }}">
+                                            <span class="sub-status">Unsubscribe</span>
+                                            <strong class="sub-count">{{ $stream->channel->subscribers }}</strong>
                                         </button>
+                                        @else
+                                        <button class="btn btn-danger" type="button" id="subscribe_btn"
+                                            data-channel={{ $stream->channel_id }}>
+                                            <span class="sub-status">Subscribe</span>
+                                            <strong class="sub-count">{{ $stream->channel->subscribers }}</strong>
+                                        </button>
+                                        @endif
                                         <button class="btn btn btn-outline-danger" type="button"><i
                                                 class="fas fa-bell"></i></button>
+                                        @else
+                                        <button class="btn btn-danger" type="button">Subscribers
+                                            <strong>{{ $stream->channel->subscribers }}</strong>
+                                        </button>
+                                        @endif
+                                        @else
+                                        <a href="{{ route('login') }}" class="btn btn-danger" role="button">
+                                            Subscribe
+                                            <strong>{{ $stream->channel->subscribers }}</strong>
+                                        </a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -101,10 +126,29 @@ Streaming Now - {{ $stream->title }}
                         <div class="single-video-author box mb-2">
                             <div class="float-right">
 
-                                <button class="btn btn btn-outline-danger" type="button"><i
-                                        class="far fa-thumbs-up"></i>
-                                    2.2K
+                                @if(Auth::check())
+                                @if($stream->user_id != Auth::user()->id)
+                                @if(isLiked($stream->id, Auth::user()->id))
+                                <button class="btn btn btn-danger" type="button" id="like_btn"
+                                    data-stream="{{ $stream->id }}"><i class="far fa-thumbs-up"></i> <span
+                                        id="likes_count">{{ formatSubscribersCount($stream->likes) }}</span>
                                 </button>
+                                @else
+                                <button class="btn btn btn-outline-danger" type="button" id="like_btn"
+                                    data-stream="{{ $stream->id }}"><i class="far fa-thumbs-up"></i> <span
+                                        id="likes_count">{{ formatSubscribersCount($stream->likes) }}</span>
+                                </button>
+                                @endif
+                                @else
+                                <button class="btn btn btn-outline-danger" type="button"><i
+                                        class="far fa-thumbs-up"></i> {{ formatSubscribersCount($stream->likes) }}
+                                </button>
+                                @endif
+                                @else
+                                <a href="{{ route('login') }}" class="btn btn-danger" role="button">
+                                    <i class="far fa-thumbs-up"></i> {{ formatSubscribersCount($stream->likes) }}
+                                </a>
+                                @endif
 
                                 <button class="btn btn btn-outline-warning" type="button"><i
                                         class="far fa-share-square"></i></button>
@@ -113,8 +157,8 @@ Streaming Now - {{ $stream->title }}
 
 
                             <img class="img-fluid" src="{{ asset('img/s4.png') }}" alt="">
-                            <p><a href="#"><strong>{{ $stream->channel->name }}</strong></a> <span title="" data-placement="top"
-                                    data-toggle="tooltip" data-original-title="Verified"><i
+                            <p><a href="#"><strong>{{ $stream->channel->name }}</strong></a> <span title=""
+                                    data-placement="top" data-toggle="tooltip" data-original-title="Verified"><i
                                         class="fas fa-check-circle text-success"></i></span></p>
                             <small>Published on {{ $stream->created_at->format('M d, Y') }}</small>
                         </div>
@@ -129,10 +173,10 @@ Streaming Now - {{ $stream->title }}
 
                                     <h6>Cast:</h6>
                                     <p>
-                                    @foreach($casts as $cast)
-                                    <a href="#">{{ $cast->name }}</a>{{ !$loop->last ? ', ' : '' }}
-                                    @endforeach
-                                </p>
+                                        @foreach($casts as $cast)
+                                        <a href="#">{{ $cast->name }}</a>{{ !$loop->last ? ', ' : '' }}
+                                        @endforeach
+                                    </p>
 
                                 </div>
 
@@ -141,10 +185,10 @@ Streaming Now - {{ $stream->title }}
 
                                     <h6>Category :</h6>
                                     <p>
-                                    @foreach($categories as $category)
-                                    <a href="#">{{ $category->name }}</a>{{ !$loop->last ? ', ' : '' }}
-                                    @endforeach
-                                </p>
+                                        @foreach($categories as $category)
+                                        <a href="#">{{ $category->name }}</a>{{ !$loop->last ? ', ' : '' }}
+                                        @endforeach
+                                    </p>
                                 </div>
 
 
@@ -152,10 +196,10 @@ Streaming Now - {{ $stream->title }}
 
                                     <h6>Tags :</h6>
                                     <p class="tags mb-0">
-                                    @foreach($tags as $tag)
-                                    <span><a href="#">{{ $tag->name }}</a></span>
-                                    @endforeach
-                                </p>
+                                        @foreach($tags as $tag)
+                                        <span><a href="#">{{ $tag->name }}</a></span>
+                                        @endforeach
+                                    </p>
                                 </div>
 
 
@@ -279,17 +323,18 @@ Streaming Now - {{ $stream->title }}
                                                     </div>
 
 
-                                                    <a class="publisher-btn text-info" href="#" data-abc="true" id="publisher-btn"><i
-                                                            class="fa fa-paper-plane"></i></a>
+                                                    <a class="publisher-btn text-info" href="#" data-abc="true"
+                                                        id="publisher-btn"><i class="fa fa-paper-plane"></i></a>
 
                                                 </div>
                                                 @else
-                                                  <div class="col-md-12 mb-3 text-center">
+                                                <div class="col-md-12 mb-3 text-center">
                                                     <h6 class="mt-4">
-                                                      Sign in to participate in the chat!
+                                                        Sign in to participate in the chat!
                                                     </h6>
-                                                    <a href="{{ route('login') }}" class="btn btn-primary mt-4">Login</a>
-                                                  </div>
+                                                    <a href="{{ route('login') }}"
+                                                        class="btn btn-primary mt-4">Login</a>
+                                                </div>
                                                 @endif
                                             </div>
                                         </div>
@@ -324,9 +369,12 @@ Streaming Now - {{ $stream->title }}
 <script>
 var channelname = "{{ $stream->channelname }}";
 var ownerID = "{{ $stream->user_id }}";
-var APP_ENV = "{{ env("APP_ENV") }}";
-var APP_DEBUG = "{{ env("APP_DEBUG") }}";
-var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
+var APP_ENV = "{{ env("
+APP_ENV ") }}";
+var APP_DEBUG = "{{ env("
+APP_DEBUG ") }}";
+var AGORA_APP_ID = "{{ env("
+AGORA_APP_ID ") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
@@ -334,6 +382,5 @@ var usersignedin = "{{ $usersignedin }}";
 var displayname = "{{ $displayname }}";
 var profilepic = "{{ $profilepic }}";
 var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
-
 </script>
 @endsection
