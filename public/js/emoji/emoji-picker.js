@@ -263,7 +263,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\emoji\emoji-picker.js */"./resources/js/emoji/emoji-picker.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\emoji\emoji-picker.js */"./resources/js/emoji/emoji-picker.js");
 
 
 /***/ })

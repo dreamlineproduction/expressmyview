@@ -28,10 +28,12 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/emoji/jquery.emojiarea.js', 'public/js/emoji')
     .js('resources/js/emoji/emoji-picker.js', 'public/js/emoji')
 mix.postCss('resources/css/emoji/emoji.css', 'public/css')
-   .postCss('resources/css/spinkit.css', 'public/css')
+    .postCss('resources/css/spinkit.css', 'public/css')
+    .postCss('resources/css/app.css', 'public/css')
     // .js('resources/js/bootstrap-tagsinput.js', 'public/js')
     // .js('resources/js/plugins-jquery.js', 'public/js')
     /*.styles(['resources/css/osahan.css'], 'public/css/app.css')
     .styles(['resources/css/dropzone.css'], 'public/css/dropzone.css')
     .styles(['resources/css/bootstrap-tagsinput.css'], 'public/css/bootstrap-tagsinput.css')
-    .styles(['resources/css/admin/style.css'], 'public/css/admin/styles.css')*/;
+    .styles(['resources/css/admin/style.css'], 'public/css/admin/styles.css')*/
+;
