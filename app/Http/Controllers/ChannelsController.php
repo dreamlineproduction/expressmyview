@@ -572,7 +572,7 @@ class ChannelsController extends Controller
     public function getAllChannels(Request $request)
     {
         $userid    = $request->userid;
-        $channels = Channel::all();
+        $channels = Channel::paginate(10);
         if(!empty($channels)){
             foreach($channels as $channel){
                 if($channel["logo"]){

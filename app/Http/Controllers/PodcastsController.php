@@ -1217,7 +1217,42 @@ class PodcastsController extends Controller
 
     public function getAllVideoPodcasts()
     {
-        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->orderBy('created_at', 'DESC')->get();
+        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->orderBy('created_at', 'DESC')->paginate(10);
+
+        foreach ($allVideoPodcasts as $allVideoPodcast ){
+            if($allVideoPodcast['thumbnail']){
+                $allVideoPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$allVideoPodcast['thumbnail']);
+            }
+            $allVideoPodcast["channelName"] = $this->getChannelName($allVideoPodcast["channel_id"]);
+            $allVideoPodcast["dateDiff"] = $allVideoPodcast['created_at']->diffForHumans();
+        }
+
+        if(empty($allVideoPodcast)){
+            return response()->json([
+                'error' => "No data available right now, please try again later"
+            ]);
+        }else{
+            $viewData = array(
+                'allVideoPodcasts' => $allVideoPodcasts,
+            );
+        }
+
+        return response()->json([
+            'status' => 200,
+            $viewData
+        ]);
+    }
+
+    public function getMyAllPodcasts()
+    {
+        $request = request();
+        $uid = $request->input('id');
+        $media = $request->input('media');
+        if($media == "video"){
+            $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->where('user_id', $uid)->orderBy('created_at', 'DESC')->get();
+        }else{
+            $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "audio")->where('user_id', $uid)->orderBy('created_at', 'DESC')->get();
+        }
 
         foreach ($allVideoPodcasts as $allVideoPodcast ){
             if($allVideoPodcast['thumbnail']){
