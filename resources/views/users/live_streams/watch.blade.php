@@ -83,7 +83,7 @@ Streaming Now - {{ $stream->title }}
                                     <h2><a href="#">{{ $stream->title }}</a></h2>
                                     <!-- <p class="mb-0"><i class="fas fa-eye"></i> {{ number_format($stream->views) }}
                                     </p> -->
-                                    <p class="mb-0" id="liveviewerscount"><i class="fas fa-eye"></i></p>
+                                    <p class="mb-0" id="liveviewerscount">Total <i class="fas fa-eye"></i> -- </p>
                                 </div>
 
                                 <div class="col-md-6">
@@ -369,12 +369,10 @@ Streaming Now - {{ $stream->title }}
 <script>
 var channelname = "{{ $stream->channelname }}";
 var ownerID = "{{ $stream->user_id }}";
-var APP_ENV = "{{ env("
-APP_ENV ") }}";
-var APP_DEBUG = "{{ env("
-APP_DEBUG ") }}";
-var AGORA_APP_ID = "{{ env("
-AGORA_APP_ID ") }}";
+var streamid = "{{ $stream->id }}";
+var APP_ENV = "{{ env("APP_ENV") }}";
+var APP_DEBUG = "{{ env("APP_DEBUG") }}";
+var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";

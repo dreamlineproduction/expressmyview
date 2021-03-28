@@ -37314,10 +37314,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\css\emoji\emoji.css */"./resources/css/emoji/emoji.css");
-__webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\css\spinkit.css */"./resources/css/spinkit.css");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/css/emoji/emoji.css */"./resources/css/emoji/emoji.css");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/css/spinkit.css */"./resources/css/spinkit.css");
 
 
 /***/ })

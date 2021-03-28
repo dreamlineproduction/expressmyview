@@ -4092,8 +4092,8 @@ $(function () {
               return bclient.client.leave();
 
             case 4:
-              rtmchannel.leave();
-              RTM.rtmclient.logout();
+              if (rtmchannel) rtmchannel.leave();
+              if (RTM.rtmclient !== null) RTM.rtmclient.logout();
               bclient.client = null;
               $('#golive-btn').prop('disabled', false);
               $('#exit-btn').prop('disabled', true);
@@ -4128,11 +4128,42 @@ $(function () {
     });
     sendChatMessage(textmsg, true);
   });
+  var viewsTimer = null;
+  viewsTimer = setInterval(function () {
+    $.ajax({
+      url: APP_URL + '/live-stream/views',
+      dataType: 'json',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        streamid: streamid
+      },
+      success: function success(data) {
+        if (data.status === 1) {
+          $('#liveviewerscount').html('Total <i class="fas fa-eye"></i> ' + data.viewers);
+        } else {
+          console.log(data);
+        }
+      },
+      error: function error(_error) {
+        console.log(_error);
+      },
+      complete: function complete() {}
+    });
+  }, 2000);
   window.addEventListener('beforeunload', abruptClose = function abruptClose(event) {
     for (var timer in volumeLevelTimers) {
       clearInterval(timer);
     }
 
+    if (viewsTimer !== null) {
+      clearInterval(viewsTimer);
+      viewsTimer = null;
+    }
+
+    ;
     leaveCall();
   });
   $('#switchWindow').on('click', function () {
@@ -4175,7 +4206,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\viewer.js */"./resources/js/viewer.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/viewer.js */"./resources/js/viewer.js");
 
 
 /***/ })

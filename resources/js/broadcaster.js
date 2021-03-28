@@ -20,6 +20,7 @@ $(function(){
   let micList;
   let playbackList;
 
+  let viewsTimer = null
   let volumeLevelTimer = null;
   let abruptClose = null;
 
@@ -28,6 +29,7 @@ $(function(){
 
   // 0: no recording 1: recording in progress
   let recordingstatus = 0;
+  let recordingDetails = { resourceId: null, sid: null };
 
   const encoderConfig = {
     width: {max: 1920, min: 640},
@@ -167,8 +169,6 @@ $(function(){
   //   const viewersState = viewersStore.getState();
   //   $('#liveviewerscount').html('<i class="fas fa-eye"></i> '+viewersState.viewersCount);
   // });
-
-  $('#liveviewerscount').html('<i class="fas fa-eye"></i> '+'xx');
 
   // https://docs.agora.io/en/Agora%20Platform/token?platform=All%20Platforms
   // https://docs.agora.io/en/Agora%20Platform/token_server
@@ -721,7 +721,7 @@ $(function(){
       volumeLevelTimer = setInterval(() => {
         const volLevel = bclient.localAudioTrack.getVolumeLevel();
         $('#volumelevel').val(volLevel);
-      }, 1000);
+      }, 200);
       $('#mictoggle-btn').prop('disabled', false);
       $('#mictoggle-icon').css('color','green');
       $('#mictoggle-icon.fas').attr('class','fas fa-microphone');
@@ -750,6 +750,45 @@ $(function(){
   async function leaveCall() {
     // Destroy the local audio and video tracks.
 
+    if (recordingstatus === 1) {
+      const { resourceId, sid } = recordingDetails;
+      $('#record-button').prop('disabled', true);
+      $.ajax({
+        url: APP_URL + '/live-stream/cloudrecording',
+        dataType: 'json',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        method: 'post',
+        data: { streamid, channelname, action: 'stop', clientuid, token, resourceId, sid },
+        success: (data) => {
+          try {
+            console.log(JSON.parse(data));
+          } catch(err) {
+            console.log(err.message, data);
+          }
+          // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
+          if (data.status === 1) {
+            $('#record-button').css({color: 'red'})
+            recordingstatus = 1;
+            const { resourceId, sid } = JSON.parse(data.message);
+            recordingDetails = { resourceId, sid };
+          } else if (data.status === 2 ){
+            $('#record-button').css({color: 'orange'})
+            recordingstatus = 0;
+          } else {
+            $('#record-button').css({color: 'orange'})
+            recordingstatus = 0;
+          }
+        },
+        error: (error) => {
+          console.log(error);
+          recordingstatus = 0;
+        },
+        complete: () => {
+          $('#record-button').prop('disabled', false);
+        },
+      });
+    }
+
     if (bclient.localAudioTrack !== null) bclient.localAudioTrack.close();
     if (bclient.localVideoTrack !== null) bclient.localVideoTrack.close();
     if (bclient.localScreenTrack !== null) bclient.localScreenTrack.close();
@@ -776,10 +815,10 @@ $(function(){
     hostStore.dispatch({type: 'SET_MIC_MUTED', payload: {flag: true}});
 
     // Leave the channel.
-    await bclient.client.leave();
+    if (bclient.client !== null) await bclient.client.leave();
     if (bclient.screenclient !== null) bclient.screenclient.leave();
-    rtmchannel.leave();
-    RTM.rtmclient.logout();
+    if (rtmchannel) rtmchannel.leave();
+    if (RTM.rtmclient !== null) RTM.rtmclient.logout();
     bclient.client = null;
     $('#camera-list-select').prop("selectedIndex", 0);
     $('#exit-btn').prop('disabled', true);
@@ -919,34 +958,48 @@ $(function(){
   });
 
   $('#record-button').on('click', () => {
+    const hostState = hostStore.getState();
+    if (hostState.connectionState !== 'CONNECTED') return;
     let action;
     if (recordingstatus === 0 ) {
       action = 'start'
     } else {
       action = 'stop'
     }
+    if (recordingstatus === 1 && (recordingDetails.resourceId === null || recordingDetails.sid === null)) {
+      return;
+    }
+    const { resourceId, sid } = recordingDetails;
     $('#record-button').prop('disabled', true);
     $.ajax({
       url: APP_URL + '/live-stream/cloudrecording',
       dataType: 'json',
       headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
       method: 'post',
-      data: { channelname, action, clientuid },
+      data: { streamid, channelname, action, clientuid, token, resourceId, sid },
       success: (data) => {
-        console.log(data);
+        try {
+          console.log(JSON.parse(data));
+        } catch(err) {
+          console.log(err.message, data);
+        }
         // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
         if (data.status === 1) {
           $('#record-button').css({color: 'red'})
           recordingstatus = 1;
+          const { resourceId, sid } = JSON.parse(data.message);
+          recordingDetails = { resourceId, sid };
         } else if (data.status === 2 ){
           $('#record-button').css({color: 'orange'})
           recordingstatus = 0;
         } else {
-
+          $('#record-button').css({color: 'orange'})
+          recordingstatus = 0;
         }
       },
       error: (error) => {
-        console.log(error)
+        console.log(error);
+        recordingstatus = 0;
       },
       complete: () => {
         $('#record-button').prop('disabled', false);
@@ -986,10 +1039,35 @@ $(function(){
     sendChatMessage(textmsg, true);
   });
 
+  viewsTimer = setInterval(() => {
+    $.ajax({
+      url: APP_URL + '/live-stream/views',
+      dataType: 'json',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+      method: 'post',
+      data: { streamid },
+      success: (data) => {
+        if (data.status === 1) {
+          $('#liveviewerscount').html('Total <i class="fas fa-eye"></i> '+ data.viewers);
+        } else {
+          console.log(data);
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      },
+      complete: () => {},
+    });
+  }, 3000);
+
   window.addEventListener('beforeunload', abruptClose = (event) => {
     if (volumeLevelTimer !== null) {
       clearInterval(volumeLevelTimer);
       volumeLevelTimer = null;
+    };
+    if (viewsTimer !== null) {
+      clearInterval(viewsTimer);
+      viewsTimer = null;
     };
     leaveCall();
     $.ajax({

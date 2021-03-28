@@ -93,7 +93,35 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/home/rudra/freelance/emv/expressmyview/resources/js/view.js'");
+$(function () {
+  try {
+    console.log(cloudRecordingDetails);
+    var fileList = cloudRecordingDetails.serverResponse.fileList;
+    var prefix = 'https://expressmyviewcn.s3.ap-south-1.amazonaws.com/';
+    fileList.forEach(function (val) {
+      $('#recorded_video').append($('<source>', {
+        src: prefix + val.fileName,
+        type: 'application/x-mpegURL'
+      }));
+      $('#recorded_video').append($('<source>', {
+        src: prefix + val.fileName.replace('m3u8', 'webm'),
+        type: 'video/webm'
+      }));
+    });
+    var ff = fluidPlayer('recorded_video', {
+      layoutControls: {
+        posterImage: thumbnailurl,
+        playButtonShowing: false,
+        autoPlay: true,
+        keyboardControl: false,
+        controlBar: false,
+        fillToContainer: false
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 /***/ }),
 

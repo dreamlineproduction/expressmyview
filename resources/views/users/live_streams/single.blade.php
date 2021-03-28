@@ -115,7 +115,12 @@
 
 
 
-
+                                    <div class="col-md-1">
+                                        <button id="record-button" style="color: orange" type="button"
+                                            class="btn btn-block btn-light record-stream-btn">
+                                            <i id="record-icon" class="fas fa-record-vinyl"></i>
+                                        </button>
+                                    </div>
                                     <div class="col-md-1">
                                         <button id="exit-btn" type="button"
                                             class="btn btn-block btn-danger stop-stream-btn">
@@ -173,7 +178,7 @@
                                 <h2><a href="#">{{ $stream->title }}</a></h2>
                                 <!-- <p class="mb-0"><i class="fas fa-eye"></i> {{ number_format($stream->views) }} views
                                 </p> -->
-                                <p class="mb-0" id="liveviewerscount"><i class="fas fa-eye"></i> 0 </p>
+                                <p class="mb-0" id="liveviewerscount">Total <i class="fas fa-eye"></i> 0 </p>
                             </div>
 
                             <div class="col-md-6">
@@ -473,20 +478,16 @@
 
 <script>
 var channelname = "{{ $stream->channelname }}";
-var APP_ENV = "{{ env("
-APP_ENV ") }}";
-var APP_DEBUG = "{{ env("
-APP_DEBUG ") }}";
-var AGORA_APP_ID = "{{ env("
-AGORA_APP_ID ") }}";
+var APP_ENV = "{{ env("APP_ENV") }}";
+var APP_DEBUG = "{{ env("APP_DEBUG") }}";
+var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
 var clipboard = new ClipboardJS('.btn');
 var streamid = "{{ $stream->id }}";
 var displayname = "{{ $stream->user->name }}";
-var profilepic =
-    "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
+var profilepic = "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
 var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
 
 clipboard.on('success', function(e) {

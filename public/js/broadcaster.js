@@ -3117,12 +3117,17 @@ $(function () {
   var camList;
   var micList;
   var playbackList;
+  var viewsTimer = null;
   var volumeLevelTimer = null;
   var abruptClose = null;
   var clientscreenuid = null;
   var clientuid = null; // 0: no recording 1: recording in progress
 
   var recordingstatus = 0;
+  var recordingDetails = {
+    resourceId: null,
+    sid: null
+  };
   var encoderConfig = {
     width: {
       max: 1920,
@@ -3297,8 +3302,7 @@ $(function () {
   //   const viewersState = viewersStore.getState();
   //   $('#liveviewerscount').html('<i class="fas fa-eye"></i> '+viewersState.viewersCount);
   // });
-
-  $('#liveviewerscount').html('<i class="fas fa-eye"></i> ' + 'xx'); // https://docs.agora.io/en/Agora%20Platform/token?platform=All%20Platforms
+  // https://docs.agora.io/en/Agora%20Platform/token?platform=All%20Platforms
   // https://docs.agora.io/en/Agora%20Platform/token_server
 
   var token = servertoken;
@@ -3599,10 +3603,10 @@ $(function () {
                 rtmchannel.on('ChannelMessage', function (_ref, senderId) {
                   var text = _ref.text;
 
-                  var _JSON$parse2 = JSON.parse(text),
-                      msg = _JSON$parse2.msg,
-                      displayname = _JSON$parse2.displayname,
-                      profilepic = _JSON$parse2.profilepic;
+                  var _JSON$parse3 = JSON.parse(text),
+                      msg = _JSON$parse3.msg,
+                      displayname = _JSON$parse3.displayname,
+                      profilepic = _JSON$parse3.profilepic;
 
                   var divID = '_' + Math.random().toString(36).substr(2, 9);
                   var chatDiv = $('<div>', {
@@ -4228,7 +4232,7 @@ $(function () {
               volumeLevelTimer = setInterval(function () {
                 var volLevel = bclient.localAudioTrack.getVolumeLevel();
                 $('#volumelevel').val(volLevel);
-              }, 1000);
+              }, 200);
               $('#mictoggle-btn').prop('disabled', false);
               $('#mictoggle-icon').css('color', 'green');
               $('#mictoggle-icon.fas').attr('class', 'fas fa-microphone');
@@ -4293,11 +4297,76 @@ $(function () {
 
   function _leaveCall() {
     _leaveCall = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
+      var _recordingDetails2, resourceId, sid;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
               // Destroy the local audio and video tracks.
+              if (recordingstatus === 1) {
+                _recordingDetails2 = recordingDetails, resourceId = _recordingDetails2.resourceId, sid = _recordingDetails2.sid;
+                $('#record-button').prop('disabled', true);
+                $.ajax({
+                  url: APP_URL + '/live-stream/cloudrecording',
+                  dataType: 'json',
+                  headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  },
+                  method: 'post',
+                  data: {
+                    streamid: streamid,
+                    channelname: channelname,
+                    action: 'stop',
+                    clientuid: clientuid,
+                    token: token,
+                    resourceId: resourceId,
+                    sid: sid
+                  },
+                  success: function success(data) {
+                    try {
+                      console.log(JSON.parse(data));
+                    } catch (err) {
+                      console.log(err.message, data);
+                    } // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
+
+
+                    if (data.status === 1) {
+                      $('#record-button').css({
+                        color: 'red'
+                      });
+                      recordingstatus = 1;
+
+                      var _JSON$parse4 = JSON.parse(data.message),
+                          _resourceId2 = _JSON$parse4.resourceId,
+                          _sid2 = _JSON$parse4.sid;
+
+                      recordingDetails = {
+                        resourceId: _resourceId2,
+                        sid: _sid2
+                      };
+                    } else if (data.status === 2) {
+                      $('#record-button').css({
+                        color: 'orange'
+                      });
+                      recordingstatus = 0;
+                    } else {
+                      $('#record-button').css({
+                        color: 'orange'
+                      });
+                      recordingstatus = 0;
+                    }
+                  },
+                  error: function error(_error6) {
+                    console.log(_error6);
+                    recordingstatus = 0;
+                  },
+                  complete: function complete() {
+                    $('#record-button').prop('disabled', false);
+                  }
+                });
+              }
+
               if (bclient.localAudioTrack !== null) bclient.localAudioTrack.close();
               if (bclient.localVideoTrack !== null) bclient.localVideoTrack.close();
               if (bclient.localScreenTrack !== null) bclient.localScreenTrack.close();
@@ -4359,19 +4428,24 @@ $(function () {
                 }
               }); // Leave the channel.
 
-              _context7.next = 21;
+              if (!(bclient.client !== null)) {
+                _context7.next = 23;
+                break;
+              }
+
+              _context7.next = 23;
               return bclient.client.leave();
 
-            case 21:
+            case 23:
               if (bclient.screenclient !== null) bclient.screenclient.leave();
-              rtmchannel.leave();
-              RTM.rtmclient.logout();
+              if (rtmchannel) rtmchannel.leave();
+              if (RTM.rtmclient !== null) RTM.rtmclient.logout();
               bclient.client = null;
               $('#camera-list-select').prop("selectedIndex", 0);
               $('#exit-btn').prop('disabled', true);
               $('#golive-btn').prop('disabled', false);
 
-            case 28:
+            case 30:
             case "end":
               return _context7.stop();
           }
@@ -4561,6 +4635,8 @@ $(function () {
     });
   });
   $('#record-button').on('click', function () {
+    var hostState = hostStore.getState();
+    if (hostState.connectionState !== 'CONNECTED') return;
     var action;
 
     if (recordingstatus === 0) {
@@ -4569,6 +4645,13 @@ $(function () {
       action = 'stop';
     }
 
+    if (recordingstatus === 1 && (recordingDetails.resourceId === null || recordingDetails.sid === null)) {
+      return;
+    }
+
+    var _recordingDetails = recordingDetails,
+        resourceId = _recordingDetails.resourceId,
+        sid = _recordingDetails.sid;
     $('#record-button').prop('disabled', true);
     $.ajax({
       url: APP_URL + '/live-stream/cloudrecording',
@@ -4578,27 +4661,51 @@ $(function () {
       },
       method: 'post',
       data: {
+        streamid: streamid,
         channelname: channelname,
         action: action,
-        clientuid: clientuid
+        clientuid: clientuid,
+        token: token,
+        resourceId: resourceId,
+        sid: sid
       },
       success: function success(data) {
-        console.log(data); // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
+        try {
+          console.log(JSON.parse(data));
+        } catch (err) {
+          console.log(err.message, data);
+        } // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
+
 
         if (data.status === 1) {
           $('#record-button').css({
             color: 'red'
           });
           recordingstatus = 1;
+
+          var _JSON$parse2 = JSON.parse(data.message),
+              _resourceId = _JSON$parse2.resourceId,
+              _sid = _JSON$parse2.sid;
+
+          recordingDetails = {
+            resourceId: _resourceId,
+            sid: _sid
+          };
         } else if (data.status === 2) {
           $('#record-button').css({
             color: 'orange'
           });
           recordingstatus = 0;
-        } else {}
+        } else {
+          $('#record-button').css({
+            color: 'orange'
+          });
+          recordingstatus = 0;
+        }
       },
       error: function error(_error2) {
         console.log(_error2);
+        recordingstatus = 0;
       },
       complete: function complete() {
         $('#record-button').prop('disabled', false);
@@ -4645,10 +4752,41 @@ $(function () {
     });
     sendChatMessage(textmsg, true);
   });
+  viewsTimer = setInterval(function () {
+    $.ajax({
+      url: APP_URL + '/live-stream/views',
+      dataType: 'json',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      method: 'post',
+      data: {
+        streamid: streamid
+      },
+      success: function success(data) {
+        if (data.status === 1) {
+          $('#liveviewerscount').html('Total <i class="fas fa-eye"></i> ' + data.viewers);
+        } else {
+          console.log(data);
+        }
+      },
+      error: function error(_error4) {
+        console.log(_error4);
+      },
+      complete: function complete() {}
+    });
+  }, 3000);
   window.addEventListener('beforeunload', abruptClose = function abruptClose(event) {
     if (volumeLevelTimer !== null) {
       clearInterval(volumeLevelTimer);
       volumeLevelTimer = null;
+    }
+
+    ;
+
+    if (viewsTimer !== null) {
+      clearInterval(viewsTimer);
+      viewsTimer = null;
     }
 
     ;
@@ -4672,8 +4810,8 @@ $(function () {
           console.log(data);
         }
       },
-      error: function error(_error4) {
-        console.log(_error4);
+      error: function error(_error5) {
+        console.log(_error5);
       },
       complete: function complete() {}
     });
@@ -4957,7 +5095,7 @@ var host = function host() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\broadcaster.js */"./resources/js/broadcaster.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/broadcaster.js */"./resources/js/broadcaster.js");
 
 
 /***/ })
