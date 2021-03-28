@@ -606,7 +606,7 @@ class LiveStreamsController extends Controller
 
     public function getLiveStreams(Request $request)
     {
-        $streams = LiveStream::where('islive',"1")->orderBy('created_at', 'desc')->get();
+        $streams = LiveStream::where('islive',"1")->orderBy('created_at', 'desc')->paginate(10);
 
         if($streams){
             foreach ($streams as $stream ){

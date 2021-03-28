@@ -37218,6 +37218,17 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/css/app.css":
+/*!*******************************!*\
+  !*** ./resources/css/app.css ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ "./resources/css/emoji/emoji.css":
 /*!***************************************!*\
   !*** ./resources/css/emoji/emoji.css ***!
@@ -37297,9 +37308,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ }),
 
 /***/ 0:
-/*!***********************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/css/emoji/emoji.css ./resources/css/spinkit.css ***!
-  \***********************************************************************************************/
+/*!***********************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/css/emoji/emoji.css ./resources/css/spinkit.css ./resources/css/app.css ***!
+  \***********************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

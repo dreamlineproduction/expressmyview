@@ -43,6 +43,7 @@ Route::post('subscribePodcast', 'SubscriptionsController@subscribePodcast');
 Route::post('subscribeChannel', 'SubscriptionsController@subscribeChannel');
 Route::post('getHomeDatas', 'HomeController@getHomeDatas');
 Route::get('getAllVideoPodcasts', 'PodcastsController@getAllVideoPodcasts');
+Route::post('getMyAllPodcasts', 'PodcastsController@getMyAllPodcasts');
 Route::post('getMyAccountDatas', 'UsersController@getMyAccountDatas');
 Route::post('getMyChannels', 'UsersController@getMyChannels');
 Route::post('channelDetails', 'UsersController@channelDetails');

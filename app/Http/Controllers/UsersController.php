@@ -24,6 +24,7 @@ use \App\Mail\Enquiry;
 use Mail;
 use Carbon;
 use App\Subscription;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UsersController extends Controller
 {
@@ -281,18 +282,19 @@ class UsersController extends Controller
         $channelId = $request->channel_id;
         $uid = $request->uid;
         $channelDetails = Channel::find($channelId);
-        if($channelDetails->logo){
-            $channelDetails["logoPath"] = Storage::disk('s3')->url("public/users/logo/".$channelDetails['logo']);
-        }
-        if($channelDetails['banner']){
-            $channelDetails["bannerPath"] = Storage::disk('s3')->url("public/users/banner/".$channelDetails['banner']);
+        if($channelDetails){
+            if($channelDetails->logo){
+                $channelDetails["logoPath"] = Storage::disk('s3')->url("public/users/logo/".$channelDetails['logo']);
+            }
+            if($channelDetails['banner']){
+                $channelDetails["bannerPath"] = Storage::disk('s3')->url("public/users/banner/".$channelDetails['banner']);
+            }
         }
 
         $subscribed = $this->isSubscribed($uid, $channelId);
 
         $allPodcastsCount = Podcast::where('channel_id', $channelId)->count();
-        $allPodcasts = Podcast::where('channel_id', $channelId)->get();
-
+        $allPodcasts = Podcast::where('channel_id', $channelId)->orderBy('created_at', 'DESC')->paginate(10);
         foreach ($allPodcasts as $allPodcast ){
             if($allPodcast['thumbnail']){
                 $allPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$allPodcast['thumbnail']);

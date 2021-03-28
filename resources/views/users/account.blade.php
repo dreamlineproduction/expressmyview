@@ -169,8 +169,10 @@ My Account
                         <a class="play-icon" href="{{ route('podcast.show', $podcast->id) }}"><i
                                 class="fas fa-play-circle"></i></a>
                         <a href="{{ route('podcast.show', $podcast->id) }}"><img class="img-fluid"
-                                src="{{ url('/storage/podcast/thumbnail/' . $podcast->thumbnail) }}"
+                                src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $podcast->thumbnail) }}"
                                 alt="{{ $podcast->title }}"></a>
+
+
                         <div class="time">{{ formatVideoRuntime($podcast->runtime) }}</div>
                     </div>
                     <div class="video-card-body">
@@ -256,7 +258,7 @@ My Account
                         <a class="play-icon" href="{{ route('podcast.show', $podcast->id) }}"><i
                                 class="fas fa-play-circle"></i></a>
                         <a href="{{ route('podcast.show', $podcast->id) }}"><img class="img-fluid"
-                                src="{{ url('/storage/podcast/thumbnail/' . $podcast->thumbnail) }}"
+                                src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $podcast->thumbnail) }}"
                                 alt="{{ $podcast->title }}"></a>
                         <div class="time">{{ formatVideoRuntime($podcast->runtime) }}</div>
                     </div>
