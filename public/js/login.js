@@ -222,7 +222,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\login.js */"./resources/js/login.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/login.js */"./resources/js/login.js");
 
 
 /***/ })

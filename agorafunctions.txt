@@ -1,10 +1,14 @@
-Things to DO
-1) Chat only after user login
-2) Implement Fluid player for viewers
-3) Camera, Mic dropdown is not working
+Things to do:
 4) Save live stream after stream is complete to Digital Ocean storage
 5) Edit live stream and Delete live stream si not working
 6) Publish live stream as a normal podcast from digital ocean
+
+Things completed:
+- Chat only after user login
+- Implement Fluid player for viewers
+- implement fluid player for host
+- Camera, Mic dropdown is not working
+- live view counter to be displayed for the total views
 
 Things done (some items may need minor bug fixing, especially php related stuff)
 1) video, audio live streaming
@@ -21,6 +25,3 @@ ToDO:
 1) audio volume indicator
 2) option to go full screen
 3) audio track volume control
-
-Things not possible in existing tech stack:
-1) live view counter to be displayed for the connected viewers

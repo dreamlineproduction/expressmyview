@@ -81,54 +81,58 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./resources/js/history.js":
-/*!*********************************!*\
-  !*** ./resources/js/history.js ***!
-  \*********************************/
+/***/ "./resources/js/view.js":
+/*!******************************!*\
+  !*** ./resources/js/view.js ***!
+  \******************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
 $(function () {
-  $('.video-close').click(function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var container = $(this).closest('.history-single');
-    $.ajax({
-      url: APP_URL + '/history/' + $(this).data('history'),
-      method: 'post',
-      data: {
-        _token: $('meta[name=csrf-token]').attr('content'),
-        _method: 'delete'
-      },
-      dataType: 'json',
-      beforeSend: function beforeSend() {},
-      success: function success(data) {
-        if (data.status == 1) {
-          container.remove();
-        } else {//
-        }
-      },
-      error: function error() {},
-      complete: function complete() {}
+  try {
+    console.log(cloudRecordingDetails);
+    var fileList = cloudRecordingDetails.serverResponse.fileList;
+    var prefix = 'https://expressmyviewcn.s3.ap-south-1.amazonaws.com/';
+    fileList.forEach(function (val) {
+      $('#recorded_video').append($('<source>', {
+        src: prefix + val.fileName,
+        type: 'application/x-mpegURL'
+      }));
+      $('#recorded_video').append($('<source>', {
+        src: prefix + val.fileName.replace('m3u8', 'webm'),
+        type: 'video/webm'
+      }));
     });
-  });
+    var ff = fluidPlayer('recorded_video', {
+      layoutControls: {
+        posterImage: thumbnailurl,
+        playButtonShowing: false,
+        autoPlay: true,
+        keyboardControl: false,
+        controlBar: false,
+        fillToContainer: false
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 /***/ }),
 
-/***/ 10:
-/*!***************************************!*\
-  !*** multi ./resources/js/history.js ***!
-  \***************************************/
+/***/ 9:
+/*!************************************!*\
+  !*** multi ./resources/js/view.js ***!
+  \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/history.js */"./resources/js/history.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/view.js */"./resources/js/view.js");
 
 
 /***/ })
