@@ -129,6 +129,30 @@ body.fixed-nav #content-wrapper {
     font-weight: 600 !important;
 }
 
+.ajs-ok {
+    border: 0;
+    background: #dc3545!important;
+    color: #fff;
+    appearance: button;
+    cursor: pointer;
+}
+
+.ajs-ok:hover {
+    opacity: .9;
+}
+
+.ajs-cancel {
+    border: 0;
+    background: #28a745!important;
+    color: #fff;
+    appearance: button;
+    cursor: pointer;
+}
+
+.ajs-cancel:hover {
+    opacity: .9;
+}
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #ff516b !important;
     border: 1px solid #ff516b !important;
