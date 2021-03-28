@@ -234,7 +234,7 @@ $(function () {
     event.preventDefault();
     event.stopPropagation();
     var channel = $(this);
-    alertify.confirm('Are you sure?', 'You are about to delete this comment. This action is irreversible.', function () {
+    alertify.confirm('Are you sure?', 'You are about to delete this channel. This action is irreversible.', function () {
       $.ajax({
         url: APP_URL + '/channel/' + channel.data('channel') + '/delete',
         method: 'post',

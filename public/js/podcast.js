@@ -586,6 +586,38 @@ $(function () {
       }
     });
   });
+  $('.delete-video').click(function (event) {
+    event.preventDefault();
+    var $this = $(this);
+    alertify.confirm('Are you sure?', 'You are about to delete this podcast. This action is irreversible.', function () {
+      $.ajax({
+        url: $this.attr('href'),
+        method: 'post',
+        data: {
+          _method: 'delete',
+          _token: $('meta[name=csrf-token]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function beforeSend() {//
+        },
+        success: function success(data) {
+          console.log(data);
+
+          if (data.status == 1) {
+            alertify.success(data.message);
+            window.location.reload();
+          } else {
+            alertify.error(data.message);
+          }
+        },
+        error: function error() {
+          alertify.error('An error occurred. Please try again.');
+        },
+        complete: function complete() {//
+        }
+      });
+    }, function () {});
+  });
 });
 
 /***/ }),
