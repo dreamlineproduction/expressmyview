@@ -598,7 +598,8 @@ $(function () {
           _token: $('meta[name=csrf-token]').attr('content')
         },
         dataType: 'json',
-        beforeSend: function beforeSend() {//
+        beforeSend: function beforeSend() {
+          $.LoadingOverlay("show");
         },
         success: function success(data) {
           console.log(data);
@@ -613,7 +614,8 @@ $(function () {
         error: function error() {
           alertify.error('An error occurred. Please try again.');
         },
-        complete: function complete() {//
+        complete: function complete() {
+          $.LoadingOverlay("hide");
         }
       });
     }, function () {});
@@ -629,7 +631,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\podcast.js */"./resources/js/podcast.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview\resources\js\podcast.js */"./resources/js/podcast.js");
 
 
 /***/ })
