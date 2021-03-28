@@ -46,7 +46,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::post('/podcast/upload', 'PodcastsController@upload')->name('podcast.upload');
     Route::get('/podcast/{podcast}/edit', 'PodcastsController@edit')->name('podcast.edit');
     Route::match(['put', 'patch'], '/podcast/{podcast}/update', 'PodcastsController@update')->name('podcast.update');
-    Route::delete('/podcast/{podcast}/delete', 'PodcastsController@delete')->name('podcast.delete');
+    Route::delete('/podcast/{podcast}/delete', 'PodcastsController@destroy')->name('podcast.delete');
 
     Route::get('/my-podcasts/{type?}', 'PodcastsController@getMyPodcasts')->name('my.podcasts');
     Route::get('/my-livestreams', 'LiveStreamsController@getMyLiveStreams')->name('my.livestreams');
