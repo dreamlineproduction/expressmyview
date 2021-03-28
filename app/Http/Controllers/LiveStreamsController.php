@@ -777,6 +777,9 @@ class LiveStreamsController extends Controller
                   'subscribeAudioUids' => ["#allstream#"],
                   'subscribeUidGroup' => 1,
                 ],
+                'recordingFileConfig' => [
+                  'avFileType' => ['hls'],
+                ],
                 'storageConfig' => [
                   'vendor' => 1,
                   'region' => 14,
