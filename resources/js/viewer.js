@@ -424,8 +424,8 @@ $(function(){
     hostsStore.dispatch({type: 'HOST_CONNECTED', payload: { hostConnected: false }});
 
     await bclient.client.leave();
-    rtmchannel.leave();
-    RTM.rtmclient.logout();
+    if (rtmchannel) rtmchannel.leave();
+    if (RTM.rtmclient !== null) RTM.rtmclient.logout();
     bclient.client = null;
     $('#golive-btn').prop('disabled', false);
     $('#exit-btn').prop('disabled', true);
@@ -448,10 +448,36 @@ $(function(){
     sendChatMessage(textmsg, true);
   });
 
+  let viewsTimer = null;
+  viewsTimer = setInterval(() => {
+    $.ajax({
+      url: APP_URL + '/live-stream/views',
+      dataType: 'json',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+      method: 'post',
+      data: { streamid },
+      success: (data) => {
+        if (data.status === 1) {
+          $('#liveviewerscount').html('Total <i class="fas fa-eye"></i> '+ data.viewers);
+        } else {
+          console.log(data);
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      },
+      complete: () => {},
+    });
+  }, 2000);
+
   window.addEventListener('beforeunload', abruptClose = (event) => {
     for (const timer in volumeLevelTimers) {
       clearInterval(timer);
     }
+    if (viewsTimer !== null) {
+      clearInterval(viewsTimer);
+      viewsTimer = null;
+    };
     leaveCall()
   });
 

@@ -46,7 +46,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::post('/podcast/upload', 'PodcastsController@upload')->name('podcast.upload');
     Route::get('/podcast/{podcast}/edit', 'PodcastsController@edit')->name('podcast.edit');
     Route::match(['put', 'patch'], '/podcast/{podcast}/update', 'PodcastsController@update')->name('podcast.update');
-    Route::delete('/podcast/{podcast}/delete', 'PodcastsController@delete')->name('podcast.delete');
+    Route::delete('/podcast/{podcast}/delete', 'PodcastsController@destroy')->name('podcast.delete');
 
     Route::get('/my-podcasts/{type?}', 'PodcastsController@getMyPodcasts')->name('my.podcasts');
     Route::get('/my-livestreams', 'LiveStreamsController@getMyLiveStreams')->name('my.livestreams');
@@ -70,7 +70,9 @@ Route::group(['middleware' => ['verified']], function () {
 
 Route::get('/live-streams/all', 'LiveStreamsController@index')->name('live-streams.all');
 Route::get('/live-stream/watch/{stream}','LiveStreamsController@watch')->name('live-streams.watch');
+Route::get('/live-stream/view/{stream}','LiveStreamsController@view')->name('live-streams.view');
 Route::get('/live-stream/{stream}', 'LiveStreamsController@show')->name('live-stream.show');
+Route::post('/live-stream/views', 'LiveStreamsController@getConnectedViewers')->name('live-stream.views');
 
 Route::get('/podcasts/{type}/{user?}', 'PodcastsController@index')->name('podcast.index');
 Route::get('/podcasts/{type?}', 'PodcastsController@index')->name('podcast.index');

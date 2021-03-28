@@ -42,7 +42,7 @@
                                                 class="fas fa-play-circle"></i></a>
                                     <a href="{{ route('podcast.show', $video->id) }}">
                                         <img class="img-fluid"
-                                             src="{{ url('/storage/podcast/thumbnail/' . $video->thumbnail) }}"
+                                             src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $video->thumbnail) }}"
                                              alt="{{ $video->title }}">
                                     </a>
                                     <div class="time">{{ formatVideoRuntime($video->runtime) }}</div>
@@ -70,7 +70,7 @@
                                                             <a class="dropdown-item"
                                                                href="{{ route('podcast.edit', $video->id) }}"><i
                                                                         class="far fa-edit"></i> Edit Video</a>
-                                                            <a class="dropdown-item"
+                                                            <a class="dropdown-item delete-video"
                                                                href="{{ route('podcast.delete', $video->id) }}"><i
                                                                         class="far fa-trash-alt"></i> Delete Video</a>
 
@@ -149,7 +149,7 @@
                                                 class="fas fa-play-circle"></i></a>
                                     <a href="{{ route('podcast.show', $audio->id) }}">
                                         <img class="img-fluid"
-                                             src="{{ url('/storage/podcast/thumbnail/' . $audio->thumbnail) }}"
+                                             src="{{ Storage::disk('s3')->url('/storage/podcast/thumbnail/' . $audio->thumbnail) }}"
                                              alt="{{ $audio->title }}">
                                     </a>
                                     <div class="time">{{ formatVideoRuntime($audio->runtime) }}</div>
@@ -177,7 +177,7 @@
                                                             <a class="dropdown-item"
                                                                href="{{ route('podcast.edit', $audio->id) }}"><i
                                                                         class="far fa-edit"></i> Edit Video</a>
-                                                            <a class="dropdown-item"
+                                                            <a class="dropdown-item delete-video"
                                                                href="{{ route('podcast.delete', $audio->id) }}"><i
                                                                         class="far fa-trash-alt"></i> Delete Video</a>
 
@@ -220,4 +220,8 @@
             <hr class="mt-0">
         @endif
     </div>
+@endsection
+
+@section('footer')
+    <script src="{{ asset('js/podcast.js') }}"></script>
 @endsection

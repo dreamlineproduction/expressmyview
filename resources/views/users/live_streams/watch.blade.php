@@ -83,7 +83,7 @@ Streaming Now - {{ $stream->title }}
                                     <h2><a href="#">{{ $stream->title }}</a></h2>
                                     <!-- <p class="mb-0"><i class="fas fa-eye"></i> {{ number_format($stream->views) }}
                                     </p> -->
-                                    <p class="mb-0" id="liveviewerscount"><i class="fas fa-eye"></i></p>
+                                    <p class="mb-0" id="liveviewerscount">Total <i class="fas fa-eye"></i> -- </p>
                                 </div>
 
                                 <div class="col-md-6">
@@ -257,7 +257,7 @@ Streaming Now - {{ $stream->title }}
                                                     $user = \Illuminate\Support\Facades\Auth::user();
                                                     @endphp
                                                     <img alt="($user->name)" class="avatar avatar-xs"
-                                                        src="{{ !empty($user->profile->avatar) ? url('/storage/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
+                                                        src="{{ !empty($user->profile->avatar) ? Storage::disk('s3')->url('public/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
 
 
                                                     <input class="publisher-input" type="text" id="publisher-input"
@@ -369,6 +369,7 @@ Streaming Now - {{ $stream->title }}
 <script>
 var channelname = "{{ $stream->channelname }}";
 var ownerID = "{{ $stream->user_id }}";
+var streamid = "{{ $stream->id }}";
 var APP_ENV = "{{ env("
 APP_ENV ") }}";
 var APP_DEBUG = "{{ env("

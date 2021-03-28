@@ -115,7 +115,12 @@
 
 
 
-
+                                    <div class="col-md-1">
+                                        <button id="record-button" style="color: orange" type="button"
+                                            class="btn btn-block btn-light record-stream-btn">
+                                            <i id="record-icon" class="fas fa-record-vinyl"></i>
+                                        </button>
+                                    </div>
                                     <div class="col-md-1">
                                         <button id="exit-btn" type="button"
                                             class="btn btn-block btn-danger stop-stream-btn">
@@ -173,7 +178,7 @@
                                 <h2><a href="#">{{ $stream->title }}</a></h2>
                                 <!-- <p class="mb-0"><i class="fas fa-eye"></i> {{ number_format($stream->views) }} views
                                 </p> -->
-                                <p class="mb-0" id="liveviewerscount"><i class="fas fa-eye"></i> 0 </p>
+                                <p class="mb-0" id="liveviewerscount">Total <i class="fas fa-eye"></i> 0 </p>
                             </div>
 
                             <div class="col-md-6">
@@ -381,7 +386,7 @@
                                                 $user = \Illuminate\Support\Facades\Auth::user();
                                                 @endphp
                                                 <img alt="($user->name)" class="avatar avatar-xs"
-                                                    src="{{ !empty($user->profile->avatar) ? url('/storage/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
+                                                    src="{{ !empty($user->profile->avatar) ? Storage::disk('s3')->url('public/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
 
 
                                                 <input class="publisher-input" id="publisher-input" type="text"

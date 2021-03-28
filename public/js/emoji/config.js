@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1912,14 +1912,14 @@ function buildMap() {
 
 /***/ }),
 
-/***/ 12:
+/***/ 13:
 /*!********************************************!*\
   !*** multi ./resources/js/emoji/config.js ***!
   \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview-git\resources\js\emoji\config.js */"./resources/js/emoji/config.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\emoji\config.js */"./resources/js/emoji/config.js");
 
 
 /***/ })

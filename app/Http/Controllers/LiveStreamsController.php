@@ -181,6 +181,7 @@ class LiveStreamsController extends Controller
             $stream->stream_id = '';
             $stream->stream_key = '';
             $stream->channelname = uniqid();
+            $stream->cloud_recordings = json_encode((object) null);
             DB::beginTransaction();
             try {
                 $stream->save();
@@ -243,6 +244,14 @@ class LiveStreamsController extends Controller
                 ]);
             }
         }
+    }
+
+    public function view(LiveStream $stream) {
+      $viewData = array(
+        'stream' => !empty($stream) ? $stream : null,
+        'cloud_recordings' => !empty($stream) ? htmlspecialchars_decode($stream->cloud_recordings, ENT_QUOTES) : null,
+      );
+      return view('users.live_streams.view', $viewData);
     }
 
     /**
@@ -585,6 +594,16 @@ class LiveStreamsController extends Controller
       return view('users.live_streams.index', $viewData);
     }
 
+    public function getConnectedViewers(Request $request) {
+      $streamid = $request->input('streamid');
+      $stream = LiveStream::where('id', $streamid)->first();
+      if ($stream) {
+        return new Response(['status' => 1, 'viewers' => $stream->views]);
+      } else {
+        return new Response(['status' => 0, 'error' => 'unknown stream id: '.$streamid]);
+      }
+    }
+
     public function getLiveStreams(Request $request)
     {
         $streams = LiveStream::where('islive',"1")->orderBy('created_at', 'desc')->paginate(10);
@@ -622,7 +641,7 @@ class LiveStreamsController extends Controller
                 $stream->views += 1;
                 $stream->save();
             }
-          
+
             $appID = env('AGORA_APP_ID');
             $appCertificate = env('AGORA_APP_CERTIFICATE');
             $channelName = $stream->channelname;
@@ -636,7 +655,7 @@ class LiveStreamsController extends Controller
             $userrtm = 'u_'.strval($userid);
             $rolertm = RtmTokenBuilder::RoleRtmUser;
             $tokenrtm = RtmTokenBuilder::buildToken($appID, $appCertificate, $userrtm, $rolertm, $privilegeExpiredTs);
-    
+
             $displayname = $user->name;
             $profilepic = !empty($userprofile[0]->avatar) ? url('/storage/users/avatar/' . $userprofile[0]->avatar) : asset('img/user.png');
             $casts = $stream->casts;
@@ -661,7 +680,7 @@ class LiveStreamsController extends Controller
                 "stream_channel" => $channelName
 
             );
-    
+
             return response()->json([
                 'status' => 0,
                 'livestreams' => $viewData
@@ -690,7 +709,7 @@ class LiveStreamsController extends Controller
         // $app_id = \Config::get('app.app_id');
         // $app_key = \Config::get('app.app_key');
         // $app_secret = \Config::get('app.app_secret');
-        
+
         // $appID = $app_id;
         // $appCertificate = $app_secret;
         // $channelName = "New Channel";
@@ -703,20 +722,20 @@ class LiveStreamsController extends Controller
         $tokenClass = new RtcTokenBuilders();
         $token = $tokenClass->buildTokenWithUid($appID, $appCertificate, $channelName, null, 2, $privilegeExpiredTs);
         // echo "app_id is";
-        // echo $app_id;  
+        // echo $app_id;
         // echo "appCertificate is";
-        // echo $appCertificate;  
+        // echo $appCertificate;
         // echo "channelName is";
-        // echo $channelName;  
+        // echo $channelName;
         // echo "uid is";
-        // echo $uid;  
+        // echo $uid;
         // echo "role is";
-        // echo $role;  
+        // echo $role;
         // exit();
         // $token = \RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, $uid, $role, $privilegeExpiredTs);
 
         return $token;
-        
+
     }
 
     public function cloudrecording(Request $request) {
@@ -724,7 +743,11 @@ class LiveStreamsController extends Controller
         $action = $request->input('action');
         $channelname = $request->input('channelname');
         $clientuid = $request->input('clientuid');
+        $token = $request->input('token');
+        $resourceIdinput = $request->input('resourceId');
+        $sidinput = $request->input('sid');
         $userId = Auth::user()->id;
+        $streamid = $request->input('streamid');
 
         $customerKey = env('AGORA_CLOUD_REC_KEY');
         $customerSecret = env('AGORA_CLOUD_REC_SECRET');
@@ -742,16 +765,78 @@ class LiveStreamsController extends Controller
           ]);
           if ($response->successful()) {
             $resourceId = $response['resourceId'];
-
+            $starturl = 'https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/resourceid/'.$resourceId.'/mode/individual/start';
+            $startBody = [
+              'cname' => $channelname,
+              'uid' => strval($userId),
+              'clientRequest' => [
+                'token' => $token,
+                'recordingConfig' => [
+                  'channelType' => 1,
+                  'subscribeVideoUids' => ["#allstream#"],
+                  'subscribeAudioUids' => ["#allstream#"],
+                  'subscribeUidGroup' => 1,
+                ],
+                'recordingFileConfig' => [
+                  'avFileType' => ['hls'],
+                ],
+                'storageConfig' => [
+                  'vendor' => 1,
+                  'region' => 14,
+                  'bucket' => env('AWS_S3_BUCKET'),
+                  'accessKey' => env('AWS_S3_KEY'),
+                  'secretKey' => env('AWS_S3_SECRET'),
+                ],
+              ],
+            ];
+            $startResponse = Http::withHeaders([
+              'Authorization' => 'Basic '.$base64Credentials
+            ])->post($starturl, $startBody);
+            if ($startResponse->successful()) {
+              return new Response(['status' => 1, 'message' => json_encode($startResponse->json())]);
+            } else {
+              return new Response(['status' => 99, 'error' => json_encode(['startURL' => $starturl, 'startBody' => $startBody, 'response' => $startResponse->json()])]);
+            }
           } else if ($response->failed()) {
             return new Response(['status' => 0, 'error' => json_encode($response->json())]);
           } else {
             return new Response(['status' => 0, 'error' => 'Unexpected error']);
           }
         } else if ($action == 'stop') {
-          $res = 2;
+          if ($sidinput == null ) {
+            return new Response(['status' => 0, 'error' => 'SID not received in request body']);
+          }
+          if ($resourceIdinput == null ) {
+            return new Response(['status' => 0, 'error' => 'resourceId not received in request body']);
+          }
+          $stopurl = 'https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/resourceid/'.$resourceIdinput.'/sid/'.$sidinput.'/mode/individual/stop';
+          $stopBody = [
+            'cname' => $channelname,
+            'uid' => strval($userId),
+            'clientRequest' => (object) null,
+          ];
+          $stopResponse = Http::withHeaders([
+              'Authorization' => 'Basic '.$base64Credentials
+            ])->post($stopurl, $stopBody);
+          if ($stopResponse->successful()) {
+            $stream = LiveStream::where('id', $streamid)->first();
+            if (!empty($stream)) {
+              DB::beginTransaction();
+              try {
+                $stream->cloud_recordings = json_encode($stopResponse->json());
+                $stream->update();
+                DB::commit();
+              } catch (\Exception $exception) {
+                DB::rollBack();
+              }
+            }
+            return new Response(['status' => 2, 'message' => json_encode($stopResponse->json())]);
+          } else {
+            return new Response(['status' => 99, 'error' => json_encode(['stopURL' => $stopurl, 'stopBody' => $stopBody, 'response' => $stopResponse->json()])]);
+          }
         } else {
           $res = 99;
+          return new Response(['status' => 99, 'error' => 'Unknown action type!!']);
         }
       } else {
         return new Response([
@@ -759,9 +844,5 @@ class LiveStreamsController extends Controller
           'error' => 'Access denied',
         ]);
       }
-    }
-
-    public function stoprecording(Request $request) {
-
     }
 }

@@ -17,5 +17,6 @@
     "/js/podcast.js": "/js/podcast.js",
     "/js/search.js": "/js/search.js",
     "/js/settings.js": "/js/settings.js",
+    "/js/view.js": "/js/view.js",
     "/js/viewer.js": "/js/viewer.js"
 }
