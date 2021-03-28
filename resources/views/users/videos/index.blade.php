@@ -100,13 +100,13 @@
                     @empty
 
                     <div class="col-md-12 mb-3 mt-4 text-center">
-                    
+
                     <img class="img-fluid mb-4" src="{{asset('img/no-data.svg')}}" width="120" alt="No Data Avalaible"></a>
-                   
+
                    <h3 class="text-muted"> You do not have any videos.</h3>
-                    
+
                     </div>
-                       
+
                     @endforelse
                     {{ $videos->links() }}
                 </div>
@@ -206,18 +206,69 @@
                         </div>
                     @empty
                     <div class="col-md-12 mb-3 mt-4 text-center">
-                    
+
                     <img class="img-fluid mb-4" src="{{asset('img/no-data.svg')}}" width="120" alt="No Data Avalaible"></a>
-                   
+
                    <h3 class="text-muted"> You do not have any audio.</h3>
-                    
+
                     </div>
-                        
+
                     @endforelse
                     {{ $audios->links() }}
                 </div>
             </div>
             <hr class="mt-0">
+        @endif
+
+        @if(!empty($recorded))
+        <div class="video-block section-padding">
+          <div class="row">
+            @forelse($recorded as $stream)
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="video-card">
+                    <div class="video-card-image">
+                      <a class="play-icon" href="{{ route('live-streams.view', $stream->id) }}"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
+                      <a href="{{ route('live-streams.view', $stream->id) }}">
+                          <img class="img-fluid" src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}" alt="video">
+                      </a>
+                      <div class="time"><i class="fas fa-video"></i></div>
+                    </div>
+                    <div class="video-card-body">
+                        <div class="row">
+                            <div class="col-md-10">
+
+                              <div class="video-title text-left">
+                                  <a href="{{ route('live-streams.view', $stream->id) }}">{{ $stream->title }}</a>
+                              </div>
+                          </div>
+
+                                                                      <div class="col-md-2">
+
+
+                              </div>
+                                                              </div>
+                      <div class="video-page text-success">
+                          <a href="{{ route('channel.show', $stream->channel->id) }}">{{ $stream->channel->name }}</a>
+                                                              </div>
+                      <div class="video-view float-left">
+                          <i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ $stream->created_at->diffForHumans() }}
+                      </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-md-12 mb-3 text-center">
+                <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
+                <h6 class="mt-4"> Sorry! There are not recorded streams currently.</h6>
+                <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
+                <h6 class="mt-4"> OR </h6>
+                <a href="{{ route('my.livestreams') }}" class="btn btn-primary mt-4">Past Streams</a>
+            </div>
+            @endforelse
+          </div>
+        </div>
         @endif
     </div>
 @endsection
