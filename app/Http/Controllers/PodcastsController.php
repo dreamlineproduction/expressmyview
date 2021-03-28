@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Like;
 use App\Podcast;
+use App\LiveStream;
 use App\Cast;
 use App\Category;
 use App\Comment;
@@ -60,6 +61,8 @@ class PodcastsController extends Controller
                 }
             });
 
+          $streams = LiveStream::whereRaw('cloud_recordings <> "{}"');
+
         if (empty($type)) {
             $podcasts2 = clone $podcasts;
 
@@ -72,7 +75,8 @@ class PodcastsController extends Controller
         $viewData = array(
             'videos' => !empty($videoPodcasts) ? $videoPodcasts : null,
             'audios' => !empty($audioPodcasts) ? $audioPodcasts : null,
-            'type' => $type
+            'type' => $type,
+            'recorded' => !empty($streams) ? $streams->paginate(10) : null,
         );
         return view('users.videos.index', $viewData);
     }
@@ -434,9 +438,9 @@ class PodcastsController extends Controller
 
     public function relatedPodcasts(Request $request)
     {
-        $pid = $request->pid;   
+        $pid = $request->pid;
         $podcast = Podcast::find($pid);
-        
+
         $podcastCategories = $podcast->categories()->pluck('categories.id')->toArray();
 
         $relatedPodcastsObj = Podcast::where('id', '!=', $pid)->where('status', 1);
@@ -453,14 +457,14 @@ class PodcastsController extends Controller
                 ->take(5)
                 ->get();
         }
-       
-            
+
+
         return response()->json([
             'status' => 0,
             'relatedPodcast' => $relatedPodcasts2,
             'message' => "success"
         ]);
-        
+
     }
 
     public function uploadPodcastDetails(Request $request)
@@ -506,7 +510,7 @@ class PodcastsController extends Controller
                     $thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $podcast->thumbnail;
 
                     Storage::disk('s3')->put('public/podcast/thumbnail/' . $podcast->thumbnail, file_get_contents($thumbfile), 'public');
-    
+
                     $coverFilename = $podcast->thumbnail;
                 }
             }
@@ -557,7 +561,7 @@ class PodcastsController extends Controller
                         }
                     }
                 }
-                
+
                 foreach ($catIds as $catid) {
                     $allCats = DB::table('category_podcast')->where([
                             'category_id' => $catid,
@@ -595,7 +599,7 @@ class PodcastsController extends Controller
                             'tag_id' => $tagid,
                             'podcast_id' => $podcastId
                         ])->first();
-                    
+
                     if(!$allTags){
                         DB::table('podcast_tag')->insert([
                             ['tag_id' => $tagid, 'podcast_id' => $podcastId]
@@ -626,7 +630,7 @@ class PodcastsController extends Controller
                             'cast_id' => $castid,
                             'podcast_id' => $podcastId
                         ])->first();
-                    
+
                     if(!$allCasts){
                         DB::table('cast_podcast')->insert([
                             ['cast_id' => $castid, 'podcast_id' => $podcastId]
@@ -931,7 +935,7 @@ class PodcastsController extends Controller
         // $file = Request::file('mediafile');
         // $filename = Request::post('fileName');
         // $path = public_path().'/uploads/';
-        
+
         // $mimeType = $file->getMimeType();
         // $fileType = explode('/', $mimeType)[0];
         // $userid = Request::post('userid');
@@ -985,12 +989,12 @@ class PodcastsController extends Controller
         ];
 
         $id =  $data['id'];
-        
+
         $data = $request->all();
-         
+
         $input     = $request->only('firstname', 'lastname', 'username', 'phonenumber', 'address1', 'address2', 'state', 'zip');
         $validator = Validator::make($input, $rules);
-        
+
         $user = User::find($id);
 
         if ($validator->fails()) {
@@ -1003,7 +1007,7 @@ class PodcastsController extends Controller
             );
             return redirect()->back()->with("error","Something went wrong.")->withInput();
         }
-        
+
         $user->firstname = $data['firstname'];
         $user->lastname = $data['lastname'];
         $user->phonenumber = $data['phonenumber'];
@@ -1015,13 +1019,13 @@ class PodcastsController extends Controller
 
         return redirect()->back()->with("success","User Updated Successfully.")->withInput();
     }
- 
+
     public function updatePodcastDetails(Request $request)
     {
         $request = request();
         $podcastId = $request->input('id');
         $podcast = Podcast::find($podcastId);
-       
+
         $validator = Validator::make($request->all(), [
             'channel' => 'required',
             'title' => 'required',
@@ -1055,7 +1059,7 @@ class PodcastsController extends Controller
             }else{
                 $coverFilename = $oldCoverFilename;
             }
-            
+
             $podcast->channel_id = $request->input('channel');
             $podcast->title = $request->input('title');
             $podcast->description = $request->input('description');
@@ -1078,14 +1082,14 @@ class PodcastsController extends Controller
                             }
                         }
                     }
-                
+
                     foreach ($langIds as $lngid) {
                         $allLangs = DB::table('language_podcast')->where([
                                 'language_id' => $lngid,
                                 'podcast_id' => $podcastId
                             ])->first();
 
-                        
+
                         if(!$allLangs){
                             DB::table('language_podcast')->insert([
                                 ['language_id' => $lngid, 'podcast_id' => $podcastId]
@@ -1093,7 +1097,7 @@ class PodcastsController extends Controller
                         }
                     }
                 }
-                
+
 
                 $categories = $request->input('categories');
                 if($categories){
@@ -1106,7 +1110,7 @@ class PodcastsController extends Controller
                             }
                         }
                     }
-                    
+
                     foreach ($catIds as $catid) {
                         $allCats = DB::table('category_podcast')->where([
                                 'category_id' => $catid,
@@ -1144,7 +1148,7 @@ class PodcastsController extends Controller
                                 'tag_id' => $tagid,
                                 'podcast_id' => $podcastId
                             ])->first();
-                        
+
                         if(!$allTags){
                             DB::table('podcast_tag')->insert([
                                 ['tag_id' => $tagid, 'podcast_id' => $podcastId]
@@ -1152,7 +1156,7 @@ class PodcastsController extends Controller
                         }
                     }
                 }
-            
+
                 // // $podcast->tags()->sync($tagIds);
 
                 $casts = $request->input('casts');
@@ -1178,7 +1182,7 @@ class PodcastsController extends Controller
                                 'cast_id' => $castid,
                                 'podcast_id' => $podcastId
                             ])->first();
-                        
+
                         if(!$allCasts){
                             DB::table('cast_podcast')->insert([
                                 ['cast_id' => $castid, 'podcast_id' => $podcastId]
@@ -1282,9 +1286,9 @@ class PodcastsController extends Controller
         $id = $request->id;
         $uid = $request->uid;
 
-        $pid = $request->id;   
+        $pid = $request->id;
         $podcast = Podcast::find($pid);
-        
+
         $podcastCategories = $podcast->categories()->pluck('categories.id')->toArray();
 
         $relatedPodcastsObj = Podcast::where('id', '!=', $pid)->where('status', 1);
@@ -1301,8 +1305,8 @@ class PodcastsController extends Controller
                 ->take(5)
                 ->get();
         }
-      
-      
+
+
         foreach($relatedPodcasts2 as $relatedPodcast ){
             if($relatedPodcast['thumbnail']){
                 $relatedPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$relatedPodcast['thumbnail']);
@@ -1310,7 +1314,7 @@ class PodcastsController extends Controller
             $relatedPodcast["channelName"] = $this->getChannelName($relatedPodcast["channel_id"]);
             $relatedPodcast["dateDiff"] = $relatedPodcast['created_at']->diffForHumans();
         }
-        
+
         $liked = Like::where('podcast_id', $id)->where('user_id', $uid)->first();
         if (empty($liked)) {
             $isLiked = false;
@@ -1329,7 +1333,7 @@ class PodcastsController extends Controller
             $allCasts = DB::table('cast_podcast')->where('podcast_id', $id)->get();
             $allTags = DB::table('podcast_tag')->where('podcast_id', $id)->get();
             $allLangs = DB::table('language_podcast')->where('podcast_id', $id)->get();
-        
+
             $languages = array();
             foreach($allLangs as $lng){
                 $lngId = $lng->language_id;
@@ -1357,7 +1361,7 @@ class PodcastsController extends Controller
                 $cast = Cast::find($castId);
                 $casts[] = $cast->name;
             }
-        
+
             $subscribed = $this->isSubscribed($uid, $channelId);
 
             $podcastDetails = array(
@@ -1376,7 +1380,7 @@ class PodcastsController extends Controller
                 "error" => "something went wrong, please try again"
             ]);
         }
-        
+
         return response()->json([
             'status' => 200,
             $podcastDetails
@@ -1488,5 +1492,5 @@ class PodcastsController extends Controller
                 'error' => 'error, something went wrong, please try again later'
             ]);
         }
-    }  
+    }
 }

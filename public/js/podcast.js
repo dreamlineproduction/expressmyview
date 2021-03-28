@@ -586,38 +586,6 @@ $(function () {
       }
     });
   });
-  $('.delete-video').click(function (event) {
-    event.preventDefault();
-    var $this = $(this);
-    alertify.confirm('Are you sure?', 'You are about to delete this podcast. This action is irreversible.', function () {
-      $.ajax({
-        url: $this.attr('href'),
-        method: 'post',
-        data: {
-          _method: 'delete',
-          _token: $('meta[name=csrf-token]').attr('content')
-        },
-        dataType: 'json',
-        beforeSend: function beforeSend() {//
-        },
-        success: function success(data) {
-          console.log(data);
-
-          if (data.status == 1) {
-            alertify.success(data.message);
-            window.location.reload();
-          } else {
-            alertify.error(data.message);
-          }
-        },
-        error: function error() {
-          alertify.error('An error occurred. Please try again.');
-        },
-        complete: function complete() {//
-        }
-      });
-    }, function () {});
-  });
 });
 
 /***/ }),
@@ -629,7 +597,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview\resources\js\podcast.js */"./resources/js/podcast.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\podcast.js */"./resources/js/podcast.js");
 
 
 /***/ })

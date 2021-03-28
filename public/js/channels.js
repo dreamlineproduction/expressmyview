@@ -234,7 +234,7 @@ $(function () {
     event.preventDefault();
     event.stopPropagation();
     var channel = $(this);
-    alertify.confirm('Are you sure?', 'You are about to delete this channel. This action is irreversible.', function () {
+    alertify.confirm('Are you sure?', 'You are about to delete this comment. This action is irreversible.', function () {
       $.ajax({
         url: APP_URL + '/channel/' + channel.data('channel') + '/delete',
         method: 'post',
@@ -301,7 +301,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\expressmyview\resources\js\channels.js */"./resources/js/channels.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\channels.js */"./resources/js/channels.js");
 
 
 /***/ })

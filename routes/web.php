@@ -70,7 +70,9 @@ Route::group(['middleware' => ['verified']], function () {
 
 Route::get('/live-streams/all', 'LiveStreamsController@index')->name('live-streams.all');
 Route::get('/live-stream/watch/{stream}','LiveStreamsController@watch')->name('live-streams.watch');
+Route::get('/live-stream/view/{stream}','LiveStreamsController@view')->name('live-streams.view');
 Route::get('/live-stream/{stream}', 'LiveStreamsController@show')->name('live-stream.show');
+Route::post('/live-stream/views', 'LiveStreamsController@getConnectedViewers')->name('live-stream.views');
 
 Route::get('/podcasts/{type}/{user?}', 'PodcastsController@index')->name('podcast.index');
 Route::get('/podcasts/{type?}', 'PodcastsController@index')->name('podcast.index');
