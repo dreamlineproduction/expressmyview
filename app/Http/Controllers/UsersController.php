@@ -246,7 +246,7 @@ class UsersController extends Controller
     public function getMyChannels(Request $request)
     {
         $userid    = $request->userid;
-        $myChannels = Channel::where('user_id', $userid)->orderBy('created_at', 'DESC')->get();
+        $myChannels = Channel::where('user_id', $userid)->orderBy('created_at', 'DESC')->paginate(4);
         foreach ($myChannels as $myChannel ){
             if($myChannel['logo']){
                 $myChannel["logoPath"] = Storage::disk('s3')->url("public/users/logo/".$myChannel['logo']);
@@ -294,13 +294,6 @@ class UsersController extends Controller
         $subscribed = $this->isSubscribed($uid, $channelId);
 
         $allPodcastsCount = Podcast::where('channel_id', $channelId)->count();
-        $allPodcasts = Podcast::where('channel_id', $channelId)->orderBy('created_at', 'DESC')->paginate(10);
-        foreach ($allPodcasts as $allPodcast ){
-            if($allPodcast['thumbnail']){
-                $allPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$allPodcast['thumbnail']);
-            }
-            $allPodcast["dateDiff"] = $allPodcast['created_at']->diffForHumans();
-        }
 
         if(empty($channelDetails)){
             return response()->json([
@@ -310,7 +303,6 @@ class UsersController extends Controller
             $viewData = array(
                 'channelDetails' => $channelDetails,
                 'allPodcastsCount' => $allPodcastsCount,
-                'allPodcasts' => $allPodcasts, 
                 "isSubscribed" => $subscribed,
             );
         }
@@ -318,6 +310,21 @@ class UsersController extends Controller
         return response()->json([
             'status' => 200,
             $viewData
+        ]);
+    }
+
+    public function getChannelPodcasts(Request $request){
+        $channelId = $request->channel_id;
+        $allPodcasts = Podcast::where('channel_id', $channelId)->orderBy('created_at', 'DESC')->paginate(10);
+        foreach ($allPodcasts as $allPodcast ){
+            if($allPodcast['thumbnail']){
+                $allPodcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$allPodcast['thumbnail']);
+            }
+            $allPodcast["dateDiff"] = $allPodcast['created_at']->diffForHumans();
+        }
+        return response()->json([
+            'status' => 200,
+            $allPodcasts
         ]);
     }
 
