@@ -47,6 +47,7 @@ Route::post('getMyAllPodcasts', 'PodcastsController@getMyAllPodcasts');
 Route::post('getMyAccountDatas', 'UsersController@getMyAccountDatas');
 Route::post('getMyChannels', 'UsersController@getMyChannels');
 Route::post('channelDetails', 'UsersController@channelDetails');
+Route::post('getChannelPodcasts', 'UsersController@getChannelPodcasts');
 Route::post('changePassword', 'UsersController@changePassword');
 Route::post('forgotpassword', 'UsersController@forgotpassword');
 Route::post('verifyotp', 'UsersController@verifyotp');

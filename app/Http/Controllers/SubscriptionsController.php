@@ -249,7 +249,7 @@ class SubscriptionsController extends Controller
         $uid = $request->uid;
         $channels = Channel::whereIn(
             'id', Subscription::where('user_id', $uid)->get(['channel_id'])->pluck('channel_id')->toArray()
-        )->get();
+        )->paginate(10);
 
         if(!empty($channels)){
             foreach($channels as $channel){

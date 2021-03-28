@@ -1249,9 +1249,9 @@ class PodcastsController extends Controller
         $uid = $request->input('id');
         $media = $request->input('media');
         if($media == "video"){
-            $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->where('user_id', $uid)->orderBy('created_at', 'DESC')->get();
+            $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->where('user_id', $uid)->orderBy('created_at', 'DESC')->paginate(10);
         }else{
-            $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "audio")->where('user_id', $uid)->orderBy('created_at', 'DESC')->get();
+            $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "audio")->where('user_id', $uid)->orderBy('created_at', 'DESC')->paginate(10);
         }
 
         foreach ($allVideoPodcasts as $allVideoPodcast ){
@@ -1321,7 +1321,11 @@ class PodcastsController extends Controller
 
         $podcast["dateDiff"] = $podcast['created_at']->diffForHumans();
         $podcast["thumbnail"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$podcast['thumbnail']);
-        $podcast["videoPath"] =Storage::disk('s3')->url('public/podcast/1080/' . $podcast['filename']);
+        if($podcast["file_type"] == "video"){
+            $podcast["videoPath"] =Storage::disk('s3')->url('public/podcast/1080/' . $podcast['filename']);
+        }else{
+            $podcast["audioPath"] =Storage::disk('s3')->url('public/podcast/audio/' . $podcast['filename']);
+        }
 
         if($podcast){
             $channelId = $podcast->channel_id;
