@@ -110,7 +110,7 @@ My Account
                                                 href="{{ route('live-stream.edit', $stream->id) }}"><i
                                                     class="far fa-edit"></i> Edit LiveStream</a>
                                             <a class="dropdown-item delete-video"
-                                                href="{{ route('podcast.delete', $video->id) }}"><i
+                                                href="{{ route('podcast.delete', $stream->id) }}"><i
                                                     class="far fa-trash-alt"></i> Delete Video</a>
 
                                         </div>
