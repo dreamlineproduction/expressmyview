@@ -386,7 +386,7 @@
                                                 $user = \Illuminate\Support\Facades\Auth::user();
                                                 @endphp
                                                 <img alt="($user->name)" class="avatar avatar-xs"
-                                                    src="{{ !empty($user->profile->avatar) ? url('/storage/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
+                                                    src="{{ !empty($user->profile->avatar) ? Storage::disk('s3')->url('public/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
 
 
                                                 <input class="publisher-input" id="publisher-input" type="text"
@@ -478,16 +478,20 @@
 
 <script>
 var channelname = "{{ $stream->channelname }}";
-var APP_ENV = "{{ env("APP_ENV") }}";
-var APP_DEBUG = "{{ env("APP_DEBUG") }}";
-var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
+var APP_ENV = "{{ env("
+APP_ENV ") }}";
+var APP_DEBUG = "{{ env("
+APP_DEBUG ") }}";
+var AGORA_APP_ID = "{{ env("
+AGORA_APP_ID ") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
 var clipboard = new ClipboardJS('.btn');
 var streamid = "{{ $stream->id }}";
 var displayname = "{{ $stream->user->name }}";
-var profilepic = "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
+var profilepic =
+    "{{ !empty($stream->user->profile->avatar) ? url('/storage/users/avatar/' . $stream->user->profile->avatar) : asset('img/user.png') }}"
 var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
 
 clipboard.on('success', function(e) {

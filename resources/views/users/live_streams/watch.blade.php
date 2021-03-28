@@ -257,7 +257,7 @@ Streaming Now - {{ $stream->title }}
                                                     $user = \Illuminate\Support\Facades\Auth::user();
                                                     @endphp
                                                     <img alt="($user->name)" class="avatar avatar-xs"
-                                                        src="{{ !empty($user->profile->avatar) ? url('/storage/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
+                                                        src="{{ !empty($user->profile->avatar) ? Storage::disk('s3')->url('public/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
 
 
                                                     <input class="publisher-input" type="text" id="publisher-input"
@@ -370,9 +370,12 @@ Streaming Now - {{ $stream->title }}
 var channelname = "{{ $stream->channelname }}";
 var ownerID = "{{ $stream->user_id }}";
 var streamid = "{{ $stream->id }}";
-var APP_ENV = "{{ env("APP_ENV") }}";
-var APP_DEBUG = "{{ env("APP_DEBUG") }}";
-var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
+var APP_ENV = "{{ env("
+APP_ENV ") }}";
+var APP_DEBUG = "{{ env("
+APP_DEBUG ") }}";
+var AGORA_APP_ID = "{{ env("
+AGORA_APP_ID ") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";
