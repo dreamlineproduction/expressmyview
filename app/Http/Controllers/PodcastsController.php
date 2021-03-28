@@ -147,7 +147,7 @@ class PodcastsController extends Controller
                 $media
                     ->getFrameFromSeconds((int)($duration * 0.3))
                     ->export()
-                    ->toDisk('public')
+                    ->toDisk('s3')
                     ->save('podcast/thumbnail/' . $thumbnailFilename);
 
                 /*$ffmpeg = FFMpeg::create();
@@ -344,7 +344,7 @@ class PodcastsController extends Controller
                     $coverFilename = $request->file('thumbnail')->hashName();
                     if (!empty($oldCoverFilename)) {
 
-                        unlink(storage_path('/app/public/podcast/thumbnail') . '/' . $oldCoverFilename);
+                        Storage::disk('s3')->delete('public/podcast/thumbnail/' . $oldCoverFilename);
                     }
 
                 } else {
@@ -353,9 +353,9 @@ class PodcastsController extends Controller
                     ]);
                 }
             } else {
-                $thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $podcast->thumbnail;
+                /*$thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $podcast->thumbnail;
 
-                Storage::disk('s3')->put('public/podcast/thumbnail/' . $podcast->thumbnail, file_get_contents($thumbfile), 'public');
+                Storage::disk('s3')->put('public/podcast/thumbnail/' . $podcast->thumbnail, file_get_contents($thumbfile), 'public');*/
 
                 $coverFilename = $podcast->thumbnail;
             }
@@ -663,7 +663,6 @@ class PodcastsController extends Controller
         if ($podcast->user_id == Auth::user()->id) {
             DB::beginTransaction();;
             if ($podcast->delete()) {
-
 //                unlink(storage_path('/app/public/podcast/' . $podcast->filename));
                 Storage::disk('s3')->delete('public/podcast/thumbnail/' . $podcast->thumbnail);
                 if ($podcast->file_type == 'video') {
