@@ -109,9 +109,9 @@ My Account
                                             <a class="dropdown-item"
                                                 href="{{ route('live-stream.edit', $stream->id) }}"><i
                                                     class="far fa-edit"></i> Edit LiveStream</a>
-                                            <a class="dropdown-item"
-                                                href="{{ route('live-stream.delete', $stream->id) }}"><i
-                                                    class="far fa-trash-alt"></i> Delete LiveStream</a>
+                                            <a class="dropdown-item delete-video"
+                                                href="{{ route('podcast.delete', $video->id) }}"><i
+                                                    class="far fa-trash-alt"></i> Delete Video</a>
 
                                         </div>
                                     </div>
@@ -197,7 +197,7 @@ My Account
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="{{ route('podcast.edit', $podcast->id) }}"><i
                                                     class="far fa-edit"></i> Edit Video</a>
-                                            <a class="dropdown-item"
+                                            <a class="dropdown-item delete-video"
                                                 href="{{ route('podcast.delete', $podcast->id) }}"><i
                                                     class="far fa-trash-alt"></i> Delete Video</a>
 
@@ -284,8 +284,8 @@ My Account
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="{{ route('podcast.edit', $podcast->id) }}"><i
                                                     class="far fa-edit"></i> Edit Video</a>
-                                            <a class="dropdown-item"
-                                                href="{{ route('podcast.delete', $podcast->id) }}"><i
+                                            <a class="dropdown-item delete-video"
+                                                href="{{ route('podcast.delete', $video->id) }}"><i
                                                     class="far fa-trash-alt"></i> Delete Video</a>
 
                                         </div>
@@ -364,4 +364,6 @@ My Account
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js">
+</script>
 @endsection
