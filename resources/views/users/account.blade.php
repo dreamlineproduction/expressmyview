@@ -292,7 +292,7 @@ My Account
                                             <a class="dropdown-item" href="{{ route('podcast.edit', $podcast->id) }}"><i
                                                     class="far fa-edit"></i> Edit Video</a>
                                             <a class="dropdown-item delete-video"
-                                                href="{{ route('podcast.delete', $video->id) }}"><i
+                                                href="{{ route('podcast.delete', $podcast->id) }}"><i
                                                     class="far fa-trash-alt"></i> Delete Video</a>
 
                                         </div>
