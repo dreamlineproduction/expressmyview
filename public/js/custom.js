@@ -99,7 +99,7 @@ Author: Askbootstrap
 Author URI: https://themeforest.net/user/askbootstrap
 Version: 1.0
 */
-(function ($) {
+$(function ($) {
   "use strict"; // Start of use strict
   // Toggle the side navigation
 
@@ -202,7 +202,7 @@ Version: 1.0
   if (typeof alertify !== 'undefined') {
     alertify.set('notifier', 'position', 'bottom-center');
   }
-})(jQuery); // End of use strict
+}); // End of use strict
 
 /***/ }),
 
@@ -213,7 +213,7 @@ Version: 1.0
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\custom.js */"./resources/js/custom.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/custom.js */"./resources/js/custom.js");
 
 
 /***/ })

@@ -4,7 +4,7 @@ Author: Askbootstrap
 Author URI: https://themeforest.net/user/askbootstrap
 Version: 1.0
 */
-(function($) {
+$(function($) {
     "use strict"; // Start of use strict
 
     // Toggle the side navigation
@@ -111,4 +111,4 @@ Version: 1.0
         alertify.set('notifier', 'position', 'bottom-center');
     }
 
-})(jQuery); // End of use strict
+}); // End of use strict

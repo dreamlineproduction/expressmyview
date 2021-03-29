@@ -97,8 +97,13 @@
 //
 // const player = new Plyr('#player');
 $(function () {
-  $('#channel').select2();
-  $('#languages').select2();
+  alertify.set('notifier', 'position', 'bottom-center');
+  var $languages = $('#languages');
+
+  if ($languages.length > 0) {
+    $languages.select2();
+  }
+
   var $thumbnail = $('#thumbnail');
 
   if ($thumbnail.length > 0) {
@@ -144,6 +149,74 @@ $(function () {
     });
   }
 
+  var podcastDetails = $('#podcast_details');
+
+  if (podcastDetails.length > 0) {
+    var $submitBtn = $('#submit_btn');
+    podcastDetails.ajaxForm({
+      url: $(this).attr('action'),
+      method: 'post',
+      beforeSend: function beforeSend() {
+        $submitBtn.attr('disabled', true);
+        $submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Please wait');
+      },
+      success: function success(data) {
+        if (data.status == 1) {
+          window.location.href = data.redirect;
+        } else {
+          swal({
+            title: 'Error',
+            text: data.message,
+            type: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            buttonsStyling: true,
+            confirmButtonClass: 'btn btn-success'
+          });
+        }
+      },
+      complete: function complete() {
+        $submitBtn.attr('disabled', false);
+        $submitBtn.html('Save Changes');
+      }
+    });
+  }
+
+  $('.delete-stream').click(function (event) {
+    event.preventDefault();
+    var $this = $(this);
+    alertify.confirm('Are you sure?', 'You are about to delete this podcast. This action is irreversible.', function () {
+      $.ajax({
+        url: $this.attr('href'),
+        method: 'delete',
+        data: {
+          _method: 'delete',
+          _token: $('meta[name=csrf-token]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function beforeSend() {
+          $.LoadingOverlay("show");
+        },
+        success: function success(data) {
+          console.log(data);
+
+          if (data.status == 1) {
+            alertify.success(data.message);
+            window.location.reload();
+          } else {
+            alertify.error(data.message);
+          }
+        },
+        error: function error() {
+          alertify.error('An error occurred. Please try again.');
+        },
+        complete: function complete() {
+          $.LoadingOverlay("hide");
+        }
+      });
+    }, function () {});
+  });
   $('#podcast_form').validate({
     rules: {
       channel: 'required',
@@ -204,7 +277,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\live-streams.js */"./resources/js/live-streams.js");
+module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/live-streams.js */"./resources/js/live-streams.js");
 
 
 /***/ })

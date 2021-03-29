@@ -90,8 +90,7 @@
         </div>
     </div>
     <script>
-    var APP_URL = '{{ env('
-    APP_URL ') }}';
+    var APP_URL = '{{ env('APP_URL') }}';
     </script>
     <!-- jQuery Full -->
     <script src="https://code.jquery.com/jquery-3.5.0.min.js"
@@ -110,6 +109,8 @@
     <script src="{{ asset('js/owl.carousel.min.js') }}" defer></script>
     <!-- AlertifyJS -->
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js" defer></script>
+
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/custom.js') }}" defer></script>
     <!-- Emoji picker -->
@@ -120,15 +121,15 @@
 
 
 
-    <script>
+    <!-- <script>
     $("#mic-btn").prop("disabled", true);
     $("#video-btn").prop("disabled", true);
     $("#screen-share-btn").prop("disabled", true);
     $("#exit-btn").prop("disabled", true);
     $("#add-rtmp-btn").prop("disabled", true);
-    </script>
+    </script> -->
 
-    <script src="{{ asset('js/ui.js') }}"></script>
+    <!-- <script src="{{ asset('js/ui.js') }}"></script> -->
 
     @yield('footer')
 </body>

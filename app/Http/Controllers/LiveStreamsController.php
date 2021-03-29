@@ -69,8 +69,21 @@ class LiveStreamsController extends Controller
           }
         });
 
+      $recordedStreams = LiveStream::where('islive', false)
+        ->whereJsonContains('cloud_recordings->serverResponse->uploadingStatus','uploaded')
+        ->when($orderBy, function($query, $orderBy) {
+          if ($orderBy == 'popularity') {
+              return $query->orderBy('views', 'desc');
+          } elseif ($orderBy == 'rating') {
+              return $query->orderBy('likes', 'desc');
+          } else {
+              return $query->orderBy('created_at', 'desc');
+          }
+        });
+
       $viewData = array(
         'streams' => $streams->paginate(10),
+        'recordedStreams' => $recordedStreams->paginate(10),
       );
 
       return view('users.live_streams.all', $viewData);
@@ -448,18 +461,18 @@ class LiveStreamsController extends Controller
                 $coverFilename = $request->file('thumbnail')->hashName();
                 if (!empty($oldCoverFilename)) {
 
-                    unlink(storage_path('/app/public/podcast/thumbnail') . '/' . $oldCoverFilename);
+                    Storage::disk('s3')->delete('public/podcast/thumbnail/' . $oldCoverFilename);
                 }
 
             } else {
                 return response()->json([
-                    'errors' => 'An error occurred. Please try again.'
+                    'errors' => 'An error occurred in thumbnail code. Please try again.'
                 ]);
             }
         } else {
-            $thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $stream->thumbnail;
+            // $thumbfile = storage_path('/app/public/podcast/thumbnail') . '/' . $stream->thumbnail;
 
-            Storage::disk('s3')->put('public/podcast/thumbnail/' . $stream->thumbnail, file_get_contents($thumbfile), 'public');
+            // Storage::disk('s3')->put('public/podcast/thumbnail/' . $stream->thumbnail, file_get_contents($thumbfile), 'public');
 
             $coverFilename = $stream->thumbnail;
         }
@@ -471,7 +484,7 @@ class LiveStreamsController extends Controller
         $stream->license_id = $request->input('license');
         $stream->comments_allowed = $request->input('comments_allowed');
         $stream->thumbnail = $coverFilename;
-        $stream->status = 1;
+
         DB::beginTransaction();
         try {
             $stream->save();
@@ -530,7 +543,7 @@ class LiveStreamsController extends Controller
 
             return response()->json([
                 'status' => 0,
-                'message' => 'An error occurred. Please try again.',
+                'message' => 'An error occurred in db storage. Please try again.',
             ]);
         }
       }
@@ -542,11 +555,9 @@ class LiveStreamsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(LiveStream $stream)
     {
-        $stream = LiveStream::find($id);
         if ($stream->user_id == Auth::user()->id){
-          DB::beginTransaction();
           if ($stream->delete()) {
             Storage::disk('s3')->delete('public/podcast/thumbnail/' . $stream->thumbnail);
 
@@ -786,6 +797,7 @@ class LiveStreamsController extends Controller
                   'bucket' => env('AWS_S3_BUCKET'),
                   'accessKey' => env('AWS_S3_KEY'),
                   'secretKey' => env('AWS_S3_SECRET'),
+                  'fileNamePrefix' => [$channelname],
                 ],
               ],
             ];

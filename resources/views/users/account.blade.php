@@ -4,6 +4,13 @@
 My Account
 @endsection
 
+@section('header')
+<!-- Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<!-- Bootstrap Tags Input -->
+<link rel="stylesheet" href="{{ asset('css/bootstrap-tagsinput.css') }}">
+@endsection
+
 @section('content')
 <div class="container-fluid pb-0">
     <div class="row">
@@ -110,7 +117,7 @@ My Account
                                                 href="{{ route('live-stream.edit', $stream->id) }}"><i
                                                     class="far fa-edit"></i> Edit LiveStream</a>
                                             <a class="dropdown-item delete-video"
-                                                href="{{ route('podcast.delete', $stream->id) }}"><i
+                                                href="{{ route('live-stream.delete', $stream->id) }}"><i
                                                     class="far fa-trash-alt"></i> Delete Video</a>
 
                                         </div>
@@ -364,6 +371,20 @@ My Account
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js">
-</script>
+@endsection
+
+@section('footer')
+<!-- Sweetalert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" defer></script>
+<!-- jQuery Form -->
+<script src="https://malsup.github.io/jquery.form.js" defer></script>
+<!-- Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js" defer></script>
+<!-- jQuery Validation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" defer></script>
+<!-- Bootstrap Tags Input -->
+<script src="{{ asset('js/bootstrap-tagsinput.js') }}" defer></script>
+
+<script src="{{ asset('js/podcast.js') }}"></script>
+<script src="{{ asset('js/live-streams.js') }}"></script>
 @endsection
