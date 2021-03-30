@@ -760,11 +760,6 @@ $(function(){
         method: 'post',
         data: { streamid, channelname, action: 'stop', clientuid, token, resourceId, sid },
         success: (data) => {
-          try {
-            console.log(JSON.parse(data));
-          } catch(err) {
-            console.log(err.message, data);
-          }
           // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
           if (data.status === 1) {
             $('#record-button').css({color: 'red'})
@@ -777,6 +772,7 @@ $(function(){
           } else {
             $('#record-button').css({color: 'orange'})
             recordingstatus = 0;
+            if (data.error) console.log(JSON.parse(data.error));
           }
         },
         error: (error) => {
@@ -978,11 +974,7 @@ $(function(){
       method: 'post',
       data: { streamid, channelname, action, clientuid, token, resourceId, sid },
       success: (data) => {
-        try {
-          console.log(JSON.parse(data));
-        } catch(err) {
-          console.log(err.message, data);
-        }
+        if (data.message) console.log(JSON.parse(data.message));
         // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
         if (data.status === 1) {
           $('#record-button').css({color: 'red'})
@@ -995,6 +987,7 @@ $(function(){
         } else {
           $('#record-button').css({color: 'orange'})
           recordingstatus = 0;
+          if (data.error) console.log(JSON.parse(data.error));
         }
       },
       error: (error) => {

@@ -55,7 +55,7 @@ return [
             'visibility' => 'public',
         ],
 
-      
+
         's3' => [
             'driver' => 's3',
             'key' => env('DO_SPACES_KEY'),
@@ -65,6 +65,16 @@ return [
             'bucket' => env('DO_SPACES_BUCKET'),
             'visibility' => 'public',
         ],
+
+        's3Recordings' => [
+          'driver' => 's3',
+          'key' => env('AWS_S3_KEY'),
+          'secret' => env('AWS_S3_SECRET'),
+          'endpoint' => env('AWS_S3_ENDPOINT'),
+          'region' => env('AWS_S3_REGION'),
+          'bucket' => env('AWS_S3_BUCKET'),
+          'visibility' => 'public',
+        ]
 
     ],
 
