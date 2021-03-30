@@ -5095,7 +5095,7 @@ var host = function host() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/broadcaster.js */"./resources/js/broadcaster.js");
+module.exports = __webpack_require__(/*! D:\xampp\htdocs\expressmyview-git\resources\js\broadcaster.js */"./resources/js/broadcaster.js");
 
 
 /***/ })
