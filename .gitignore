@@ -5,6 +5,8 @@
 /storage/*.key
 /vendor
 /.idea
+rootkey.csv
+rootkey_1.csv
 .env
 .env.backup
 .phpunit.result.cache

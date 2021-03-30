@@ -37240,17 +37240,6 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ "./resources/css/emoji/emoji.css":
-/*!***************************************!*\
-  !*** ./resources/css/emoji/emoji.css ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ "./resources/css/green-audio-player.css":
 /*!**********************************************!*\
   !*** ./resources/css/green-audio-player.css ***!
@@ -37352,14 +37341,13 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ }),
 
 /***/ 0:
-/*!*************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/css/emoji/emoji.css ./resources/css/spinkit.css ./resources/css/app.css ./resources/css/bootstrap-tagsinput.css ./resources/css/owl.carousel.min.css ./resources/css/owl.theme.default.min.css ./resources/css/green-audio-player.css ***!
-  \*************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/css/spinkit.css ./resources/css/app.css ./resources/css/bootstrap-tagsinput.css ./resources/css/owl.carousel.min.css ./resources/css/owl.theme.default.min.css ./resources/css/green-audio-player.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/css/emoji/emoji.css */"./resources/css/emoji/emoji.css");
 __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/css/spinkit.css */"./resources/css/spinkit.css");
 __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/css/app.css */"./resources/css/app.css");
 __webpack_require__(/*! /home/rudra/freelance/emv/expressmyview/resources/css/bootstrap-tagsinput.css */"./resources/css/bootstrap-tagsinput.css");

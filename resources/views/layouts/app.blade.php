@@ -113,13 +113,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/custom.js') }}" defer></script>
-    <!-- Emoji picker -->
-    <!-- <script src="{{ asset('js/emoji/config.js') }}"></script>
-<script src="{{ asset('js/emoji/util.js') }}"></script>
-<script src="{{ asset('js/emoji/jquery.emojiarea.js') }}"></script>
-<script src="{{ asset('js/emoji/emoji-picker.js') }}" defer></script> -->
-
-
 
     <!-- <script>
     $("#mic-btn").prop("disabled", true);

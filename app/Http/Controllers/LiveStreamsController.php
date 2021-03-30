@@ -850,7 +850,7 @@ class LiveStreamsController extends Controller
                 ],
                 'storageConfig' => [
                   'vendor' => 1,
-                  'region' => 14,
+                  'region' => 0,
                   'bucket' => env('AWS_S3_BUCKET'),
                   'accessKey' => env('AWS_S3_KEY'),
                   'secretKey' => env('AWS_S3_SECRET'),

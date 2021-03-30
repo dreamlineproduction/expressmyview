@@ -401,6 +401,7 @@ $(function(){
       const msg = $('#publisher-input').val();
       if (msg.length < 1) return;
       const textmsg = JSON.stringify({msg,displayname,profilepic,emoji: false});
+      // console.log(textmsg);
       sendChatMessage(textmsg);
     }
   });
@@ -762,15 +763,15 @@ $(function(){
         success: (data) => {
           // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
           if (data.status === 1) {
-            $('#record-button').css({color: 'red'})
+            $('#record-icon').css({color: 'red'})
             recordingstatus = 1;
             const { resourceId, sid } = JSON.parse(data.message);
             recordingDetails = { resourceId, sid };
           } else if (data.status === 2 ){
-            $('#record-button').css({color: 'orange'})
+            $('#record-icon').css({color: 'orange'})
             recordingstatus = 0;
           } else {
-            $('#record-button').css({color: 'orange'})
+            $('#record-icon').css({color: 'orange'})
             recordingstatus = 0;
             if (data.error) console.log(JSON.parse(data.error));
           }
@@ -975,17 +976,18 @@ $(function(){
       data: { streamid, channelname, action, clientuid, token, resourceId, sid },
       success: (data) => {
         if (data.message) console.log(JSON.parse(data.message));
+        if (data.debug) console.log(JSON.parse(data.debug));
         // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
         if (data.status === 1) {
-          $('#record-button').css({color: 'red'})
+          $('#record-icon').css({color: 'red'})
           recordingstatus = 1;
           const { resourceId, sid } = JSON.parse(data.message);
           recordingDetails = { resourceId, sid };
         } else if (data.status === 2 ){
-          $('#record-button').css({color: 'orange'})
+          $('#record-icon').css({color: 'orange'})
           recordingstatus = 0;
         } else {
-          $('#record-button').css({color: 'orange'})
+          $('#record-icon').css({color: 'orange'})
           recordingstatus = 0;
           if (data.error) console.log(JSON.parse(data.error));
         }
@@ -1051,7 +1053,7 @@ $(function(){
       },
       complete: () => {},
     });
-  }, 3000);
+  }, 5000);
 
   window.addEventListener('beforeunload', abruptClose = (event) => {
     if (volumeLevelTimer !== null) {
@@ -1083,6 +1085,17 @@ $(function(){
       complete: () => {},
     });
   });
+
+  // Initializes and creates emoji set from sprite sheet
+  // window.emojiPicker = new EmojiPicker({
+  //   emojiable_selector: '[data-emojiable=true]',
+  //   assetsPath: '/css/img',
+  //   popupButtonClasses: 'fa fa-smile-o'
+  // });
+  // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+  // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+  // It can be called as many times as necessary; previously converted input fields will not be converted again
+  // window.emojiPicker.discover();
 
   // const player = fluidPlayer('fluidplayerdiv');
 
