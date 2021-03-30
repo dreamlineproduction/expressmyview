@@ -260,8 +260,43 @@ class LiveStreamsController extends Controller
     }
 
     public function view(LiveStream $stream) {
+      if (Auth::check()) {
+          $userId = Auth::user()->id;
+          if ($userId !== $stream->user->id) {
+              $stream->views += 1;
+              $stream->save();
+          }
+
+          // $history = History::where('user_id', $userId)->where('podcast_id', $stream->id)->first();
+          // if (empty($history)) {
+          //     $history = new History();
+          //     $history->user_id = $userId;
+          //     $history->podcast_id = $stream->id;
+          //     $history->save();
+          // }
+      } else {
+          $stream->views += 1;
+          $stream->save();
+      }
+
+      $casts = $stream->casts;
+      $categories = $stream->categories;
+      $tags = $stream->tags;
+
+      // $commentsCount = Comment::where('podcast_id', $stream->id)->count();
+      // $comments = Comment::where('podcast_id', $stream->id)->with('user.profile', 'likes')->latest()->paginate(3);
+
+      $streamCategories = $stream->categories()->pluck('categories.id')->toArray();
+
+      // Get related podcasts
+      $relatedPodcastsCount = 0;
+
       $viewData = array(
         'stream' => !empty($stream) ? $stream : null,
+        'casts' => $casts,
+        'categories' => $categories,
+        'tags' => $tags,
+        'relatedStreams' => null,
         'cloud_recordings' => !empty($stream) ? htmlspecialchars_decode($stream->cloud_recordings, ENT_QUOTES) : null,
       );
       return view('users.live_streams.view', $viewData);
@@ -557,17 +592,30 @@ class LiveStreamsController extends Controller
      */
     public function destroy(LiveStream $stream)
     {
+      $channelname = $stream->channelname;
         if ($stream->user_id == Auth::user()->id){
           if ($stream->delete()) {
-            Storage::disk('s3')->delete('public/podcast/thumbnail/' . $stream->thumbnail);
 
-            // Also delete the recorded livestream from agora
+            try {
+              Storage::disk('s3')->delete('public/podcast/thumbnail/' . $stream->thumbnail);
 
-            return new Response([
-                'status' => 1,
-                'message' => 'Live stream deleted successfully.',
-                'redirect' => route('my.livestreams'),
-            ]);
+              // Also delete the recorded livestream from agora
+              if (in_array($channelname, Storage::disk('s3Recordings')->directories(''))) {
+                Storage::disk('s3Recordings')->deleteDirectory($channelname);
+              }
+
+              return new Response([
+                  'status' => 1,
+                  'message' => 'Live stream deleted successfully.',
+                  'redirect' => route('my.livestreams'),
+              ]);
+            } catch (\Exception $exception) {
+              return new Response([
+                'status' => 0,
+                'error' => 'Couldnt delete S3 files'.json_encode($exception).json_encode(Storage::disk('s3Recordings')->directories(''))
+              ]);
+            }
+
           } else {
             return new Response([
                 'status' => 0,
@@ -776,7 +824,7 @@ class LiveStreamsController extends Controller
           ]);
           if ($response->successful()) {
             $resourceId = $response['resourceId'];
-            $starturl = 'https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/resourceid/'.$resourceId.'/mode/individual/start';
+            $starturl = 'https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/resourceid/'.$resourceId.'/mode/mix/start';
             $startBody = [
               'cname' => $channelname,
               'uid' => strval($userId),
@@ -784,6 +832,15 @@ class LiveStreamsController extends Controller
                 'token' => $token,
                 'recordingConfig' => [
                   'channelType' => 1,
+                  'streamTypes' => 2,
+                  'transcodingConfig' => [
+                    'height' => 480,
+                    'width' => 640,
+                    'bitrate' => 500,
+                    'fps' => 15,
+                    'mixedVideoLayout' => 1,
+                    'backgroundColor' => '#E59866',
+                  ],
                   'subscribeVideoUids' => ["#allstream#"],
                   'subscribeAudioUids' => ["#allstream#"],
                   'subscribeUidGroup' => 1,
@@ -821,7 +878,7 @@ class LiveStreamsController extends Controller
           if ($resourceIdinput == null ) {
             return new Response(['status' => 0, 'error' => 'resourceId not received in request body']);
           }
-          $stopurl = 'https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/resourceid/'.$resourceIdinput.'/sid/'.$sidinput.'/mode/individual/stop';
+          $stopurl = 'https://api.agora.io/v1/apps/'.env('AGORA_APP_ID').'/cloud_recording/resourceid/'.$resourceIdinput.'/sid/'.$sidinput.'/mode/mix/stop';
           $stopBody = [
             'cname' => $channelname,
             'uid' => strval($userId),

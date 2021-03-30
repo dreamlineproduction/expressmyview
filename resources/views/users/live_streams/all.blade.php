@@ -73,7 +73,7 @@
                         <h6 class="mt-4"> Sorry! There are not live streams currently.</h6>
                         <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
                         <h6 class="mt-4"> OR </h6>
-                        <a href="{{ route('my.livestreams') }}" class="btn btn-primary mt-4">Past Streams</a>
+                        <a href="{{ route('my.livestreams') }}" class="btn btn-primary mt-4">Relaunch</a>
                     </div>
                     @endforelse
                 </div>

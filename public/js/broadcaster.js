@@ -4324,13 +4324,7 @@ $(function () {
                     sid: sid
                   },
                   success: function success(data) {
-                    try {
-                      console.log(JSON.parse(data));
-                    } catch (err) {
-                      console.log(err.message, data);
-                    } // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
-
-
+                    // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
                     if (data.status === 1) {
                       $('#record-button').css({
                         color: 'red'
@@ -4355,6 +4349,7 @@ $(function () {
                         color: 'orange'
                       });
                       recordingstatus = 0;
+                      if (data.error) console.log(JSON.parse(data.error));
                     }
                   },
                   error: function error(_error6) {
@@ -4670,12 +4665,7 @@ $(function () {
         sid: sid
       },
       success: function success(data) {
-        try {
-          console.log(JSON.parse(data));
-        } catch (err) {
-          console.log(err.message, data);
-        } // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
-
+        if (data.message) console.log(JSON.parse(data.message)); // data.code = 1 (recording started), 2 (recording stopped), 99 (error)
 
         if (data.status === 1) {
           $('#record-button').css({
@@ -4701,6 +4691,7 @@ $(function () {
             color: 'orange'
           });
           recordingstatus = 0;
+          if (data.error) console.log(JSON.parse(data.error));
         }
       },
       error: function error(_error2) {
