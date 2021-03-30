@@ -9,6 +9,7 @@
 <!-- <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css" type="text/css" /> -->
 
 <!-- Emoji Set -->
+<!-- <link href="{{ asset('css/emoji.css') }}" rel="stylesheet" type="text/css"> -->
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
 <link href="{{ asset('css/spinkit.css') }}" rel="stylesheet" type="text/css">
 
@@ -109,10 +110,10 @@
                                         <div class="mic-selection1">
                                             <div id="video-toggle" class="text-center btn-group">
                                                 <div class="mic-selection">
-                                                    <button id="record-button" style="color: orange" type="button"
+                                                    <button id="record-button" type="button"
                                                         class="mic-selection" data-toggle="tooltip"
                                                         data-placement="bottom" title="Record Stream">
-                                                        <i id="record-icon" class="fas fa-save"></i>
+                                                        <i id="record-icon" style="color: orange" class="fas fa-save"></i>
 
                                                     </button>
 
@@ -383,15 +384,24 @@
                                                 </div>
                                             </div>
                                             <div class="publisher bt-1 border-light">
+
                                                 @php
                                                 $user = \Illuminate\Support\Facades\Auth::user();
                                                 @endphp
+
                                                 <img alt="($user->name)" class="avatar avatar-xs"
-                                                    src="{{ !empty($user->profile->avatar) ? Storage::disk('s3')->url('public/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}">
+                                                    src="{{ !empty($user->profile->avatar) ? Storage::disk('s3')->url('public/users/avatar/' . $user->profile->avatar) : asset('img/user.png') }}" />
 
-
+                                                <!-- <div class="col-10">
+                                                  <div class="text-left">
+                                                    <p class="lead emoji-picker-container">
+                                                      <input id="publisher-input" type="text" class="form-control textarea-control" rows="2" placeholder="Type here and press enter.." data-emojiable="true">
+                                                    </p>
+                                                  </div>
+                                                  </div> -->
+                                                    <!-- <img src="{{ asset('/css/img/blank.gif') }}" style="display: none" /> -->
                                                 <input class="publisher-input" id="publisher-input" type="text"
-                                                    placeholder="Write something" data-emojiable="true">
+                                                    placeholder="Write something">
                                                 <div class="btn-group dropup">
                                                     <button type="button" class="publisher-btn" id="emojidrop"
                                                         data-toggle="dropdown" aria-haspopup="true"
@@ -445,9 +455,9 @@
                                                     </div>
                                                 </div>
 
-
+                                                <div class="col-1"
                                                 <a class="publisher-btn text-info" href="#" data-abc="true"
-                                                    id='publisher-btn'><i class="fa fa-paper-plane"></i></a>
+                                                    id='publisher-btn'><i class="fa fa-paper-plane"></i></a></div>
 
                                             </div>
                                         </div>
@@ -473,18 +483,18 @@
 <!-- Fluid Player -->
 <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js" defer></script>
 <script src="{{ asset('js/clipboard.js') }}"></script>
-<!-- <script src="{{ asset('js/podcast.js') }}"></script> -->
 <script src="{{ asset('js/broadcaster.js') }}"></script>
-<!-- <script src="{{ asset('js/loademoji.js') }}"></script> -->
+<!-- Emoji picker -->
+<!-- <script src="{{ asset('js/emoji/config.js') }}"></script>
+<script src="{{ asset('js/emoji/util.js') }}"></script>
+<script src="{{ asset('js/emoji/jquery.emojiarea.js') }}"></script>
+<script src="{{ asset('js/emoji/emoji-picker.js') }}"></script> -->
 
 <script>
 var channelname = "{{ $stream->channelname }}";
-var APP_ENV = "{{ env("
-APP_ENV ") }}";
-var APP_DEBUG = "{{ env("
-APP_DEBUG ") }}";
-var AGORA_APP_ID = "{{ env("
-AGORA_APP_ID ") }}";
+var APP_ENV = "{{ env("APP_ENV") }}";
+var APP_DEBUG = "{{ env("APP_DEBUG") }}";
+var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";

@@ -2,7 +2,7 @@ $(function(){
   try {
     console.log(cloudRecordingDetails);
     const fileList = cloudRecordingDetails.serverResponse.fileList;
-    const prefix = 'https://expressmyviewcn.s3.ap-south-1.amazonaws.com/';
+    const prefix = 'https://'+bucketname+'.s3.'+regionname+'.amazonaws.com/';
     if (cloudRecordingDetails.serverResponse.fileListMode === 'json') {
       fileList.forEach((val) => {
         if (val.trackType === 'video')

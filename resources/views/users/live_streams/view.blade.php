@@ -205,5 +205,7 @@ var streamid = "{{ $stream->id }}";
 var thumbnailurl = "{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $stream->thumbnail) }}"
 var dd = "{{ $cloud_recordings }}";
 var cloudRecordingDetails = JSON.parse(dd.replaceAll('&quot;','"'));
+var bucketname = "{{ env("AWS_S3_BUCKET") }}";
+var regionname = "{{ env("AWS_S3_REGION") }}";
 </script>
 @endsection
