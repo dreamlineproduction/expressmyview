@@ -7,7 +7,8 @@ use App\License;
 use App\Podcast;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
+use App\Channel;
 class SearchesController extends Controller
 {
     public function search(Request $request)
@@ -99,5 +100,70 @@ class SearchesController extends Controller
             'orderBy' => $orderBy
         ];
         return view('users.search', $viewData);
+    }
+
+    public function searchAPI(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (strlen($query) == 0) {
+            return response()->json([
+                'status' => 0,
+                'queryResults' => ""
+            ]);
+        }
+        
+        // $category = Category::where('slug', $request->input('category'))->first();
+        // $created = $request->input('uploaded');
+        // $duration = $request->input('duration');
+        // $license = License::where('short_name', urldecode($request->input('license')))->first();
+        // $orderBy = $request->input('order-by');
+
+        $podcasts = Podcast::select(['id', 'channel_id', 'title', 'description', 'runtime_formatted', 'thumbnail', 'file_type', 'views', 'created_at'])
+            ->whereRaw('MATCH (title, description) AGAINST (? IN BOOLEAN MODE)', $query)
+            ->paginate(10);
+
+        foreach ($podcasts as $podcast ){
+            if($podcast['thumbnail']){
+                $podcast["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$podcast['thumbnail']);
+            }
+            $podcast["channelName"] = $this->getChannelName($podcast["channel_id"]);
+            $podcast["dateDiff"] = $podcast['created_at']->diffForHumans();
+        }
+        $viewData = [
+            'title' => 'Search results for ' . $query,
+            'query' => $query,
+            'podcasts' => $podcasts,
+        ];
+        return response()->json([
+            'status' => 0,
+            'queryResults' => $viewData
+        ]);
+    }
+
+    public function getAllCategories(){
+        $category = Category::all();
+
+        if($category){
+            return response()->json([
+                'status' => 0,
+                'allCategories' => $category
+            ]);
+        }else{
+            return response()->json([
+                'status' => 0,
+                'error' => "No category found"
+            ]);
+        }
+    }
+
+    public function getChannelName($channelId){
+        $channel = Channel::find($channelId);
+
+        if($channel){
+            return $channel->name;
+        }else{
+            return "";
+        }
     }
 }
