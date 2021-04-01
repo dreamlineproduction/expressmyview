@@ -1,4 +1,4 @@
-import * as EmojiPicker from './emoji/emoji-picker';
+// import * as EmojiPicker from './emoji/emoji-picker';
 
 $(function() {
 

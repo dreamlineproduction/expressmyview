@@ -4,18 +4,18 @@ Author: Askbootstrap
 Author URI: https://themeforest.net/user/askbootstrap
 Version: 1.0
 */
-(function ($) {
+$(function($) {
     "use strict"; // Start of use strict
 
     // Toggle the side navigation
-    $(document).on('click', '#sidebarToggle', function (e) {
+    $(document).on('click', '#sidebarToggle', function(e) {
         e.preventDefault();
         $("body").toggleClass("sidebar-toggled");
         $(".sidebar").toggleClass("toggled");
     });
 
     // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-    $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function (e) {
+    $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
         if ($window.width() > 768) {
             var e0 = e.originalEvent,
                 delta = e0.wheelDelta || -e0.detail;
@@ -58,7 +58,7 @@ Version: 1.0
     $('[data-toggle="tooltip"]').tooltip()
 
     // Scroll to top button appear
-    $(document).on('scroll', function () {
+    $(document).on('scroll', function() {
         var scrollDistance = $(this).scrollTop();
         if (scrollDistance > 100) {
             $('.scroll-to-top').fadeIn();
@@ -68,7 +68,7 @@ Version: 1.0
     });
 
     // Smooth scrolling using jQuery easing
-    $(document).on('click', 'a.scroll-to-top', function (event) {
+    $(document).on('click', 'a.scroll-to-top', function(event) {
         var $anchor = $(this);
         $('html, body').stop().animate({
             scrollTop: ($($anchor.attr('href')).offset().top)
@@ -77,17 +77,17 @@ Version: 1.0
     });
 
     if ($('.subscribe_btn').length > 0) {
-        $('.subscribe_btn').click(function () {
+        $('.subscribe_btn').click(function() {
             var $this = $(this);
             $.ajax({
                 url: APP_URL + '/channel/' + $this.data('channel') + '/subscribe',
                 method: 'post',
-                data: {_token: $('meta[name=csrf-token]').attr('content'), _method: 'put'},
+                data: { _token: $('meta[name=csrf-token]').attr('content'), _method: 'put' },
                 dataType: 'json',
-                beforeSend: function () {
+                beforeSend: function() {
 
                 },
-                success: function (data) {
+                success: function(data) {
                     if (data.status == 1) {
                         if (data.action == 'subscribed') {
                             $this.text('Unsubscribe');
@@ -97,10 +97,10 @@ Version: 1.0
                         $this.closest('.single-channel').find('.subscribers-count').text(data.subsCount);
                     }
                 },
-                error: function () {
+                error: function() {
 
                 },
-                complete: function () {
+                complete: function() {
 
                 }
             });
@@ -108,7 +108,7 @@ Version: 1.0
     }
 
     if (typeof alertify !== 'undefined') {
-        alertify.set('notifier','position', 'bottom-center');
+        alertify.set('notifier', 'position', 'bottom-center');
     }
 
-})(jQuery); // End of use strict
+}); // End of use strict

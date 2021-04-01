@@ -377,6 +377,15 @@
 
     var editorDiv = this.$editor;
     this.$editor.on("change keydown keyup resize scroll", function(e) {
+      // ADD THESE LINES TO TRIGGER ENTER KEY ON ORIGINAL INPUT
+      if (e.keyCode == 13 && e.type == 'keyup') {
+        var ev = jQuery.Event("keyup");
+        ev.which = 13;
+        ev.keyCode = 13;
+        $textarea.trigger(ev);
+        editorDiv.html('');
+        return;
+      }
       if(MAX_LENGTH_ALLOWED_KEYS.indexOf(e.which) == -1 &&
         !((e.ctrlKey || e.metaKey) && e.which == 65) && // Ctrl + A
         !((e.ctrlKey || e.metaKey) && e.which == 67) && // Ctrl + C

@@ -554,7 +554,7 @@ $(function() {
                 data: {_method: 'delete', _token: $('meta[name=csrf-token]').attr('content')},
                 dataType: 'json',
                 beforeSend: function () {
-                    //
+                    $.LoadingOverlay("show");
                 },
                 success: function (data) {
                     console.log(data);
@@ -569,7 +569,7 @@ $(function() {
                     alertify.error('An error occurred. Please try again.');
                 },
                 complete: function () {
-                    //
+                    $.LoadingOverlay("hide");
                 }
             });
         }, function () {});

@@ -370,12 +370,9 @@ Streaming Now - {{ $stream->title }}
 var channelname = "{{ $stream->channelname }}";
 var ownerID = "{{ $stream->user_id }}";
 var streamid = "{{ $stream->id }}";
-var APP_ENV = "{{ env("
-APP_ENV ") }}";
-var APP_DEBUG = "{{ env("
-APP_DEBUG ") }}";
-var AGORA_APP_ID = "{{ env("
-AGORA_APP_ID ") }}";
+var APP_ENV = "{{ env("APP_ENV") }}";
+var APP_DEBUG = "{{ env("APP_DEBUG") }}";
+var AGORA_APP_ID = "{{ env("AGORA_APP_ID") }}";
 var servertoken = "{{ $token }}";
 var servertokenrtm = "{{ $tokenrtm }}";
 var userrtm = "{{ $userrtm }}";

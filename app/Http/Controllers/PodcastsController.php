@@ -665,11 +665,12 @@ class PodcastsController extends Controller
     public function destroy(Podcast $podcast)
     {
         if ($podcast->user_id == Auth::user()->id) {
-            DB::beginTransaction();;
+            $type = $podcast->file_type;
+
             if ($podcast->delete()) {
 //                unlink(storage_path('/app/public/podcast/' . $podcast->filename));
                 Storage::disk('s3')->delete('public/podcast/thumbnail/' . $podcast->thumbnail);
-                if ($podcast->file_type == 'video') {
+                if ($type == 'video') {
                     try {
                         if (Storage::disk('s3')->exists('public/podcast/360/' . $podcast->filename)) {
                             Storage::disk('s3')->delete('public/podcast/360/' . $podcast->filename);

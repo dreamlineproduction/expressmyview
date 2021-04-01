@@ -9,11 +9,6 @@ Upload New Podcast
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Bootstrap Tags Input -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap-tagsinput.css') }}">
-
-    <!-- AlertifyJS -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-    <!-- AlertifyJS Bootstrap theme -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
 @endsection
 
 @section('content')
@@ -21,7 +16,7 @@ Upload New Podcast
         <div class="row">
             <div class="col-md-8 mx-auto text-center upload-video pt-5 pb-2 shadow-sm p-3 mb-5 bg-white rounded">
             <img class="img-fluid upld-icon mb-4" src="{{asset('img/upload-podcast.svg')}}" width="150" alt="Select Video files to upload"></a>
-                
+
                 <h4 class="mt-4">Select Video files to upload</h4>
                 <p class="land mt-3">or drag and drop video files</p>
                 <div class="selected-file"></div>
@@ -242,8 +237,6 @@ Please be sure not to violate others' copyright or privacy rights.</p></p>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" defer></script>
     <!-- Bootstrap Tags Input -->
     <script src="{{ asset('js/bootstrap-tagsinput.js') }}" defer></script>
-    <!-- AlertifyJS -->
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js" defer></script>
 
     <script src="{{ asset('js/podcast.js') }}" defer></script>
 @endsection
