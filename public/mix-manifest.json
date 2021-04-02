@@ -25,5 +25,6 @@
     "/js/emoji/util.js": "/js/emoji/util.js",
     "/js/emoji/jquery.emojiarea.js": "/js/emoji/jquery.emojiarea.js",
     "/js/emoji/emoji-picker.js": "/js/emoji/emoji-picker.js",
+    "/js/clipboard.js": "/js/clipboard.js",
     "/css/emoji.css": "/css/emoji.css"
 }

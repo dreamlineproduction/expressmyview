@@ -34,6 +34,15 @@ class UsersController extends Controller
         $podcasts = $authenticatedUser->podcasts()->where('status', 1);
         $podcasts2 = clone $podcasts;
         $streams = LiveStream::where('user_id', $authenticatedUser->id)->latest()->take(4)->get();
+        $recordedStreams = LiveStream::where('user_id', $authenticatedUser->id)
+          ->where('ispublished', false)
+          ->whereJsonContains('cloud_recordings->serverResponse->uploadingStatus','uploaded')
+          ->latest()->take(4)->get();
+
+        $publishedStreams = LiveStream::where('user_id', $authenticatedUser->id)
+          ->where('ispublished', true)
+          ->whereJsonContains('cloud_recordings->serverResponse->uploadingStatus','uploaded')
+          ->latest()->take(4)->get();
 
         $videos = $podcasts->where('file_type', 'video')->latest()->take(4)->with('channel')->get();
         $audios = $podcasts2->where('file_type', 'audio')->latest()->take(4)->with('channel')->get();
@@ -44,6 +53,8 @@ class UsersController extends Controller
             'videos' => $videos,
             'audios' => $audios,
             'streams' => $streams,
+            'recordedStreams' => $recordedStreams,
+            'publishedStreams' => $publishedStreams,
         ];
         return view('users.account', $viewData);
     }
@@ -352,7 +363,7 @@ class UsersController extends Controller
         $req = $request->all();
         $email = $req["email"];
         $user = User::where("email",$email)->get();
-        $email = str_replace("\xE2\x80\x8B", "", $email); 
+        $email = str_replace("\xE2\x80\x8B", "", $email);
         $id = $user[0]->id;
 
         if ($user->count() == 0) {
@@ -361,7 +372,7 @@ class UsersController extends Controller
             );
             return response()->json($user, 200);
         }
-        
+
         if($user[0]->type == "admin"){
             $user = array(
                 "error" => "User not registered"
@@ -388,7 +399,7 @@ class UsersController extends Controller
             $message->to($email)->subject('Reset Password');
             $message->from(config('mail.username'), 'Admin');
         });
-    
+
         if (Mail::failures()) {
             $error = array(
                 "error" => "Something went wrong, please try again later"
@@ -408,7 +419,7 @@ class UsersController extends Controller
         $id = $users[0]->id;
 
         $user = User::find($id);
-        
+
         if( $users[0]->status == "0"){
             $user = array(
                 "error" => "Your account has been blocked, please contact admin"
@@ -436,20 +447,20 @@ class UsersController extends Controller
         $id = $users[0]->id;
 
         $user = User::find($id);
-        
+
         if( $users[0]->status == "0"){
             $user = array(
                 "error" => "Your account has been blocked, please contact admin"
             );
             return response()->json($user, 200);
         }
-       
+
         $user->password = bcrypt($password);
         $user->save();
 
         return response()->json("Password Successfully Changed", 200);
     }
-    
+
     public function broker()
     {
         return Password::broker();
@@ -679,7 +690,7 @@ class UsersController extends Controller
         ];
         return response()->json($viewData, 200);
     }
-   
+
     public function reg(Request $request) {
         // $this->assignHeaders();
         $rules = [
@@ -688,7 +699,7 @@ class UsersController extends Controller
             'phone' => 'unique:user_profiles|required',
             'password' => 'required',
         ];
-    
+
         if($request->name == "" || $request->email == "" || $request->password == "" || $request->phone == ""){
             $msg = array(
                 "error" => "Values are Empty"
@@ -698,7 +709,7 @@ class UsersController extends Controller
 
         $input     = $request->only('name', 'email', 'password', 'phone');
         $validator = Validator::make($input, $rules);
-    
+
         if ($validator->fails()) {
             $msg = array(
                 "error" => "Email or mobile number already registered"

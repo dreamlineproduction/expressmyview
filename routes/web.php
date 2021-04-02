@@ -39,6 +39,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::match(['put', 'patch'], '/live-stream/{stream}/update', 'LiveStreamsController@update')->name('live-stream.update');
     Route::delete('/live-stream/{stream}/delete', 'LiveStreamsController@destroy')->name('live-stream.delete');
     Route::post('/live-stream/setlive', 'LiveStreamsController@editLiveStatus')->name('live-stream.setlive');
+    Route::post('/live-stream/{stream}/publish', 'LiveStreamsController@publish')->name('live-stream.publish');
     Route::match(['put', 'patch'], '/live-stream/{stream}/update', 'LiveStreamsController@update')->name('live-stream.update');
     Route::post('/live-stream/cloudrecording', 'LiveStreamsController@cloudrecording')->name('live-stream.cloudrecording');
 
@@ -50,6 +51,7 @@ Route::group(['middleware' => ['verified']], function () {
 
     Route::get('/my-podcasts/{type?}', 'PodcastsController@getMyPodcasts')->name('my.podcasts');
     Route::get('/my-livestreams', 'LiveStreamsController@getMyLiveStreams')->name('my.livestreams');
+    Route::get('/my-recordedstreams', 'LiveStreamsController@getMyRecordedStreams')->name('my.recordedstreams');
 
     Route::post('/podcast/{podcast}/comment', 'CommentsController@store')->name('comment.store');
     Route::post('/podcast/comment/{comment}/like', 'CommentsController@like')->name('comment.like');

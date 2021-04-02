@@ -83,6 +83,34 @@ $(function() {
         });
     }
 
+    $('.publish-stream').click(function (event) {
+      event.preventDefault();
+      const $this = $(this);
+      console.log($this.attr('href'));
+      alertify.confirm('You are about to publish this livestream. This action is irreversible! Do you want to continue?', function(){
+        $.ajax({
+          url: $this.attr('href'),
+          dataType: 'json',
+          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+          method: 'post',
+          beforeSend: function () {
+              $.LoadingOverlay("show");
+          },
+          success: (data) => {
+            if (data.status === 1) {
+              window.location.href = data.redirect;
+            } else {
+              console.log(data);
+            }
+          },
+          error: (error) => {
+            console.log(error);
+          },
+          complete: () => {$.LoadingOverlay("show");},
+        });
+      }, function() {});
+    });
+
     $('.delete-stream').click(function (event) {
         event.preventDefault();
         const $this = $(this);

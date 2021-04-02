@@ -80,6 +80,7 @@ My Account
                     </div>
                     @endif
                     <h6>My Live Streams</h6>
+                    <h6>Click on poster to relaunch</h6>
                 </div>
             </div>
             @forelse($streams as $stream)
@@ -116,7 +117,7 @@ My Account
                                             <a class="dropdown-item"
                                                 href="{{ route('live-stream.edit', $stream->id) }}"><i
                                                     class="far fa-edit"></i> Edit LiveStream</a>
-                                            <a class="dropdown-item delete-video"
+                                            <a class="dropdown-item delete-stream"
                                                 href="{{ route('live-stream.delete', $stream->id) }}"><i
                                                     class="far fa-trash-alt"></i> Delete Video</a>
 
@@ -236,6 +237,169 @@ My Account
                 <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
                 <h6 class="mt-4"> Sorry! You do not have any video contents yet.</h6>
                 <a href="{{ route('podcast.create') }}" class="btn btn-primary mt-4">Create</a>
+            </div>
+            @endforelse
+        </div>
+    </div>
+    <hr class="mt-0">
+    @endif
+
+    @if(!empty($recordedStreams))
+    <div class="video-block section-padding">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-title">
+                    @if($recordedStreams->count() > 0)
+                    <div class="btn-group float-right right-action">
+
+                        <a href="{{ route('my.recordedstreams') }}" class="btn btn-primary btn-sm mb-4">View All</a>
+                    </div>
+                    @endif
+                    <h6>My Past recorded streams</h6>
+                    <h6>Click on poster to publish</h6>
+                </div>
+            </div>
+            @forelse($recordedStreams as $rstream)
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="video-card">
+                    <div class="video-card-image">
+                        <a class="play-icon publish-stream" href="{{ route('live-stream.publish', $rstream->id) }}">
+                          <i class="fas fa-cloud-upload-alt"></i>
+                        </a>
+                        <img class="img-fluid"
+                                src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $rstream->thumbnail) }}"
+                                alt="{{ $rstream->title }}">
+                        <div class="time">{{ time_elapsed_string($rstream->created_at) }}</div>
+                    </div>
+                    <div class="video-card-body">
+
+                        <div class="row">
+                            <div class="col-md-10">
+
+                                <div class="video-title text-left">
+                                    <p>{{ $rstream->title }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+
+                                <div class=" text-right video-edit">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-round-edit" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                                href="{{ route('live-stream.edit', $rstream->id) }}"><i
+                                                    class="far fa-edit"></i> Edit LiveStream</a>
+                                            <a class="dropdown-item delete-stream"
+                                                href="{{ route('live-stream.delete', $rstream->id) }}"><i
+                                                    class="far fa-trash-alt"></i> Delete Video</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="video-view">
+                            {{ formatViewsCount($rstream->views, 1) }} views &nbsp;<i class="fas fa-calendar-alt"></i>
+                            {{ $rstream->created_at->diffForHumans() }}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-md-12 mb-3 text-center">
+                <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
+                <h6 class="mt-4"> Sorry! You do not have any recorded streams yet.</h6>
+                <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
+            </div>
+            @endforelse
+        </div>
+    </div>
+    <hr class="mt-0">
+    @endif
+
+    @if(!empty($publishedStreams))
+    <div class="video-block section-padding">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-title">
+                    @if($publishedStreams->count() > 0)
+                    <div class="btn-group float-right right-action">
+
+                        <a href="{{ route('my.recordedstreams') }}" class="btn btn-primary btn-sm mb-4">View All</a>
+                    </div>
+                    @endif
+                    <h6>My Past published streams</h6>
+                    <h6>Click on poster to publish</h6>
+                </div>
+            </div>
+            @forelse($publishedStreams as $rstream)
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="video-card">
+                    <div class="video-card-image">
+                      <a class="play-icon" href="{{ route('live-streams.view', $rstream->id) }}"><i class="fas fa-play-circle" aria-hidden="true"></i></a>
+                      <a href="{{ route('live-streams.view', $rstream->id) }}">
+                          <img class="img-fluid" src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $rstream->thumbnail) }}" alt="video">
+                      </a>
+                        <img class="img-fluid"
+                                src="{{ Storage::disk('s3')->url('public/podcast/thumbnail/' . $rstream->thumbnail) }}"
+                                alt="{{ $rstream->title }}">
+                        <div class="time">{{ time_elapsed_string($rstream->created_at) }}</div>
+                    </div>
+                    <div class="video-card-body">
+
+                        <div class="row">
+                            <div class="col-md-10">
+
+                                <div class="video-title text-left">
+                                    <p>{{ $rstream->title }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+
+                                <div class=" text-right video-edit">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-round-edit" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                                href="{{ route('live-stream.edit', $rstream->id) }}"><i
+                                                    class="far fa-edit"></i> Edit LiveStream</a>
+                                            <a class="dropdown-item delete-stream"
+                                                href="{{ route('live-stream.delete', $rstream->id) }}"><i
+                                                    class="far fa-trash-alt"></i> Delete Video</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="video-view">
+                            {{ formatViewsCount($rstream->views, 1) }} views &nbsp;<i class="fas fa-calendar-alt"></i>
+                            {{ $rstream->created_at->diffForHumans() }}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-md-12 mb-3 text-center">
+                <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
+                <h6 class="mt-4"> Sorry! You do not have any published streams yet.</h6>
+                <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
             </div>
             @endforelse
         </div>

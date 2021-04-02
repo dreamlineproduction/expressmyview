@@ -81,15 +81,15 @@
             <hr class="mt-0">
         @endif
         <hr>
-        @if(!empty($recordedStreams))
+        @if(!empty($publishedStreams))
         <div class="video-block section-padding">
             <div class="row">
               <div class="col-md-12">
                   <div class="main-title">
-                      <h6> Past recorded Streams</h6>
+                      <h6> Past published Streams</h6>
                   </div>
               </div>
-                @forelse ($recordedStreams as $rstream)
+                @forelse ($publishedStreams as $rstream)
                 <div class="col-xl-3 col-sm-6 mb-3">
                     <div class="video-card">
                         <div class="video-card-image">
@@ -127,7 +127,7 @@
                 @empty
                 <div class="col-md-12 mb-3 text-center">
                     <img src="{{asset('img/sorry_no_podcast.svg')}}" width=150>
-                    <h6 class="mt-4"> Sorry! There are not recorded streams currently.</h6>
+                    <h6 class="mt-4"> Sorry! There are not published streams currently.</h6>
                     <a href="{{ route('live-stream.create') }}" class="btn btn-primary mt-4">Create</a>
                 </div>
                 @endforelse
