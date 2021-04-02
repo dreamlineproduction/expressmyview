@@ -1,0 +1,5 @@
+AWS_S3_BUCKET=expressmyviewcn
+AWS_S3_REGION=ap-south-1
+AWS_S3_KEY=AKIASFETLIQXOYHOLMXL
+AWS_S3_SECRET=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
+AWS_S3_ENDPOINT=https://s3.ap-south-1.amazonaws.com
