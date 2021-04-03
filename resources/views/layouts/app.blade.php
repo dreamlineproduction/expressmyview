@@ -116,7 +116,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/custom.js') }}" defer></script>
-    <script src="{{ asset('js/purecookie.js') }}" async></script>
 
     <!-- <script>
     $("#mic-btn").prop("disabled", true);

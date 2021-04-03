@@ -26,6 +26,7 @@
         "agora-rtc-sdk-ng": "^4.3.0",
         "agora-rtm-sdk": "^1.4.2",
         "bowser": "^2.11.0",
+        "clipboard": "^2.0.8",
         "plyr": "^3.6.2",
         "redux": "^4.0.5",
         "spinkit": "^2.0.1"

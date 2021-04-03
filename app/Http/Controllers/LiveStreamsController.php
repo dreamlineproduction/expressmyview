@@ -69,7 +69,8 @@ class LiveStreamsController extends Controller
           }
         });
 
-      $recordedStreams = LiveStream::where('islive', false)
+      $publishedStreams = LiveStream::where('islive', false)
+        ->where('ispublished', true)
         ->whereJsonContains('cloud_recordings->serverResponse->uploadingStatus','uploaded')
         ->when($orderBy, function($query, $orderBy) {
           if ($orderBy == 'popularity') {
@@ -83,7 +84,7 @@ class LiveStreamsController extends Controller
 
       $viewData = array(
         'streams' => $streams->paginate(10),
-        'recordedStreams' => $recordedStreams->paginate(10),
+        'publishedStreams' => $publishedStreams->paginate(10),
       );
 
       return view('users.live_streams.all', $viewData);
@@ -170,7 +171,7 @@ class LiveStreamsController extends Controller
                 } else {
                     return new Response([
                         'status' => 0,
-                        'errors' => 'An error occurred. Please try again.'
+                        'errors' => 'An error occurred in thumbnail. Please try again.'
                     ]);
                 }
             } else {
@@ -182,6 +183,7 @@ class LiveStreamsController extends Controller
             $stream->user_id = Auth::user()->id;
             $stream->hostid = strval(Auth::user()->id);
             $stream->islive = False;
+            $stream->ispublished = False;
             $stream->totalviews = 0;
             $stream->title = $request->input('title');
             $stream->description = $request->input('description');
@@ -253,7 +255,7 @@ class LiveStreamsController extends Controller
 
                 return new Response([
                     'status' => 0,
-                    'message' => 'An error occurred. Please try again.',
+                    'message' => 'An error occurred in db storage. Please try again.',
                 ]);
             }
         }
@@ -463,6 +465,33 @@ class LiveStreamsController extends Controller
       return new Response(['status' => 0, 'error' => 'Access denied']);
     }
 
+    public function publish(LiveStream $stream) {
+      if (Auth::check()) {
+        if (Auth::user()->id == $stream->hostid) {
+          DB::beginTransaction();
+          try {
+            $stream->ispublished = true;
+            $stream->update();
+            DB::commit();
+            return new Response([
+              'status' => 1,
+              'message' => 'Live stream published!',
+              'redirect' => route('my.recordedstreams'),
+            ]);
+          }
+          catch (\Exception $exception) {
+            DB::rollBack();
+            return new Response(['status' => 0, 'error' => 'Error occurred: '.json_encode($exception)]);
+          }
+        } else {
+          return new Response(['status' => 0, 'error' => 'Access denied']);
+        }
+      } else {
+        return new Response(['status' => 0, 'error' => 'Access denied']);
+      }
+      return new Response(['status' => 0, 'error' => 'Access denied']);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -582,6 +611,46 @@ class LiveStreamsController extends Controller
             ]);
         }
       }
+    }
+
+
+    public function getMyRecordedStreams(Request $request) {
+      $type = $request->route('type');
+      $user = Auth::user()->id;
+      $orderBy = $request->get('orderBy');
+
+      $recordedStreams = LiveStream::where('user_id', $user)
+        ->where('ispublished', false)
+        ->whereJsonContains('cloud_recordings->serverResponse->uploadingStatus','uploaded')
+        ->when($orderBy, function ($query, $orderBy) {
+          if (empty($orderBy) || $orderBy == 'date') {
+              return $query->orderBy('created_at', 'desc');
+          } elseif ($orderBy == 'popularity') {
+              return $query->orderBy('views', 'desc');
+          } else {
+              return $query;
+          }
+        });
+
+      $publishedStreams = LiveStream::where('user_id', $user)
+        ->where('ispublished', true)
+        ->whereJsonContains('cloud_recordings->serverResponse->uploadingStatus','uploaded')
+        ->when($orderBy, function ($query, $orderBy) {
+          if (empty($orderBy) || $orderBy == 'date') {
+              return $query->orderBy('created_at', 'desc');
+          } elseif ($orderBy == 'popularity') {
+              return $query->orderBy('views', 'desc');
+          } else {
+              return $query;
+          }
+        });
+
+      $viewData = array(
+        'recordedStreams' => !empty($recordedStreams) ? $recordedStreams->paginate(10) : null,
+        'publishedStreams' => !empty($publishedStreams) ? $publishedStreams->paginate(10) : null,
+        'type' => $type,
+      );
+      return view('users.live_streams.recorded', $viewData);
     }
 
     /**
