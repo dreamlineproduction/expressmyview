@@ -37284,17 +37284,6 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ "./resources/css/purecookie.css":
-/*!**************************************!*\
-  !*** ./resources/css/purecookie.css ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ "./resources/css/spinkit.css":
 /*!***********************************!*\
   !*** ./resources/css/spinkit.css ***!
@@ -37363,9 +37352,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ }),
 
 /***/ 0:
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/css/emoji/emoji.css ./resources/css/spinkit.css ./resources/css/app.css ./resources/css/bootstrap-tagsinput.css ./resources/css/owl.carousel.min.css ./resources/css/owl.theme.default.min.css ./resources/css/purecookie.css ./resources/css/green-audio-player.css ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/css/emoji/emoji.css ./resources/css/spinkit.css ./resources/css/app.css ./resources/css/bootstrap-tagsinput.css ./resources/css/owl.carousel.min.css ./resources/css/owl.theme.default.min.css ./resources/css/green-audio-player.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -37376,7 +37365,6 @@ __webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\css\app.css 
 __webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\css\bootstrap-tagsinput.css */"./resources/css/bootstrap-tagsinput.css");
 __webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\css\owl.carousel.min.css */"./resources/css/owl.carousel.min.css");
 __webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\css\owl.theme.default.min.css */"./resources/css/owl.theme.default.min.css");
-__webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\css\purecookie.css */"./resources/css/purecookie.css");
 module.exports = __webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\css\green-audio-player.css */"./resources/css/green-audio-player.css");
 
 

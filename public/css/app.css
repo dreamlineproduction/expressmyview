@@ -74,7 +74,6 @@ body.fixed-nav #content-wrapper {
     border: 1px solid #ccc;
     display: block !important;
     color: #555;
-    vertical-align: middle;
     max-width: 100%;
     line-height: 23px;
     cursor: text;
@@ -82,6 +81,26 @@ body.fixed-nav #content-wrapper {
     border-color: #dcdfdf;
     border-radius: 2px;
     font-size: 13px;
+}
+
+.cookie-alert {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 320px;
+    background: #2f3337;
+    border: 0;
+    margin: 0 !important;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 500ms ease-out;
+}
+
+.cookie-alert.show {
+    opacity: 1;
+    transform: translateY(0%);
+    transition-delay: 1000ms;
 }
 
 .search-filter .collapsible {
@@ -1213,7 +1232,7 @@ body.sidebar-toggled footer.sticky-footer {
     border-color: transparent !important;
     background: #ff516b;
     background: linear-gradient(135deg, #ff516b 0, #826cfd 100%);
-    border: 0;
+    border: 1;
 }
 
 .btn-outline-primary {

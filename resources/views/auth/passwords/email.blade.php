@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Askbootstrap">
     <meta name="author" content="Askbootstrap">
-    <title>{{ env('APP_NAME') }} - Reset Password</title>
+    <title>Reset Password - MyView</title>
     <!-- Favicon Icon -->
     <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
     <!-- Bootstrap core CSS-->
@@ -19,7 +19,6 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Owl Carousel -->
     <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
-    <link href="{{ asset('css/purecookie.css') }}" rel="stylesheet" async>
     <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
 </head>
 
@@ -115,6 +114,19 @@
             </div>
         </div>
     </section>
+    <div class="card cookie-alert">
+        <div class="card-body text-white">
+            <h5 class="card-title text-white">&#x1F36A; Your privacy</h5>
+            <p class="card-text">By clicking “Accept all cookies”, you agree MyView can store cookies on your
+                device and disclose information in accordance with our Cookie Policy.</p>
+            <div class="btn-toolbar">
+                <a href="#" class="btn btn-success accept-cookies btn-block">Accept all cookies</a>
+                <a href="{{ route('page.show', 'cookie-policy') }}" target="_blank" class="btn btn-link btn-block">Learn
+                    more</a>
+
+            </div>
+        </div>
+    </div>
 
 
 
@@ -129,7 +141,49 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/custom.js') }}" defer></script>
     <script src="{{ asset('js/login.js') }}" defer></script>
-    <script src="{{ asset('js/purecookie.js') }}" async></script>
+    <script>
+    (function() {
+        "use strict";
+
+        var cookieAlert = document.querySelector(".cookie-alert");
+        var acceptCookies = document.querySelector(".accept-cookies");
+
+        cookieAlert.offsetHeight; // Force browser to trigger reflow (https://stackoverflow.com/a/39451131)
+
+        if (!getCookie("acceptCookies")) {
+            cookieAlert.classList.add("show");
+        }
+
+        acceptCookies.addEventListener("click", function() {
+            setCookie("acceptCookies", true, 60);
+            cookieAlert.classList.remove("show");
+        });
+    })();
+
+    // Cookie functions stolen from w3schools
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    </script>
 </body>
 
 </html>
