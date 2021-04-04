@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af9e6d04d155a14e88781113e58bccc9",
+    "content-hash": "af1844382aa29f3b502283c3d32ed1b1",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -71,46 +71,6 @@
                 "source": "https://github.com/alchemy-fr/BinaryDriver/tree/master"
             },
             "time": "2020-02-12T19:35:11+00:00"
-        },
-        {
-            "name": "api-video/php-sdk",
-            "version": "1.8.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/apivideo/php-sdk.git",
-                "reference": "88ba353f8f0720cf9a9a3094be76d9201d3eba97"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/apivideo/php-sdk/zipball/88ba353f8f0720cf9a9a3094be76d9201d3eba97",
-                "reference": "88ba353f8f0720cf9a9a3094be76d9201d3eba97",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "kriswallsmith/buzz": "^0.15",
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "^1.6",
-                "phpunit/phpunit": "^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "ApiVideo\\Client\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHP client for api.video web services.",
-            "support": {
-                "issues": "https://github.com/apivideo/php-sdk/issues",
-                "source": "https://github.com/apivideo/php-sdk/tree/1.8.8"
-            },
-            "time": "2021-02-17T09:44:15+00:00"
         },
         {
             "name": "asm89/stack-cors",
@@ -1334,58 +1294,6 @@
                 "source": "https://github.com/vinkla/hashids/tree/4.1.0"
             },
             "time": "2020-11-26T19:24:33+00:00"
-        },
-        {
-            "name": "kriswallsmith/buzz",
-            "version": "v0.15.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kriswallsmith/Buzz.git",
-                "reference": "d0b82d8a6169276f91f445c26792ff4a2b11e831"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/Buzz/zipball/d0b82d8a6169276f91f445c26792ff4a2b11e831",
-                "reference": "d0b82d8a6169276f91f445c26792ff4a2b11e831",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.3 || ^7.0"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "^3.3"
-            },
-            "suggest": {
-                "ext-curl": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Buzz\\": "lib/Buzz"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Kris Wallsmith",
-                    "email": "kris.wallsmith@gmail.com",
-                    "homepage": "http://kriswallsmith.net/"
-                }
-            ],
-            "description": "Lightweight HTTP client",
-            "homepage": "https://github.com/kriswallsmith/Buzz",
-            "keywords": [
-                "curl",
-                "http client"
-            ],
-            "support": {
-                "issues": "https://github.com/kriswallsmith/Buzz/issues",
-                "source": "https://github.com/kriswallsmith/Buzz/tree/master"
-            },
-            "time": "2017-11-24T19:18:50+00:00"
         },
         {
             "name": "laravel/framework",
