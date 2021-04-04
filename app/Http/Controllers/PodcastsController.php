@@ -152,7 +152,7 @@ class PodcastsController extends Controller
                     ->getFrameFromSeconds((int)($duration * 0.3))
                     ->export()
                     ->toDisk('s3')
-                    ->save('podcast/thumbnail/' . $thumbnailFilename);
+                    ->save('public/podcast/thumbnail/' . $thumbnailFilename);
 
                 /*$ffmpeg = FFMpeg::create();
                 $thumbnailTime = (int)($duration * 0.3);
@@ -188,7 +188,8 @@ class PodcastsController extends Controller
 
                 return response()->json([
                     'title' => $originalFilename,
-                    'thumbnail' => !empty($thumbnailFilename) ? url('/storage/podcast/thumbnail/' . $thumbnailFilename) : $thumbnailFilename,
+                    
+                    'thumbnail' => !empty($thumbnailFilename) ?  Storage::disk('s3')->url('public/podcast/thumbnail/' . $thumbnailFilename) : $thumbnailFilename,
                     'file_type' => $fileType == 'video' ? 'video' : 'audio',
                     'action' => route('podcast.update', $podcast->id)
                 ], 201);

@@ -1,1 +1,316 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="/",n(n.s=54)}({54:function(e,t,n){e.exports=n(55)},55:function(e,t){$((function(){alertify.set("notifier","position","bottom-center");var e=$("#languages");e.length>0&&e.select2();var t=$("#thumbnail");t.length>0&&t.change((function(){var e=$(this),t=this.files?this.files:[];if(t.length&&window.FileReader&&/^image/.test(t[0].type)){var n=new FileReader;n.readAsDataURL(t[0]),n.onloadend=function(){e.closest(".imgUp").find(".imagePreview").css("background-image","url("+this.result+")")}}}));var n=$('input[name="categories[]"]');n.length>0&&n.click((function(){n.filter(":checked").length>=3?n.each((function(){$(this).is(":checked")||$(this).prop("disabled",!0)})):n.each((function(){$(this).is(":checked")||$(this).prop("disabled",!1)}))}));var r=$("#podcast_details");if(r.length>0){var o=$("#submit_btn");r.ajaxForm({url:$(this).attr("action"),method:"post",beforeSend:function(){o.attr("disabled",!0),o.html('<i class="fa fa-spinner fa-spin"></i> Please wait')},success:function(e){1==e.status?window.location.href=e.redirect:swal({title:"Error",text:e.message,type:"error",confirmButtonColor:"#3085d6",cancelButtonColor:"#d33",confirmButtonText:"OK",buttonsStyling:!0,confirmButtonClass:"btn btn-success"})},complete:function(){o.attr("disabled",!1),o.html("Save Changes")}})}$(".publish-stream").click((function(e){e.preventDefault();var t=$(this);console.log(t.attr("href")),alertify.confirm("You are about to publish this livestream. This action is irreversible! Do you want to continue?",(function(){$.ajax({url:t.attr("href"),dataType:"json",headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},method:"post",beforeSend:function(){$.LoadingOverlay("show")},success:function(e){1===e.status?window.location.href=e.redirect:console.log(e)},error:function(e){console.log(e)},complete:function(){$.LoadingOverlay("show")}})}),(function(){}))})),$(".delete-stream").click((function(e){e.preventDefault();var t=$(this);alertify.confirm("Are you sure?","You are about to delete this podcast. This action is irreversible.",(function(){$.ajax({url:t.attr("href"),method:"delete",data:{_method:"delete",_token:$("meta[name=csrf-token]").attr("content")},dataType:"json",beforeSend:function(){$.LoadingOverlay("show")},success:function(e){console.log(e),1==e.status?(alertify.success(e.message),window.location.reload()):alertify.error(e.message)},error:function(){alertify.error("An error occurred. Please try again.")},complete:function(){$.LoadingOverlay("hide")}})}),(function(){}))})),$("#podcast_form").validate({rules:{channel:"required",title:"required",description:"required",tags:"required"},submitHandler:function(e){var t=$(e),n=new FormData(e);$.ajax({url:t.attr("action"),method:"post",data:n,contentType:!1,processData:!1,beforeSend:function(){t.find("input").prop("disabled",!0),t.find("#submit_btn").html('<i class="fa fa-spinner fa-spin"></i> Please Wait ')},success:function(e){var n;1==e.status?(n='<div class="alert alert-success mt-2">'+e.message+"</div>",$(n).appendTo(t).delay(5e3).fadeOut(500,(function(){$(this).remove()})),window.location.href=e.redirect):(n='<div class="alert alert-danger mt-2">'+e.message+"</div>",$(n).appendTo(t).delay(5e3).fadeOut(500,(function(){$(this).remove()})))},error:function(){$('<div class="alert alert-danger mt-2">An error occurred. Please try again.</div>').appendTo(t).delay(5e3).fadeOut(500,(function(){$(this).remove()}))},complete:function(){t.find("input").prop("disabled",!1),t.find("#submit_btn").html(" Save Changes ")}})}})}))}});
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./resources/js/live-streams.js":
+/*!**************************************!*\
+  !*** ./resources/js/live-streams.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// import Plyr from 'plyr';
+//
+// const player = new Plyr('#player');
+$(function () {
+  alertify.set('notifier', 'position', 'bottom-center');
+  var $languages = $('#languages');
+
+  if ($languages.length > 0) {
+    $languages.select2();
+  }
+
+  var $thumbnail = $('#thumbnail');
+
+  if ($thumbnail.length > 0) {
+    $thumbnail.change(function () {
+      var uploadFile = $(this);
+      var files = !!this.files ? this.files : [];
+      if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+      if (/^image/.test(files[0].type)) {
+        // only image file
+        var reader = new FileReader(); // instance of the FileReader
+
+        reader.readAsDataURL(files[0]); // read the local file
+
+        reader.onloadend = function () {
+          // set image data as background of div
+          //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+          uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
+        };
+      }
+    });
+  }
+
+  var categories = $('input[name="categories[]"]');
+
+  if (categories.length > 0) {
+    categories.click(function () {
+      var checked = categories.filter(':checked');
+
+      if (checked.length >= 3) {
+        categories.each(function () {
+          if (!$(this).is(':checked')) {
+            $(this).prop('disabled', true);
+          }
+        });
+      } else {
+        categories.each(function () {
+          if (!$(this).is(':checked')) {
+            $(this).prop('disabled', false);
+          }
+        });
+      }
+    });
+  }
+
+  var podcastDetails = $('#podcast_details');
+
+  if (podcastDetails.length > 0) {
+    var $submitBtn = $('#submit_btn');
+    podcastDetails.ajaxForm({
+      url: $(this).attr('action'),
+      method: 'post',
+      beforeSend: function beforeSend() {
+        $submitBtn.attr('disabled', true);
+        $submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Please wait');
+      },
+      success: function success(data) {
+        if (data.status == 1) {
+          window.location.href = data.redirect;
+        } else {
+          swal({
+            title: 'Error',
+            text: data.message,
+            type: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            buttonsStyling: true,
+            confirmButtonClass: 'btn btn-success'
+          });
+        }
+      },
+      complete: function complete() {
+        $submitBtn.attr('disabled', false);
+        $submitBtn.html('Save Changes');
+      }
+    });
+  }
+
+  $('.publish-stream').click(function (event) {
+    event.preventDefault();
+    var $this = $(this);
+    console.log($this.attr('href'));
+    alertify.confirm('You are about to publish this livestream. This action is irreversible! Do you want to continue?', function () {
+      $.ajax({
+        url: $this.attr('href'),
+        dataType: 'json',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: 'post',
+        beforeSend: function beforeSend() {
+          $.LoadingOverlay("show");
+        },
+        success: function success(data) {
+          if (data.status === 1) {
+            window.location.href = data.redirect;
+          } else {
+            console.log(data);
+          }
+        },
+        error: function error(_error) {
+          console.log(_error);
+        },
+        complete: function complete() {
+          $.LoadingOverlay("show");
+        }
+      });
+    }, function () {});
+  });
+  $('.delete-stream').click(function (event) {
+    event.preventDefault();
+    var $this = $(this);
+    alertify.confirm('Are you sure?', 'You are about to delete this podcast. This action is irreversible.', function () {
+      $.ajax({
+        url: $this.attr('href'),
+        method: 'delete',
+        data: {
+          _method: 'delete',
+          _token: $('meta[name=csrf-token]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function beforeSend() {
+          $.LoadingOverlay("show");
+        },
+        success: function success(data) {
+          console.log(data);
+
+          if (data.status == 1) {
+            alertify.success(data.message);
+            window.location.reload();
+          } else {
+            alertify.error(data.message);
+          }
+        },
+        error: function error() {
+          alertify.error('An error occurred. Please try again.');
+        },
+        complete: function complete() {
+          $.LoadingOverlay("hide");
+        }
+      });
+    }, function () {});
+  });
+  $('#podcast_form').validate({
+    rules: {
+      channel: 'required',
+      title: 'required',
+      description: 'required',
+      tags: 'required'
+    },
+    submitHandler: function submitHandler(form) {
+      var $form = $(form);
+      var formData = new FormData(form);
+      $.ajax({
+        url: $form.attr('action'),
+        method: 'post',
+        data: formData,
+        contentType: false,
+        processData: false,
+        beforeSend: function beforeSend() {
+          $form.find('input').prop('disabled', true);
+          $form.find('#submit_btn').html('<i class="fa fa-spinner fa-spin"></i> Please Wait ');
+        },
+        success: function success(data) {
+          var message;
+
+          if (data.status == 1) {
+            message = '<div class="alert alert-success mt-2">' + data.message + '</div>';
+            $(message).appendTo($form).delay(5000).fadeOut(500, function () {
+              $(this).remove();
+            });
+            window.location.href = data.redirect;
+          } else {
+            message = '<div class="alert alert-danger mt-2">' + data.message + '</div>';
+            $(message).appendTo($form).delay(5000).fadeOut(500, function () {
+              $(this).remove();
+            });
+          }
+        },
+        error: function error() {
+          var message = '<div class="alert alert-danger mt-2">An error occurred. Please try again.</div>';
+          $(message).appendTo($form).delay(5000).fadeOut(500, function () {
+            $(this).remove();
+          });
+        },
+        complete: function complete() {
+          $form.find('input').prop('disabled', false);
+          $form.find('#submit_btn').html(' Save Changes ');
+        }
+      });
+    }
+  });
+});
+
+/***/ }),
+
+/***/ 5:
+/*!********************************************!*\
+  !*** multi ./resources/js/live-streams.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! E:\xampp\htdocs\expressmyview-git\resources\js\live-streams.js */"./resources/js/live-streams.js");
+
+
+/***/ })
+
+/******/ });
