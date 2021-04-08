@@ -778,8 +778,8 @@ class LiveStreamsController extends Controller
             $expireTimeInSeconds = 10800;
             $currentTimestamp = (new DateTime("now", new DateTimeZone('UTC')))->getTimestamp();
             $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
-            // $token = RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, null, $role, $privilegeExpiredTs);
-            $token = $this->generateToken($appID, $appCertificate, $channelName);
+            $token = RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, $uid, $role, $privilegeExpiredTs);
+            // $token = $this->generateToken($appID, $appCertificate, $channelName);
             $userrtm = 'u_'.strval($userid);
             $rolertm = RtmTokenBuilder::RoleRtmUser;
             $tokenrtm = RtmTokenBuilder::buildToken($appID, $appCertificate, $userrtm, $rolertm, $privilegeExpiredTs);
