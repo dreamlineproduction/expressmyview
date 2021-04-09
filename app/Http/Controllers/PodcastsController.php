@@ -152,7 +152,7 @@ class PodcastsController extends Controller
                     ->getFrameFromSeconds((int)($duration * 0.3))
                     ->export()
                     ->toDisk('s3')
-                    ->save('public/podcast/thumbnail/' . $thumbnailFilename);
+                    ->save('podcast/thumbnail/' . $thumbnailFilename);
 
                 /*$ffmpeg = FFMpeg::create();
                 $thumbnailTime = (int)($duration * 0.3);
@@ -188,8 +188,7 @@ class PodcastsController extends Controller
 
                 return response()->json([
                     'title' => $originalFilename,
-                    
-                    'thumbnail' => !empty($thumbnailFilename) ?  Storage::disk('s3')->url('public/podcast/thumbnail/' . $thumbnailFilename) : $thumbnailFilename,
+                    'thumbnail' => !empty($thumbnailFilename) ? url('/storage/podcast/thumbnail/' . $thumbnailFilename) : $thumbnailFilename,
                     'file_type' => $fileType == 'video' ? 'video' : 'audio',
                     'action' => route('podcast.update', $podcast->id)
                 ], 201);
@@ -1222,7 +1221,7 @@ class PodcastsController extends Controller
 
     public function getAllVideoPodcasts()
     {
-        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->orderBy('created_at', 'DESC')->paginate(10);
+        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->where('channel_id', '!=', "")->orderBy('created_at', 'DESC')->paginate(10);
 
         foreach ($allVideoPodcasts as $allVideoPodcast ){
             if($allVideoPodcast['thumbnail']){

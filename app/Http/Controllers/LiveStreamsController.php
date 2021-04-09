@@ -37,8 +37,15 @@ class LiveStreamsController extends Controller
     /**
      * LiveStreamsController constructor.
      */
-
-  
+    public function __construct()
+    {
+        // API Client Initialization
+        if (env('APIVIDEO_ENVIRONMENT') == 'production') {
+            $this->apiVideoClient = Client::create(env('APIVIDEO_API_KEY'));
+        } else {
+            $this->apiVideoClient = Client::createSandbox(env('APIVIDEO_SANDBOX_API_KEY'));
+        }
+    }
 
     /**
      * Display a listing of the resource.
@@ -729,7 +736,7 @@ class LiveStreamsController extends Controller
     {
         $streams = LiveStream::where('islive',"1")->orderBy('created_at', 'desc')->paginate(10);
 
-        if($streams){
+        if(count($streams) > 0){
             foreach ($streams as $stream ){
                 if($stream['thumbnail']){
                     $stream["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$stream['thumbnail']);
@@ -771,8 +778,8 @@ class LiveStreamsController extends Controller
             $expireTimeInSeconds = 10800;
             $currentTimestamp = (new DateTime("now", new DateTimeZone('UTC')))->getTimestamp();
             $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
-            // $token = RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, null, $role, $privilegeExpiredTs);
-            $token = $this->generateToken($appID, $appCertificate, $channelName);
+            $token = RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, $uid, $role, $privilegeExpiredTs);
+            // $token = $this->generateToken($appID, $appCertificate, $channelName);
             $userrtm = 'u_'.strval($userid);
             $rolertm = RtmTokenBuilder::RoleRtmUser;
             $tokenrtm = RtmTokenBuilder::buildToken($appID, $appCertificate, $userrtm, $rolertm, $privilegeExpiredTs);
