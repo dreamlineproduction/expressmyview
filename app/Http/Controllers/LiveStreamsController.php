@@ -736,7 +736,7 @@ class LiveStreamsController extends Controller
     {
         $streams = LiveStream::where('islive',"1")->orderBy('created_at', 'desc')->paginate(10);
 
-        if($streams){
+        if(count($streams) > 0){
             foreach ($streams as $stream ){
                 if($stream['thumbnail']){
                     $stream["path"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$stream['thumbnail']);

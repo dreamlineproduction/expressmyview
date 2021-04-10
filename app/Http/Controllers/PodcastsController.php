@@ -1221,7 +1221,7 @@ class PodcastsController extends Controller
 
     public function getAllVideoPodcasts()
     {
-        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->orderBy('created_at', 'DESC')->paginate(10);
+        $allVideoPodcasts = Podcast::where('privacy', 1)->where('file_type', "video")->where('channel_id', '!=', "")->orderBy('created_at', 'DESC')->paginate(10);
 
         foreach ($allVideoPodcasts as $allVideoPodcast ){
             if($allVideoPodcast['thumbnail']){

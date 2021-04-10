@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Comment;
 use App\CommentLike;
 use App\Podcast;
+use App\User;
+use App\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -166,4 +168,45 @@ class CommentsController extends Controller
             ]);
         }
     }
+
+    public function getAllCommentsByPodcastId(Request $request){
+        $pid = $request->pid;
+        $uid = $request->uid;
+        $comments = Comment::where('podcast_id', $pid)->latest()->paginate(10);
+        foreach ($comments as $comment ){
+            $comment["date"] = $comment['created_at']->diffForHumans();
+            $comment['username'] = $this->getUserName($uid);
+            $comment["user_image"] = $this->getUserImage($uid);
+        }
+        return new Response([
+            'status' => 1,
+            'message' => $comments
+        ]);
+    }
+
+    public function getUserName($uid){
+        $user = User::find($uid);
+
+        if($user){
+            return $user->name;
+        }else{
+            return "";
+        }
+    }
+
+    public function getUserImage($uid){
+        $user_profile = Userprofile::where("user_id", $uid)->get();
+        if($user_profile){
+            if($user_profile[0]['avatar']){
+                $user_image= Storage::disk('s3')->url("public/users/avatar/".$user_profile[0]['avatar']);
+                return $user_image;
+            }else{
+                return "";
+            }
+        }
+        else{
+            return "";
+        }
+    }
+    
 }

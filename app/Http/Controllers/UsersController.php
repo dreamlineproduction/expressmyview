@@ -242,8 +242,10 @@ class UsersController extends Controller
         }
         if (\Hash::check($password, $user[0]->password)) {
             $user_profile = Userprofile::where("user_id", $user[0]->id)->get();
-            if($user_profile[0]['avatar']){
-                $user_profile[0]["imagePath"] = Storage::disk('s3')->url("public/users/avatar/".$user_profile[0]['avatar']);
+            if($user_profile){
+                if($user_profile[0]['avatar']){
+                    $user_profile[0]["imagePath"] = Storage::disk('s3')->url("public/users/avatar/".$user_profile[0]['avatar']);
+                }
             }
             return response()->json([$user, $user_profile], 200);
         } else {

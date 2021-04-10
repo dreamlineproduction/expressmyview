@@ -57,3 +57,4 @@ Route::post('getLiveStreams', 'LiveStreamsController@getLiveStreams');
 Route::post('watchAPI', 'LiveStreamsController@watchAPI');
 Route::post('searchAPI', 'SearchesController@searchAPI');
 Route::get('getAllCategories', 'SearchesController@getAllCategories');
+Route::post('getAllCommentsByPodcastId', 'CommentsController@getAllCommentsByPodcastId');
