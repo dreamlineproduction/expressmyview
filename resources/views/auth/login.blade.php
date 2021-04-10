@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Askbootstrap">
     <meta name="author" content="Askbootstrap">
-    <title>{{ env('APP_NAME') }} - Sign in</title>
+    <title>Sign in - Myview </title>
     <!-- Favicon Icon -->
     <link rel="icon" type="image/png" href="img/favicon.png">
     <!-- Bootstrap core CSS-->
@@ -84,7 +84,7 @@
                         <div class="owl-carousel owl-carousel-login">
                             <div class="item">
                                 <div class="carousel-login-card text-center">
-                                    <img src="img/login_image1.svg" class="img-fluid" alt="LOGO">
+                                    <img src="{{ asset('img/login_image1.svg') }}" class="img-fluid" alt="LOGO">
                                     <h5 class="mt-5 mb-3">Watch Live Streams</h5>
                                     <p class="mb-4">when an unknown printer took a galley of type and scrambled<br> it
                                         to make a type specimen book. It has survived not <br>only five centuries</p>
@@ -92,7 +92,7 @@
                             </div>
                             <div class="item">
                                 <div class="carousel-login-card text-center">
-                                    <img src="img/login_image2.svg" class="img-fluid" alt="LOGO">
+                                    <img src="{{ asset('img/login_image2.svg') }}" class="img-fluid" alt="LOGO">
                                     <h5 class="mt-5 mb-3">View Millions of Podcasts</h5>
                                     <p class="mb-4">when an unknown printer took a galley of type and scrambled<br> it
                                         to make a type specimen book. It has survived not <br>only five centuries</p>
@@ -100,7 +100,7 @@
                             </div>
                             <div class="item">
                                 <div class="carousel-login-card text-center">
-                                    <img src="img/login_image3.svg" class="img-fluid" alt="LOGO">
+                                    <img src="{{ asset('img/login_image3.svg') }}" class="img-fluid" alt="LOGO">
                                     <h5 class="mt-5 mb-3">Get Notified from your Subscription</h5>
                                     <p class="mb-4">when an unknown printer took a galley of type and scrambled<br> it
                                         to make a type specimen book. It has survived not <br>only five centuries</p>
@@ -112,6 +112,19 @@
             </div>
         </div>
     </section>
+    <div class="card cookie-alert">
+        <div class="card-body text-white">
+            <h5 class="card-title text-white">&#x1F36A; Your privacy</h5>
+            <p class="card-text">By clicking “Accept all cookies”, you agree MyView can store cookies on your
+                device and disclose information in accordance with our Cookie Policy.</p>
+            <div class="btn-toolbar">
+                <a href="#" class="btn btn-success accept-cookies btn-block">Accept all cookies</a>
+                <a href="{{ route('page.show', 'cookie-policy') }}" target="_blank" class="btn btn-link btn-block">Learn
+                    more</a>
+
+            </div>
+        </div>
+    </div>
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <!-- Core plugin JavaScript-->
@@ -124,6 +137,49 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/custom.js') }}" defer></script>
     <script src="{{ asset('js/login.js') }}" defer></script>
+    <script>
+    (function() {
+        "use strict";
+
+        var cookieAlert = document.querySelector(".cookie-alert");
+        var acceptCookies = document.querySelector(".accept-cookies");
+
+        cookieAlert.offsetHeight; // Force browser to trigger reflow (https://stackoverflow.com/a/39451131)
+
+        if (!getCookie("acceptCookies")) {
+            cookieAlert.classList.add("show");
+        }
+
+        acceptCookies.addEventListener("click", function() {
+            setCookie("acceptCookies", true, 60);
+            cookieAlert.classList.remove("show");
+        });
+    })();
+
+    // Cookie functions stolen from w3schools
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    </script>
 </body>
 
 </html>

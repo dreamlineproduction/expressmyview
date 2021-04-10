@@ -37,15 +37,15 @@ class LiveStreamsController extends Controller
     /**
      * LiveStreamsController constructor.
      */
-    public function __construct()
-    {
-        // API Client Initialization
-        if (env('APIVIDEO_ENVIRONMENT') == 'production') {
-            $this->apiVideoClient = Client::create(env('APIVIDEO_API_KEY'));
-        } else {
-            $this->apiVideoClient = Client::createSandbox(env('APIVIDEO_SANDBOX_API_KEY'));
-        }
-    }
+    // public function __construct()
+    // {
+    //     // API Client Initialization
+    //     if (env('APIVIDEO_ENVIRONMENT') == 'production') {
+    //         $this->apiVideoClient = Client::create(env('APIVIDEO_API_KEY'));
+    //     } else {
+    //         $this->apiVideoClient = Client::createSandbox(env('APIVIDEO_SANDBOX_API_KEY'));
+    //     }
+    // }
 
     /**
      * Display a listing of the resource.
