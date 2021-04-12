@@ -1291,7 +1291,7 @@ class PodcastsController extends Controller
         $podcast = Podcast::find($pid);
 
         $podcastCategories = $podcast->categories()->pluck('categories.id')->toArray();
-
+        
         $relatedPodcastsObj = Podcast::where('id', '!=', $pid)->where('status', 1);
 
         if(empty($podcastCategories)){
@@ -1323,6 +1323,7 @@ class PodcastsController extends Controller
             $isLiked = true;
         }
 
+        $podcast['commentsCount'] = Comment::where('podcast_id', $pid)->count();
         $podcast["dateDiff"] = $podcast['created_at']->diffForHumans();
         $podcast["thumbnail"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$podcast['thumbnail']);
         if($podcast["file_type"] == "video"){
