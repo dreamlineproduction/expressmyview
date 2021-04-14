@@ -62,3 +62,4 @@ Route::post('getAllReplyByCommentId', 'CommentsController@getAllReplyByCommentId
 Route::post('uploadComment', 'CommentsController@uploadComment');
 Route::post('uploadReply', 'CommentsController@uploadReply');
 Route::post('likeComment', 'CommentsController@likeComment');
+Route::post('deleteComment', 'CommentsController@deleteComment');

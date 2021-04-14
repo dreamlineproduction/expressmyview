@@ -1323,7 +1323,7 @@ class PodcastsController extends Controller
             $isLiked = true;
         }
 
-        $podcast['commentsCount'] = Comment::where('podcast_id', $pid)->count();
+        $podcast['commentsCount'] = Comment::where('podcast_id', $pid)->where('parent_id', '=', '0')->count();
         $podcast["dateDiff"] = $podcast['created_at']->diffForHumans();
         $podcast["thumbnail"] = Storage::disk('s3')->url("public/podcast/thumbnail/".$podcast['thumbnail']);
         if($podcast["file_type"] == "video"){

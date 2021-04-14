@@ -426,4 +426,31 @@ class CommentsController extends Controller
             }   
         }
     }
+
+    public function deleteComment(Request $request)
+    {
+        $cid = $request->cid;
+        $uid = $request->uid;
+
+        $comment = Comment::find($cid);
+
+        if ($uid == $comment->user_id) {
+            if ($comment->delete()) {
+                return new Response([
+                    'status' => 1,
+                    'message' => 'Comment deleted.'
+                ]);
+            } else {
+                return new Response([
+                    'status' => 0,
+                    'message' => 'Comment could not be deleted.'
+                ]);
+            }
+        } else {
+            return new Response([
+                'status' => 0,
+                'message' => 'You cannot perform this operation.'
+            ]);
+        }
+    }
 }
